@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DhanunJay Solar Solutions - Powering Your Future with Clean Energy</title>
+    <meta name="description" content="Smart, sustainable, and affordable solar solutions for every home & business. Professional solar panel installation and maintenance services.">
+    <meta name="keywords" content="Solar Energy, Solar Panels Installation, Green Energy Solutions, Residential Solar, Commercial Solar">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div id="loading-screen">
+        <div class="solar-loader">
+            <div class="celestial-body sun" id="sun"></div>
+            <div class="celestial-body moon" id="moon"></div>
+            <div class="welcome-text">Welcome to</div>
+            <div class="company-name">DhanunJay Solar Solutions</div>
+            <div class="tagline">We Serve you the Best</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="logo.png" alt="DhanunJay Solar Solutions" class="logo-img-full" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="logo-fallback" style="display: none;">
+                        <div class="logo-svg">
+                            <div class="house-roof"></div>
+                            <div class="solar-panels"></div>
+                            <div class="sun-icon">☀️</div>
+                        </div>
+                        <span class="logo-text">DhanunJay Solar</span>
+                    </div>
+                </div>
+                
+                <ul class="nav-menu" id="nav-menu">
+                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">About Us</a></li>
+                    <li class="nav-item"><a href="#services" class="nav-link">Services</a></li>
+                    <li class="nav-item"><a href="#projects" class="nav-link">Projects</a></li>
+                    <li class="nav-item"><a href="#brands" class="nav-link">Partners</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="#brands" class="quote-btn nav-link">💰 Get Quote</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <a href="tel:+919346476607" class="call-btn">
+                        <i class="fas fa-phone"></i> Call Us
+                    </a>
+                    <div class="hamburger" id="hamburger">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <h1 class="hero-title">Powering Your Future with Clean Energy</h1>
+                    <p class="hero-subtitle">Smart, sustainable, and affordable solar solutions for every home & business.</p>
+                    
+                    <div class="hero-buttons">
+                        <a href="https://wa.me/919346476607" target="_blank" class="btn btn-whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Us Now
+                        </a>
+                        <a href="https://maps.app.goo.gl/Ho3BZWo9rVka2Dtc7" target="_blank" class="btn btn-location">
+                            <i class="fas fa-map-marker-alt"></i> Find Our Location
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hero-right">
+                    <div class="hero-image">
+                        <div class="sunlight-glow"></div>
+                        <!-- Half-visible sun/moon on the right side of hero -->
+                        <div id="hero-sun" class="hero-celestial"></div>
+                        <div id="hero-moon" class="hero-celestial" style="display:none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About DhanunJay Solar Solutions</h2>
+                <p class="section-subtitle">Leading the solar revolution with innovative and reliable energy solutions</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>At DhanunJay Solar Solutions, we are committed to transforming the way you power your life. With years of expertise in solar technology, we provide comprehensive solar solutions that are not only environmentally friendly but also economically beneficial.</p>
+                </div>
+                
+                <div class="about-highlights">
+                    <div class="highlight-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>Affordable</h3>
+                        <p>Cost-effective solar solutions with flexible payment options</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Reliable</h3>
+                        <p>High-quality equipment with long-term warranties and support</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Green Energy</h3>
+                        <p>100% clean, renewable energy for a sustainable future</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-subtitle">Comprehensive solar solutions tailored to your needs</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Residential Solar Solutions</h3>
+                    <p>Custom solar panel installations for homes, reducing electricity bills and carbon footprint.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Commercial Solar Solutions</h3>
+                    <p>Large-scale solar installations for businesses, industries, and commercial properties.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Installation & Maintenance</h3>
+                    <p>Professional installation services and ongoing maintenance to ensure optimal performance.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Energy Consultation</h3>
+                    <p>Expert advice on energy efficiency and solar system design for maximum savings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Gallery Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Projects</h2>
+                <p class="section-subtitle">Showcasing our successful solar installations</p>
+            </div>
+            
+            <div class="projects-slider">
+                <div class="slider-container">
+                    <div class="slide active">
+                        <img src="project1.jpg" alt="Residential Solar Installation">
+                        <div class="slide-content">
+                            <h3>Residential Installation - Hyderabad</h3>
+                            <p>5kW solar system reducing electricity bills by 80%</p>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="project2.jpg" alt="Commercial Solar Installation">
+                        <div class="slide-content">
+                            <h3>Commercial Project - Tech Park</h3>
+                            <p>100kW solar installation for office complex</p>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="project3.jpg" alt="Industrial Solar Installation">
+                        <div class="slide-content">
+                            <h3>Industrial Setup - Manufacturing Unit</h3>
+                            <p>500kW solar system for sustainable manufacturing</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slider-controls">
+                    <button class="prev-btn" onclick="changeSlide(-1)">❮</button>
+                    <button class="next-btn" onclick="changeSlide(1)">❯</button>
+                </div>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="testimonials">
+                <h3>What Our Customers Say</h3>
+                <div class="testimonial-carousel">
+                    <div class="testimonial active">
+                        <p>"Excellent service and professional installation. Our electricity bills have reduced by 70%!"</p>
+                        <span>- Rajesh Kumar, Homeowner</span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"DhanunJay Solar provided the best commercial solar solution for our office. Highly recommended!"</p>
+                        <span>- Priya Sharma, Business Owner</span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Professional team, quality equipment, and excellent after-sales service. Very satisfied!"</p>
+                        <span>- Amit Patel, Residential Customer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands/Partners Section -->
+    <section id="brands" class="brands">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Trusted Partners</h2>
+                <p class="section-subtitle">Working with leading brands to deliver quality solar solutions</p>
+            </div>
+            
+            <div class="brands-container">
+                <div class="brands-slider">
+                    <div class="brand-logo" onclick="openPriceModalWithBrand('exide')" style="cursor: pointer;">
+                        <img src="logos/exide-logo.png" alt="Exide" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij5FWElERTwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <div class="brand-logo" onclick="openPriceModalWithBrand('luminous')" style="cursor: pointer;">
+                        <img src="logos/luminous-logo.png" alt="Luminous" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5MVU1JTk9VUzwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <div class="brand-logo" onclick="openPriceModalWithBrand('adani')" style="cursor: pointer;">
+                        <img src="logos/adani-logo.png" alt="Adani Solar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5BREFOSSE8L3RleHQ+PHRleHQgeD0iNjAiIHk9IjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPlNvbGFyPC90ZXh0Pjwvc3ZnPg=='">
+                    </div>
+                    <div class="brand-logo" onclick="openPriceModalWithBrand('tata')" style="cursor: pointer;">
+                        <img src="logos/tata-power-logo.png" alt="Tata Power" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5UQVRBPC90ZXh0Pjx0ZXh0IHg9IjYwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzY2NiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj5QT1dFUjwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <div class="brand-logo" onclick="openPriceModalWithBrand('waaree')" style="cursor: pointer;">
+                        <img src="logos/waaree-logo.png" alt="Waaree" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5XQUFSRUU8L3RleHQ+PHRleHQgeD0iNjAiIHk9IjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPk9uZSB3aXRoIHRoZSBTdW48L3RleHQ+PC9zdmc+'">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Ready to switch to solar? Contact us today!</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+91 93464 76607</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@dhanunjay solar.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>Hyderabad, Telangana, India</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <a href="https://wa.me/919346476607" target="_blank" class="action-btn whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="action-btn instagram-btn">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://maps.app.goo.gl/Ho3BZWo9rVka2Dtc7" target="_blank" class="action-btn maps-btn">
+                        <i class="fas fa-map-marker-alt"></i> Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <h2 class="footer-slogan">DhanunJay Solar – We Serve You the Best ☀⚡</h2>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="social-links">
+                        <a href="https://wa.me/919346476607" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2024 DhanunJay Solar Solutions. All rights reserved.</p>
+                    <div class="footer-legal">
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="floating-whatsapp">
+        <a href="https://wa.me/919346476607" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Admin Toggle Button -->
+    <div id="admin-toggle" class="admin-toggle" style="display: none;">
+        <button onclick="showAdminLogin()" class="admin-btn">
+            <i class="fas fa-edit"></i> Admin
+        </button>
+    </div>
+
+    <!-- On-Grid Price Calculator Modal -->
+    <div id="priceModal" class="modal">
+        <div class="modal-content price-modal-content">
+            <div class="price-modal-header">
+                <span class="close" onclick="closePriceModal()">&times;</span>
+                <h2>Get Your Solar System Price</h2>
+                <p>Select system capacity to see detailed pricing</p>
+            </div>
+            
+            <div class="toggle-buttons">
+                <button id="capacityBtn" class="toggle-btn active" onclick="showCapacityView()">System Capacity</button>
+                <button id="detailsBtn" class="toggle-btn" onclick="showDetailsView()">System Details</button>
+            </div>
+            
+            <div class="price-modal-body">
+                <div class="kw-selector-container">
+                    <div class="kw-cards-grid">
+                        <div class="kw-card" data-kw="1" onclick="selectKW(1)">
+                            <div class="kw-number">1 KW</div>
+                            <div class="kw-description">Small Home</div>
+                            <div class="kw-price" id="kw-price-1">₹60,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="2" onclick="selectKW(2)">
+                            <div class="kw-number">2 KW</div>
+                            <div class="kw-description">Small Home+</div>
+                            <div class="kw-price" id="kw-price-2">₹1,25,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="3" onclick="selectKW(3)">
+                            <div class="kw-number">3 KW</div>
+                            <div class="kw-description">Medium Home</div>
+                            <div class="kw-price" id="kw-price-3">₹1,80,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="4" onclick="selectKW(4)">
+                            <div class="kw-number">4 KW</div>
+                            <div class="kw-description">Large Home</div>
+                            <div class="kw-price" id="kw-price-4">₹2,40,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="5" onclick="selectKW(5)">
+                            <div class="kw-number">5 KW</div>
+                            <div class="kw-description">Villa/Duplex</div>
+                            <div class="kw-price" id="kw-price-5">₹3,00,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="6" onclick="selectKW(6)">
+                            <div class="kw-number">6 KW</div>
+                            <div class="kw-description">Small Business</div>
+                            <div class="kw-price" id="kw-price-6">₹3,50,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="7" onclick="selectKW(7)">
+                            <div class="kw-number">7 KW</div>
+                            <div class="kw-description">Office/Shop</div>
+                            <div class="kw-price" id="kw-price-7">₹3,85,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="8" onclick="selectKW(8)">
+                            <div class="kw-number">8 KW</div>
+                            <div class="kw-description">Medium Business</div>
+                            <div class="kw-price" id="kw-price-8">₹4,00,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="9" onclick="selectKW(9)">
+                            <div class="kw-number">9 KW</div>
+                            <div class="kw-description">Large Business</div>
+                            <div class="kw-price" id="kw-price-9">₹4,15,000</div>
+                        </div>
+                        <div class="kw-card" data-kw="10" onclick="selectKW(10)">
+                            <div class="kw-number">10 KW</div>
+                            <div class="kw-description">Commercial</div>
+                            <div class="kw-price" id="kw-price-10">₹4,25,000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="priceResult" class="price-result" style="display: none;">
+                    <div class="system-details">
+                        <h3 id="systemTitle">System Details</h3>
+                        <div class="details-layout">
+                            <div class="details-left">
+                                <div class="detail-item">
+                                    <span class="detail-label">System Capacity:</span>
+                                    <span id="capacityDisplay" class="detail-value" data-editable="price-calculator-capacity" data-kw-specific="true"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Monthly Gen Upto:</span>
+                                    <span id="generationDisplay" class="detail-value" data-editable="price-calculator-generation" data-kw-specific="true"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Annual Sav Upto:</span>
+                                    <span id="savingsDisplay" class="detail-value" data-editable="price-calculator-savings" data-kw-specific="true"></span>
+                                </div>
+                            </div>
+                            <div class="details-right">
+                                <div class="price-display">
+                                    <div class="total-price">
+                                        <span class="price-label">Total System Price:</span>
+                                        <span id="totalPrice" class="price-amount" data-editable="price-calculator-total" data-kw-specific="true"></span>
+                                    </div>
+                                    <div class="subsidy-info">
+                                        <span class="subsidy-label">Gov Subsidy:</span>
+                                        <span id="subsidyPrice" class="subsidy-amount" data-editable="price-calculator-subsidy" data-kw-specific="true"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="price-modal-footer">
+                <button onclick="openQuoteModalWithKW()" class="cta-btn">Interested</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 Admin Access</h3>
+                <span class="close" onclick="closeAdminModal()">&times;</span>
+            </div>
+            <form id="admin-login-form" class="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-password">Admin Password</label>
+                    <input type="password" id="admin-password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Controls Panel -->
+    <div id="edit-controls" class="edit-controls" style="display: none;">
+        <div class="edit-panel">
+            <h4>Edit Controls</h4>
+            <button class="btn btn-success" onclick="saveChanges()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button class="btn btn-warning" onclick="resetChanges()">
+                <i class="fas fa-undo"></i> Reset
+            </button>
+            <button class="btn btn-danger" onclick="exitEditMode()">
+                <i class="fas fa-times"></i> Exit Edit
+            </button>
+        </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quote-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💰 Get Free Solar Quote</h3>
+                <span class="close" onclick="closeQuoteModal()">&times;</span>
+            </div>
+            
+            <form id="quote-form" class="quote-form">
+                <div class="form-group">
+                    <label for="quote-name">Full Name *</label>
+                    <input type="text" id="quote-name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quote-email">Email ID *</label>
+                    <input type="email" id="quote-email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quote-mobile">Mobile Number *</label>
+                    <input type="tel" id="quote-mobile" name="mobile" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="quote-location">Location / Address *</label>
+                    <textarea id="quote-location" name="location" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quote-capacity">Required Capacity (kW) *</label>
+                    <input type="text" id="quote-capacity" name="capacity" required readonly placeholder="Select KW from price calculator first">
+                </div>
+                
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit" id="quote-submit-btn">Get Quote</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content success-content">
+            <div class="success-icon">✅</div>
+            <h3>Thank You!</h3>
+            <p>We will send your solar quote within 24 hours!</p>
+            <button onclick="closeSuccessModal()" class="btn btn-ok">OK</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
