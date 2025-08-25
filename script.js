@@ -570,7 +570,76 @@ function storeQuoteData(data) {
     // Store back to localStorage
     localStorage.setItem('solarBookings', JSON.stringify(quotes));
     
+    // Also send to cloud storage for cross-device access
+    sendToCloudStorage(data);
+    
+    // Send email notification to admin
+    sendEmailNotification(data);
+    
     console.log('Quote request stored:', data);
+}
+
+// Send data to cloud storage (JSONBin.io - free service)
+async function sendToCloudStorage(data) {
+    try {
+        const response = await fetch('https://api.jsonbin.io/v3/b', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': '$2a$10$8K9vN2mF5qL3pR7sT1wX4eY6hG8jD9kA2bC5fE3gH1iJ4kL6mN0oP'
+            },
+            body: JSON.stringify({
+                type: 'solar_quote',
+                timestamp: new Date().toISOString(),
+                data: data
+            })
+        });
+        
+        if (response.ok) {
+            console.log('Quote sent to cloud storage successfully');
+        }
+    } catch (error) {
+        console.log('Cloud storage failed, data saved locally only:', error);
+    }
+}
+
+// Send email notification to admin
+async function sendEmailNotification(data) {
+    try {
+        const emailData = {
+            to: 'admin@dhanunjaysolar.com',
+            subject: `New Solar Quote Request - ${data.capacity}`,
+            html: `
+                <h2>New Solar Quote Request</h2>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Mobile:</strong> ${data.mobile}</p>
+                <p><strong>Location:</strong> ${data.location}</p>
+                <p><strong>Capacity:</strong> ${data.capacity}</p>
+                <p><strong>Submitted:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+            `
+        };
+        
+        // Using EmailJS for free email service
+        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                service_id: 'service_solar',
+                template_id: 'template_quote',
+                user_id: 'user_dhanunjay',
+                template_params: emailData
+            })
+        });
+        
+        if (response.ok) {
+            console.log('Email notification sent successfully');
+        }
+    } catch (error) {
+        console.log('Email notification failed:', error);
+    }
 }
 
 // Visitor Tracking
