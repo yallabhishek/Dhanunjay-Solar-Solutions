@@ -531,7 +531,6 @@ document.getElementById('quote-form').addEventListener('submit', function(e) {
         mobile: document.getElementById('quote-mobile').value,
         location: document.getElementById('quote-location').value,
         capacity: document.getElementById('quote-capacity').value,
-        type: document.getElementById('quote-type').value,
         timestamp: new Date().toISOString(),
         status: 'Pending'
     };
@@ -539,8 +538,9 @@ document.getElementById('quote-form').addEventListener('submit', function(e) {
     // Store quote data (In real implementation, send to backend)
     storeQuoteData(formData);
     
-    // Show success modal
-    document.getElementById('priceResult').style.display = 'block';
+    // Close quote modal and show success modal
+    closeQuoteModal();
+    document.getElementById('success-modal').style.display = 'block';
     
     // Refresh admin editing if in edit mode
     if (isEditMode) {
@@ -549,34 +549,26 @@ document.getElementById('quote-form').addEventListener('submit', function(e) {
         }, 100);
     }
     
-    // Track the price calculation
-    trackEvent('price_calculated', {
-        capacity: formData.capacity,
-        totalPrice: totalPrice,
-        subsidyPrice: subsidyPrice
-    });
-    
     // Track conversion
     trackEvent('quote_requested', {
         email: formData.email,
         mobile: formData.mobile,
         location: formData.location,
-        capacity: formData.capacity,
-        type: formData.type
+        capacity: formData.capacity
     });
 });
 
 // Data Storage Functions
 function storeQuoteData(data) {
     // Get existing quotes from localStorage
-    let quotes = JSON.parse(localStorage.getItem('solarQuotes') || '[]');
+    let quotes = JSON.parse(localStorage.getItem('solarBookings') || '[]');
     
     // Add new quote
     data.id = Date.now().toString();
     quotes.push(data);
     
     // Store back to localStorage
-    localStorage.setItem('solarQuotes', JSON.stringify(quotes));
+    localStorage.setItem('solarBookings', JSON.stringify(quotes));
     
     console.log('Quote request stored:', data);
 }
