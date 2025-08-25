@@ -402,28 +402,24 @@
 
         <!-- Statistics Cards -->
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon visitors">
-                    <i class="fas fa-users"></i>
+            <h2>📊 Booking Management</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBookings">0</div>
+                    <div class="stat-label">Total Bookings</div>
                 </div>
-                <div class="stat-number" id="total-visitors">0</div>
-                <div class="stat-label">Total Visitors</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon bookings">
-                    <i class="fas fa-calendar-check"></i>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingBookings">0</div>
+                    <div class="stat-label">Pending</div>
                 </div>
-                <div class="stat-number" id="total-bookings">0</div>
-                <div class="stat-label">Total Bookings</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon pending">
-                    <i class="fas fa-clock"></i>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedBookings">0</div>
+                    <div class="stat-label">Completed</div>
                 </div>
-                <div class="stat-number" id="pending-bookings">0</div>
-                <div class="stat-label">Pending Bookings</div>
+                <div class="stat-card">
+                    <button onclick="refreshCloudData()" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">
+                        🔄 Sync Cloud Data
+                    </button>
             </div>
 
             <div class="stat-card">
@@ -816,11 +812,15 @@
             // Removed auto-refresh to prevent overwriting user edits
         });
 
-        // Load data from localStorage
-        function loadData() {
+        // Load data from localStorage and cloud storage
+        async function loadData() {
+            // Load from localStorage first
             bookingsData = JSON.parse(localStorage.getItem('solarBookings') || '[]');
             visitorsData = JSON.parse(localStorage.getItem('solarVisitors') || '[]');
             eventsData = JSON.parse(localStorage.getItem('solarEvents') || '[]');
+
+            // Also fetch from cloud storage for cross-device data
+            await loadCloudData();
 
             updateStatistics();
             renderBookings();
@@ -828,6 +828,68 @@
             renderEvents();
             renderCharts();
             loadPriceData();
+        }
+
+        // Load data from cloud storage
+        async function loadCloudData() {
+            try {
+                const response = await fetch('https://api.jsonbin.io/v3/b/66cb5f5ce41b4d34e4217a8f/latest', {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': '$2a$10$8K9vN2mF5qL3pR7sT1wX4eY6hG8jD9kA2bC5fE3gH1iJ4kL6mN0oP'
+                    }
+                });
+                
+                if (response.ok) {
+                    const cloudData = await response.json();
+                    if (cloudData.record && cloudData.record.quotes) {
+                        // Merge cloud data with local data
+                        const cloudQuotes = cloudData.record.quotes;
+                        const localQuotes = JSON.parse(localStorage.getItem('solarBookings') || '[]');
+                        
+                        // Combine and deduplicate based on ID
+                        const allQuotes = [...localQuotes];
+                        cloudQuotes.forEach(cloudQuote => {
+                            if (!allQuotes.find(local => local.id === cloudQuote.id)) {
+                                allQuotes.push(cloudQuote);
+                            }
+                        });
+                        
+                        bookingsData = allQuotes;
+                        // Update localStorage with merged data
+                        localStorage.setItem('solarBookings', JSON.stringify(allQuotes));
+                        console.log('Cloud data loaded successfully, found', cloudQuotes.length, 'quotes');
+                    }
+                } else {
+                    console.log('Cloud storage response not OK:', response.status);
+                }
+            } catch (error) {
+                console.log('Cloud data loading failed, using local data only:', error);
+            }
+        }
+
+        // Manual refresh function for cloud data sync
+        async function refreshCloudData() {
+            const button = event.target;
+            button.innerHTML = '⏳ Syncing...';
+            button.disabled = true;
+            
+            try {
+                await loadCloudData();
+                updateStatistics();
+                renderBookings();
+                button.innerHTML = '✅ Synced!';
+                setTimeout(() => {
+                    button.innerHTML = '🔄 Sync Cloud Data';
+                    button.disabled = false;
+                }, 2000);
+            } catch (error) {
+                button.innerHTML = '❌ Failed';
+                setTimeout(() => {
+                    button.innerHTML = '🔄 Sync Cloud Data';
+                    button.disabled = false;
+                }, 2000);
+            }
         }
 
         // Load price data into dashboard inputs

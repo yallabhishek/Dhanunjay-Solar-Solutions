@@ -579,19 +579,40 @@ function storeQuoteData(data) {
     console.log('Quote request stored:', data);
 }
 
-// Send data to cloud storage (JSONBin.io - free service)
+// Send data to cloud storage using a shared database approach
 async function sendToCloudStorage(data) {
     try {
-        const response = await fetch('https://api.jsonbin.io/v3/b', {
-            method: 'POST',
+        // First, get existing data from the shared bin
+        let existingQuotes = [];
+        try {
+            const getResponse = await fetch('https://api.jsonbin.io/v3/b/66cb5f5ce41b4d34e4217a8f/latest', {
+                method: 'GET',
+                headers: {
+                    'X-Master-Key': '$2a$10$8K9vN2mF5qL3pR7sT1wX4eY6hG8jD9kA2bC5fE3gH1iJ4kL6mN0oP'
+                }
+            });
+            
+            if (getResponse.ok) {
+                const existingData = await getResponse.json();
+                existingQuotes = existingData.record?.quotes || [];
+            }
+        } catch (error) {
+            console.log('No existing data found, creating new database');
+        }
+        
+        // Add new quote to existing data
+        existingQuotes.push(data);
+        
+        // Update the shared bin with all quotes
+        const response = await fetch('https://api.jsonbin.io/v3/b/66cb5f5ce41b4d34e4217a8f', {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Master-Key': '$2a$10$8K9vN2mF5qL3pR7sT1wX4eY6hG8jD9kA2bC5fE3gH1iJ4kL6mN0oP'
             },
             body: JSON.stringify({
-                type: 'solar_quote',
-                timestamp: new Date().toISOString(),
-                data: data
+                quotes: existingQuotes,
+                lastUpdated: new Date().toISOString()
             })
         });
         
