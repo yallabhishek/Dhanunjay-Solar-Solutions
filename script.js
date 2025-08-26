@@ -144,26 +144,46 @@ function openPriceModal() {
 
 // Open price calculator modal with specific brand
 function openPriceModalWithBrand(brand) {
-    currentBrand = brand;
-    onGridPricing = getBrandPricing();
-    currentSelectedKW = null; // Reset selected KW
-    
-    const modal = document.getElementById('priceModal');
-    const priceResult = document.getElementById('priceResult');
-    
-    // Reset form
-    document.querySelectorAll('.kw-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    priceResult.style.display = 'none';
-    
-    // Update KW card prices with selected brand data
-    updateKWCardPrices();
-    
-    modal.style.display = 'block';
-    
-    // Track price modal view
-    trackEvent('price_calculator_opened');
+    try {
+        console.log('Opening price modal for brand:', brand);
+        
+        currentBrand = brand;
+        onGridPricing = getBrandPricing();
+        currentSelectedKW = null; // Reset selected KW
+        
+        const modal = document.getElementById('priceModal');
+        const priceResult = document.getElementById('priceResult');
+        
+        if (!modal) {
+            console.error('Price modal not found');
+            return;
+        }
+        
+        // Reset form
+        document.querySelectorAll('.kw-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        if (priceResult) {
+            priceResult.style.display = 'none';
+        }
+        
+        // Update KW card prices with selected brand data
+        updateKWCardPrices();
+        
+        // Show modal with slight delay for better browser compatibility
+        setTimeout(() => {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }, 10);
+        
+        // Track price modal view
+        trackEvent('price_calculator_opened', { brand: brand });
+        
+    } catch (error) {
+        console.error('Error opening price modal:', error);
+        alert('Unable to open price calculator. Please try again.');
+    }
 }
 
 // Select KW option
@@ -315,10 +335,62 @@ document.addEventListener('DOMContentLoaded', function() {
     initVisitorTracking();
     initTestimonialCarousel();
     initAdminSystem(); // Add admin system initialization
+    initBrandLogos(); // Add brand logo initialization
     
     // Update KW card prices on page load
     updateKWCardPrices();
 });
+
+// Initialize brand logo click handlers for better browser compatibility
+function initBrandLogos() {
+    // Add event listeners to brand logos for better Brave browser compatibility
+    const brandLogos = document.querySelectorAll('.brand-logo');
+    
+    brandLogos.forEach(logo => {
+        // Remove existing onclick handlers
+        logo.removeAttribute('onclick');
+        
+        // Add proper event listeners
+        logo.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Get brand from data attribute or determine from image src
+            let brand = this.getAttribute('data-brand');
+            
+            if (!brand) {
+                const img = this.querySelector('img');
+                if (img) {
+                    const src = img.src.toLowerCase();
+                    if (src.includes('exide')) brand = 'exide';
+                    else if (src.includes('luminous')) brand = 'luminous';
+                    else if (src.includes('adani')) brand = 'adani';
+                    else if (src.includes('tata')) brand = 'tata';
+                    else if (src.includes('waaree')) brand = 'waaree';
+                }
+            }
+            
+            if (brand) {
+                console.log('Brand logo clicked:', brand);
+                openPriceModalWithBrand(brand);
+            } else {
+                console.error('Unable to determine brand from logo');
+            }
+        });
+        
+        // Add keyboard support for accessibility
+        logo.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+        
+        // Make focusable for keyboard navigation
+        logo.setAttribute('tabindex', '0');
+        logo.style.cursor = 'pointer';
+    });
+}
 
 // Set sun or moon based on current time
 function setCelestialBody() {
@@ -494,61 +566,84 @@ function openQuoteModalWithKW() {
 
 // Redirect to WhatsApp with predefined message for selected system
 function redirectToWhatsAppWithDetails() {
-    // Check if KW is selected
-    if (!currentSelectedKW) {
-        alert('Please select a system capacity first!');
-        return;
+    try {
+        // Check if KW is selected
+        if (!currentSelectedKW) {
+            alert('Please select a system capacity first!');
+            return;
+        }
+        
+        // Get current brand pricing data
+        const brandPricing = getBrandPricing();
+        const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+        const systemData = currentBrandData[currentSelectedKW];
+        
+        if (!systemData) {
+            alert('System data not available. Please try again.');
+            return;
+        }
+        
+        // Calculate net price after subsidy
+        const totalPrice = systemData.price;
+        const subsidyAmount = systemData.subsidy || 0;
+        const netPrice = totalPrice - subsidyAmount;
+        
+        // Create shorter, more compatible message for better cross-platform support
+        const brandName = currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1);
+        const message = `Hi DhanunJay Solar Solutions!
+
+Interested in ${brandName} ${currentSelectedKW}KW Solar System:
+
+Capacity: ${currentSelectedKW} KW
+Generation: ${systemData.generation} units/month
+Annual Savings: Rs.${systemData.savings.toLocaleString()}
+Subsidy: Rs.${subsidyAmount.toLocaleString()}
+Total Price: Rs.${totalPrice.toLocaleString()}
+Net Price: Rs.${netPrice.toLocaleString()}
+
+Please share installation details.
+
+Thank you!`;
+        
+        // WhatsApp number
+        const whatsappNumber = '919133921819';
+        
+        // Create WhatsApp URL with better encoding
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        
+        console.log('WhatsApp URL:', whatsappURL);
+        
+        // Track the WhatsApp redirect
+        trackEvent('whatsapp_redirect_from_price_calculator', {
+            brand: currentBrand,
+            kw: currentSelectedKW,
+            totalPrice: totalPrice,
+            netPrice: netPrice
+        });
+        
+        // Better cross-platform WhatsApp opening
+        if (navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i)) {
+            // Mobile device - open directly
+            window.location.href = whatsappURL;
+        } else {
+            // Desktop - try to open WhatsApp Web, fallback to new tab
+            const whatsappWeb = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+            const newWindow = window.open(whatsappWeb, '_blank');
+            
+            // Fallback to regular WhatsApp if web version doesn't work
+            setTimeout(() => {
+                if (newWindow && newWindow.closed) {
+                    window.open(whatsappURL, '_blank');
+                }
+            }, 1000);
+        }
+        
+    } catch (error) {
+        console.error('Error opening WhatsApp:', error);
+        // Fallback - simple WhatsApp link
+        window.open(`https://wa.me/919133921819`, '_blank');
     }
-    
-    // Get current brand pricing data
-    const brandPricing = getBrandPricing();
-    const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
-    const systemData = currentBrandData[currentSelectedKW];
-    
-    if (!systemData) {
-        alert('System data not available. Please try again.');
-        return;
-    }
-    
-    // Calculate net price after subsidy
-    const totalPrice = systemData.price;
-    const subsidyAmount = systemData.subsidy || 0;
-    const netPrice = totalPrice - subsidyAmount;
-    
-    // Create predefined message with system details
-    const brandName = currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1);
-    const message = `Hi DhanunJay Solar Solutions! 🌞
-
-I'm interested in the ${brandName} ${currentSelectedKW}KW Solar System with the following details:
-
-📋 *System Details:*
-• Capacity: ${currentSelectedKW} KW
-• Monthly Generation: ${systemData.generation} units
-• Annual Savings: ₹${systemData.savings.toLocaleString()}
-• Total System Price: ₹${totalPrice.toLocaleString()}
-• Government Subsidy: ₹${subsidyAmount.toLocaleString()}
-• *Net Price After Subsidy: ₹${netPrice.toLocaleString()}*
-
-Please provide more information about installation, warranty, and next steps.
-
-Thank you! 🙏`;
-    
-    // WhatsApp number (from memory: 9346476607)
-    const whatsappNumber = '919346476607';
-    
-    // Create WhatsApp URL with encoded message
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    
-    // Track the WhatsApp redirect
-    trackEvent('whatsapp_redirect_from_price_calculator', {
-        brand: currentBrand,
-        kw: currentSelectedKW,
-        totalPrice: totalPrice,
-        netPrice: netPrice
-    });
-    
-    // Open WhatsApp in new tab
-    window.open(whatsappURL, '_blank');
 }
 
 function closeQuoteModal() {
