@@ -492,6 +492,65 @@ function openQuoteModalWithKW() {
     capacityInput.value = currentSelectedKW + ' kW';
 }
 
+// Redirect to WhatsApp with predefined message for selected system
+function redirectToWhatsAppWithDetails() {
+    // Check if KW is selected
+    if (!currentSelectedKW) {
+        alert('Please select a system capacity first!');
+        return;
+    }
+    
+    // Get current brand pricing data
+    const brandPricing = getBrandPricing();
+    const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+    const systemData = currentBrandData[currentSelectedKW];
+    
+    if (!systemData) {
+        alert('System data not available. Please try again.');
+        return;
+    }
+    
+    // Calculate net price after subsidy
+    const totalPrice = systemData.price;
+    const subsidyAmount = systemData.subsidy || 0;
+    const netPrice = totalPrice - subsidyAmount;
+    
+    // Create predefined message with system details
+    const brandName = currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1);
+    const message = `Hi DhanunJay Solar Solutions! 🌞
+
+I'm interested in the ${brandName} ${currentSelectedKW}KW Solar System with the following details:
+
+📋 *System Details:*
+• Capacity: ${currentSelectedKW} KW
+• Monthly Generation: ${systemData.generation} units
+• Annual Savings: ₹${systemData.savings.toLocaleString()}
+• Total System Price: ₹${totalPrice.toLocaleString()}
+• Government Subsidy: ₹${subsidyAmount.toLocaleString()}
+• *Net Price After Subsidy: ₹${netPrice.toLocaleString()}*
+
+Please provide more information about installation, warranty, and next steps.
+
+Thank you! 🙏`;
+    
+    // WhatsApp number (from memory: 9346476607)
+    const whatsappNumber = '919346476607';
+    
+    // Create WhatsApp URL with encoded message
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    
+    // Track the WhatsApp redirect
+    trackEvent('whatsapp_redirect_from_price_calculator', {
+        brand: currentBrand,
+        kw: currentSelectedKW,
+        totalPrice: totalPrice,
+        netPrice: netPrice
+    });
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappURL, '_blank');
+}
+
 function closeQuoteModal() {
     const modal = document.getElementById('quote-modal');
     modal.style.display = 'none';
