@@ -12,63 +12,68 @@ function getBrandPricing() {
             4: { generation: 480, savings: 57600, price: 240000, subsidy: 72000 },
             5: { generation: 600, savings: 72000, price: 300000, subsidy: 90000 },
             6: { generation: 720, savings: 86400, price: 350000, subsidy: 105000 },
-            7: { generation: 840, savings: 100800, price: 385000, subsidy: 115500 },
+            7: { generation: 840, savings: 100800, price: 380000, subsidy: 114000 },
             8: { generation: 960, savings: 115200, price: 400000, subsidy: 120000 },
-            9: { generation: 1080, savings: 129600, price: 415000, subsidy: 124500 },
-            10: { generation: 1200, savings: 144000, price: 425000, subsidy: 127500 }
-        },
-        adani: {
-            1: { generation: 125, savings: 15000, price: 65000, subsidy: 19500 },
-            2: { generation: 250, savings: 150000, price: 135000, subsidy: 40500 },
-            3: { generation: 375, savings: 45000, price: 195000, subsidy: 85000 },
-            4: { generation: 500, savings: 60000, price: 260000, subsidy: 78000 },
-            5: { generation: 625, savings: 75000, price: 325000, subsidy: 97500 },
-            6: { generation: 750, savings: 90000, price: 380000, subsidy: 114000 },
-            7: { generation: 875, savings: 105000, price: 420000, subsidy: 126000 },
-            8: { generation: 1000, savings: 120000, price: 435000, subsidy: 130500 },
-            9: { generation: 1125, savings: 135000, price: 450000, subsidy: 135000 },
-            10: { generation: 1250, savings: 150000, price: 465000, subsidy: 139500 }
-        },
-        luminous: {
-            1: { generation: 115, savings: 13800, price: 55000, subsidy: 16500 },
-            2: { generation: 230, savings: 138000, price: 115000, subsidy: 34500 },
-            3: { generation: 345, savings: 41400, price: 165000, subsidy: 72000 },
-            4: { generation: 460, savings: 55200, price: 220000, subsidy: 66000 },
-            5: { generation: 575, savings: 69000, price: 275000, subsidy: 82500 },
-            6: { generation: 690, savings: 82800, price: 320000, subsidy: 96000 },
-            7: { generation: 805, savings: 96600, price: 355000, subsidy: 106500 },
-            8: { generation: 920, savings: 110400, price: 370000, subsidy: 111000 },
-            9: { generation: 1035, savings: 124200, price: 385000, subsidy: 115500 },
-            10: { generation: 1150, savings: 138000, price: 395000, subsidy: 118500 }
+            9: { generation: 1080, savings: 129600, price: 420000, subsidy: 126000 },
+            10: { generation: 1200, savings: 144000, price: 450000, subsidy: 135000 }
         },
         exide: {
-            1: { generation: 110, savings: 13200, price: 58000, subsidy: 17400 },
-            2: { generation: 220, savings: 132000, price: 128000, subsidy: 38400 },
-            3: { generation: 330, savings: 39600, price: 185000, subsidy: 80000 },
-            4: { generation: 440, savings: 52800, price: 245000, subsidy: 73500 },
-            5: { generation: 550, savings: 66000, price: 305000, subsidy: 91500 },
-            6: { generation: 660, savings: 79200, price: 360000, subsidy: 108000 },
-            7: { generation: 770, savings: 92400, price: 375000, subsidy: 112500 },
-            8: { generation: 880, savings: 105600, price: 390000, subsidy: 117000 },
-            9: { generation: 990, savings: 118800, price: 405000, subsidy: 121500 },
-            10: { generation: 1100, savings: 132000, price: 415000, subsidy: 124500 }
+            1: { generation: 130, savings: 15600, price: 65000, subsidy: 19500 },
+            2: { generation: 260, savings: 31200, price: 130000, subsidy: 39000 },
+            3: { generation: 390, savings: 46800, price: 185000, subsidy: 55500 },
+            4: { generation: 520, savings: 62400, price: 245000, subsidy: 73500 },
+            5: { generation: 650, savings: 78000, price: 305000, subsidy: 91500 },
+            6: { generation: 780, savings: 93600, price: 355000, subsidy: 106500 },
+            7: { generation: 910, savings: 109200, price: 385000, subsidy: 115500 },
+            8: { generation: 1040, savings: 124800, price: 405000, subsidy: 121500 },
+            9: { generation: 1170, savings: 140400, price: 425000, subsidy: 127500 },
+            10: { generation: 1300, savings: 156000, price: 445000, subsidy: 133500 }
+        },
+        luminous: {
+            1: { generation: 125, savings: 15000, price: 62000, subsidy: 18600 },
+            2: { generation: 250, savings: 30000, price: 128000, subsidy: 38400 },
+            3: { generation: 375, savings: 45000, price: 182000, subsidy: 54600 },
+            4: { generation: 500, savings: 60000, price: 242000, subsidy: 72600 },
+            5: { generation: 625, savings: 75000, price: 302000, subsidy: 90600 },
+            6: { generation: 750, savings: 90000, price: 352000, subsidy: 105600 },
+            7: { generation: 875, savings: 105000, price: 382000, subsidy: 114600 },
+            8: { generation: 1000, savings: 120000, price: 402000, subsidy: 120600 },
+            9: { generation: 1125, savings: 135000, price: 422000, subsidy: 126600 },
+            10: { generation: 1250, savings: 150000, price: 442000, subsidy: 132600 }
+        },
+        adani: {
+            1: { generation: 135, savings: 16200, price: 68000, subsidy: 20400 },
+            2: { generation: 270, savings: 32400, price: 135000, subsidy: 40500 },
+            3: { generation: 405, savings: 48600, price: 190000, subsidy: 57000 },
+            4: { generation: 540, savings: 64800, price: 250000, subsidy: 75000 },
+            5: { generation: 675, savings: 81000, price: 310000, subsidy: 93000 },
+            6: { generation: 810, savings: 97200, price: 360000, subsidy: 108000 },
+            7: { generation: 945, savings: 113400, price: 390000, subsidy: 117000 },
+            8: { generation: 1080, savings: 129600, price: 410000, subsidy: 123000 },
+            9: { generation: 1215, savings: 145800, price: 430000, subsidy: 129000 },
+            10: { generation: 1350, savings: 162000, price: 450000, subsidy: 135000 }
         },
         waaree: {
-            1: { generation: 130, savings: 15600, price: 62000, subsidy: 18600 },
-            2: { generation: 260, savings: 156000, price: 130000, subsidy: 39000 },
-            3: { generation: 390, savings: 46800, price: 190000, subsidy: 83000 },
-            4: { generation: 520, savings: 62400, price: 250000, subsidy: 75000 },
-            5: { generation: 650, savings: 78000, price: 315000, subsidy: 94500 },
-            6: { generation: 780, savings: 93600, price: 370000, subsidy: 111000 },
-            7: { generation: 910, savings: 109200, price: 395000, subsidy: 118500 },
-            8: { generation: 1040, savings: 124800, price: 410000, subsidy: 123000 },
-            9: { generation: 1170, savings: 140400, price: 425000, subsidy: 127500 },
-            10: { generation: 1300, savings: 156000, price: 440000, subsidy: 132000 }
+            1: { generation: 128, savings: 15360, price: 64000, subsidy: 19200 },
+            2: { generation: 256, savings: 30720, price: 132000, subsidy: 39600 },
+            3: { generation: 384, savings: 46080, price: 187000, subsidy: 56100 },
+            4: { generation: 512, savings: 61440, price: 247000, subsidy: 74100 },
+            5: { generation: 640, savings: 76800, price: 307000, subsidy: 92100 },
+            6: { generation: 768, savings: 92160, price: 357000, subsidy: 107100 },
+            7: { generation: 896, savings: 107520, price: 387000, subsidy: 116100 },
+            8: { generation: 1024, savings: 122880, price: 407000, subsidy: 122100 },
+            9: { generation: 1152, savings: 138240, price: 427000, subsidy: 128100 },
+            10: { generation: 1280, savings: 153600, price: 447000, subsidy: 134100 }
         }
     };
     
-    const savedBrandPricing = localStorage.getItem('brandPricingData');
-    return savedBrandPricing ? JSON.parse(savedBrandPricing) : defaultBrandPricing;
+    try {
+        const savedBrandPricing = localStorage.getItem('brandPricingData');
+        return savedBrandPricing ? JSON.parse(savedBrandPricing) : defaultBrandPricing;
+    } catch (error) {
+        console.warn('Error accessing localStorage for brand pricing, using defaults:', error);
+        return defaultBrandPricing;
+    }
 }
 
 // Legacy function for backward compatibility
@@ -527,113 +532,6 @@ function calculatePrice(selectedKW) {
             hasCustomValues = false;
         }
     
-        // Enhanced cross-browser DOM element updater with Brave fixes
-        const updateDisplayElement = (elementId, value, fallbackSelectors = []) => {
-            try {
-                console.log(`Attempting to update element: ${elementId} with value: ${value}`);
-                
-                // Find element using enhanced finder
-                const element = findElement(elementId, fallbackSelectors);
-                
-                if (element) {
-                    console.log(`Element ${elementId} found:`, element);
-                    
-                    // Multiple update methods for Brave compatibility
-                    const updateMethods = [
-                        () => {
-                            element.textContent = value;
-                            console.log(`Updated ${elementId} via textContent`);
-                        },
-                        () => {
-                            element.innerText = value;
-                            console.log(`Updated ${elementId} via innerText`);
-                        },
-                        () => {
-                            element.innerHTML = String(value).replace(/[<>]/g, '');
-                            console.log(`Updated ${elementId} via innerHTML`);
-                        },
-                        () => {
-                            // Force DOM update for Brave
-                            const textNode = document.createTextNode(value);
-                            element.innerHTML = '';
-                            element.appendChild(textNode);
-                            console.log(`Updated ${elementId} via createTextNode`);
-                        }
-                    ];
-                    
-                    // Try each update method
-                    let updateSuccess = false;
-                    for (const method of updateMethods) {
-                        try {
-                            method();
-                            updateSuccess = true;
-                            break;
-                        } catch (e) {
-                            console.warn(`Update method failed for ${elementId}:`, e);
-                        }
-                    }
-                    
-                    if (updateSuccess) {
-                        // Force style updates for Brave
-                        try {
-                            if (element.style) {
-                                element.style.visibility = 'visible';
-                                element.style.display = element.style.display || 'inline';
-                            }
-                            
-                            // Trigger reflow for Brave
-                            if (element.offsetHeight !== undefined) {
-                                void element.offsetHeight;
-                            }
-                            
-                            // Force repaint
-                            element.style.transform = 'translateZ(0)';
-                            setTimeout(() => {
-                                element.style.transform = '';
-                            }, 1);
-                        } catch (styleError) {
-                            console.warn(`Style update failed for ${elementId}:`, styleError);
-                        }
-                        
-                        console.log(`✓ Successfully updated ${elementId} with value:`, value);
-                        return true;
-                    }
-                } else {
-                    console.warn(`✗ Element ${elementId} not found in DOM`);
-                    
-                    // Brave-specific emergency fallback
-                    const emergencySelectors = [
-                        `.${elementId}`,
-                        `[data-id="${elementId}"]`,
-                        `[data-element="${elementId}"]`,
-                        `[class*="${elementId}"]`,
-                        `[data-editable*="${elementId.replace('Display', '').toLowerCase()}"]`,
-                        `.detail-value`,
-                        `.price-amount`,
-                        `.subsidy-amount`
-                    ];
-                    
-                    for (const selector of emergencySelectors) {
-                        try {
-                            const fallbackElement = document.querySelector(selector);
-                            if (fallbackElement && fallbackElement.textContent !== value) {
-                                fallbackElement.textContent = value;
-                                console.log(`✓ Updated ${elementId} via emergency selector ${selector}:`, value);
-                                return true;
-                            }
-                        } catch (e) {
-                            console.warn(`Emergency selector ${selector} failed:`, e);
-                        }
-                    }
-                }
-                
-                return false;
-            } catch (e) {
-                console.error(`Error updating element ${elementId}:`, e);
-                return false;
-            }
-        };
-        
         // Enhanced element mappings with Brave-specific selectors
         const elementMappings = {
             capacityDisplay: [
@@ -1880,99 +1778,6 @@ function trapFocus(modal) {
     });
     
     firstElement.focus();
-}
-
-// Apply focus trapping when modals open
-const originalOpenQuoteModal = openQuoteModal;
-openQuoteModal = function() {
-    originalOpenQuoteModal();
-    setTimeout(() => {
-        trapFocus(document.getElementById('quote-modal'));
-    }, 100);
-};
-
-// Save changes
-function saveChanges() {
-    const editableElements = document.querySelectorAll('.editable');
-    const changes = {};
-    
-    editableElements.forEach((element, index) => {
-        const selector = getElementSelector(element);
-        const key = `${selector}_${index}`;
-        changes[key] = element.innerHTML.replace(/<div class="edit-indicator">.*?<\/div>/g, '').replace(/<div class="edit-tooltip">.*?<\/div>/g, '');
-    });
-    
-    // Save to localStorage
-    localStorage.setItem('solarWebsiteContent', JSON.stringify(changes));
-    
-    // Show success message
-    alert('✅ Changes saved successfully!');
-    
-    trackEvent('admin_content_saved', { changesCount: Object.keys(changes).length });
-}
-
-// Reset changes
-function resetChanges() {
-    if (confirm('Are you sure you want to reset all changes?')) {
-        Object.keys(originalContent).forEach(key => {
-            const [selector, index] = key.split('_');
-            const elements = document.querySelectorAll(selector);
-            if (elements[parseInt(index)]) {
-                elements[parseInt(index)].innerHTML = originalContent[key];
-            }
-        });
-        
-        // Re-add edit indicators
-        removeEditableAttributes();
-        makeContentEditable();
-        
-        alert('🔄 Changes reset successfully!');
-        trackEvent('admin_content_reset');
-    }
-}
-
-// Load saved content
-function loadSavedContent() {
-    const savedContent = localStorage.getItem('solarWebsiteContent');
-    if (savedContent) {
-        const changes = JSON.parse(savedContent);
-        
-        Object.keys(changes).forEach(key => {
-            const [selector, index] = key.split('_');
-            const elements = document.querySelectorAll(selector);
-            if (elements[parseInt(index)]) {
-                elements[parseInt(index)].innerHTML = changes[key];
-            }
-        });
-    }
-}
-
-// Removed duplicate declaration - already declared at top
-
-// Get element selector
-function getElementSelector(element) {
-    // Check for price calculator data-editable attributes first
-    const editableAttr = element.getAttribute('data-editable');
-    if (editableAttr && element.getAttribute('data-kw-specific') === 'true') {
-        return `[data-editable="${editableAttr}-kw-${currentSelectedKW}"]`;
-    } else if (editableAttr) {
-        return `[data-editable="${editableAttr}"]`;
-    }
-    
-    // Regular content selectors
-    if (element.classList.contains('hero-title')) return '.hero-title';
-    if (element.classList.contains('hero-subtitle')) return '.hero-subtitle';
-    if (element.classList.contains('section-title')) return '.section-title';
-    if (element.classList.contains('section-subtitle')) return '.section-subtitle';
-    if (element.closest('.about-text') && element.tagName === 'P') return '.about-text p';
-    if (element.closest('.highlight-card') && element.tagName === 'H3') return '.highlight-card h3';
-    if (element.closest('.highlight-card') && element.tagName === 'P') return '.highlight-card p';
-    if (element.closest('.service-card') && element.tagName === 'H3') return '.service-card h3';
-    if (element.closest('.service-card') && element.tagName === 'P') return '.service-card p';
-    if (element.closest('.contact-item') && element.tagName === 'H4') return '.contact-item h4';
-    if (element.closest('.contact-item') && element.tagName === 'P') return '.contact-item p';
-    if (element.classList.contains('footer-slogan')) return '.footer-slogan';
-    return '';
 }
 
 // Admin login form handler
