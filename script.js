@@ -1267,147 +1267,54 @@ function redirectToWhatsAppWithDetails() {
             return;
         }
         
-        // Get current brand pricing data
-        const brandPricing = getBrandPricing();
-        const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
-        const systemData = currentBrandData[currentSelectedKW];
+        // Use hardcoded pricing data (same as directPriceDisplay)
+        const pricing = {
+            tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 28800, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 54000} },
+            exide: { 1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 3: {gen: 390, sav: 46800, price: 185000, sub: 55500} },
+            luminous: { 1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 3: {gen: 375, sav: 45000, price: 182000, sub: 54600} },
+            adani: { 1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 3: {gen: 405, sav: 48600, price: 190000, sub: 57000} },
+            waaree: { 1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 3: {gen: 384, sav: 46080, price: 187000, sub: 56100} }
+        };
+        
+        // Get system data from hardcoded pricing
+        const brand = currentBrand || 'tata';
+        const systemData = pricing[brand] && pricing[brand][currentSelectedKW];
         
         if (!systemData) {
-            alert('System data not available. Please try again.');
+            alert('Pricing data not available. Please try again later.');
             return;
         }
         
-        // Calculate net price after subsidy
-        const totalPrice = systemData.price;
-        const subsidyAmount = systemData.subsidy || 0;
-        const netPrice = totalPrice - subsidyAmount;
-        
-        // Create optimized message for WhatsApp auto-send
-        const brandName = currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1);
-        const message = `🌞 *INTERESTED IN SOLAR SYSTEM* 🌞
-
-Hi DhanunJay Solar Solutions!
-
-I'm interested in the *${brandName} ${currentSelectedKW}KW Solar System*
-
-📋 *System Details:*
-• Capacity: ${currentSelectedKW} KW
-• Monthly Generation: ${systemData.generation} units
-• Annual Savings: ₹${systemData.savings.toLocaleString()}
-• Government Subsidy: ₹${subsidyAmount.toLocaleString()}
-• Total System Price: ₹${totalPrice.toLocaleString()}
-• *Final Price: ₹${netPrice.toLocaleString()}*
-
-Please share:
-✅ Installation timeline
-✅ Site visit details
-✅ Payment options
-✅ Warranty information
-
-Looking forward to going solar! 🔋⚡`;
-        
-        // WhatsApp number
-        const whatsappNumber = '919133921819';
-        
-        // Create WhatsApp URL with better encoding for auto-send
+        // Construct WhatsApp message with system details
+        const netPrice = systemData.price - systemData.sub;
+        const message = `Hello, I am interested in the ${brand.toUpperCase()} solar system with ${currentSelectedKW} KW capacity. Total Price: ₹${systemData.price.toLocaleString('en-IN')}, Net Price after Subsidy: ₹${netPrice.toLocaleString('en-IN')}. Please provide more details.`;
         const encodedMessage = encodeURIComponent(message);
-        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
         
-        console.log('Opening WhatsApp with predefined message...');
+        // WhatsApp number to contact
+        const whatsappNumber = '9346476607';
         
-        // Track the WhatsApp redirect
-        try {
-            if (typeof trackEvent === 'function') {
-                trackEvent('whatsapp_interested_clicked', { brand: brand, kw: currentSelectedKW, totalPrice: totalPrice, netPrice: netPrice });
-            }
-        } catch (e) {
-            console.warn('Tracking error:', e);
-        }
-        
-        // Enhanced cross-platform WhatsApp opening with browser-specific handling
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // Detect if Brave browser and handle URL accordingly
         const isBrave = navigator.brave && navigator.brave.isBrave || false;
+        let targetURL = '';
         
-        // Create different URL formats for better compatibility
-        const whatsappWebURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
-        const whatsappApiURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
-        
-        console.log('Browser detection - Mobile:', isMobile, 'Brave:', isBrave);
-        console.log('Message length:', message.length, 'Encoded length:', encodedMessage.length);
-        
-        if (isMobile) {
-            // Mobile device handling
-            try {
-                if (isBrave) {
-                    // Brave mobile - use API URL which works better
-                    window.open(whatsappApiURL, '_blank');
-                } else {
-                    // Other mobile browsers - try app first, then web
-                    window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodedMessage}`;
-                    
-                    // Fallback to web WhatsApp after short delay
-                    setTimeout(() => {
-                        window.open(whatsappURL, '_blank');
-                    }, 1500);
-                }
-            } catch (error) {
-                console.error('Mobile WhatsApp error:', error);
-                window.open(whatsappApiURL, '_blank');
-            }
+        if (isBrave) {
+            // Brave browser - use simplified URL
+            const simpleMessage = `Hello, I am interested in the ${brand.toUpperCase()} solar system with ${currentSelectedKW} KW.`;
+            const simpleEncoded = encodeURIComponent(simpleMessage);
+            targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
+            console.log('Using Brave-compatible Web URL:', targetURL);
         } else {
-            // Desktop handling - force WhatsApp Web to avoid app detection
-            try {
-                let targetURL;
-                
-                if (isBrave) {
-                    // Brave desktop - use simpler encoding and force web.whatsapp.com
-                    const simpleMessage = message.replace(/[^\w\s\-_.,!?()]/g, ' ');
-                    const simpleEncoded = encodeURIComponent(simpleMessage);
-                    targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
-                    console.log('Using Brave-compatible Web URL:', targetURL);
-                } else {
-                    // Other desktop browsers - always use web.whatsapp.com
-                    targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
-                }
-                
-                console.log('Opening WhatsApp Web directly:', targetURL);
-                
-                // Force opening in new tab to avoid app detection dialog
-                const newWindow = window.open('about:blank', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes');
-                
-                if (newWindow) {
-                    // Navigate to WhatsApp Web in the new window
-                    newWindow.location.href = targetURL;
-                    console.log('WhatsApp Web opened in new window');
-                } else {
-                    // Popup blocked - try direct navigation
-                    console.log('Popup blocked, using direct navigation');
-                    window.location.href = targetURL;
-                }
-                
-            } catch (error) {
-                console.error('Desktop WhatsApp error:', error);
-                // Ultimate fallback - try direct navigation
-                try {
-                    const fallbackURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
-                    window.location.href = fallbackURL;
-                } catch (fallbackError) {
-                    console.error('Fallback error:', fallbackError);
-                    alert('Unable to open WhatsApp. Please visit: https://web.whatsapp.com and search for +91 9133921819');
-                }
-            }
+            // Other desktop browsers - always use web.whatsapp.com
+            targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
         }
         
-        // Close the price modal after opening WhatsApp
-        setTimeout(() => {
-            closePriceModal();
-        }, 500);
+        console.log('Opening WhatsApp Web with message:', message);
+        console.log('Target URL:', targetURL);
+        window.open(targetURL, '_blank');
         
     } catch (error) {
-        console.error('Error opening WhatsApp:', error);
-        // Ultimate fallback - simple WhatsApp link
-        const fallbackURL = `https://wa.me/919133921819`;
-        window.open(fallbackURL, '_blank');
+        console.error('Error redirecting to WhatsApp:', error);
+        alert('Unable to open WhatsApp. Please try again later.');
     }
 }
 
