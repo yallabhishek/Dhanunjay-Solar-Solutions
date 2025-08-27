@@ -216,9 +216,18 @@ function openPriceModalWithBrand(brand) {
                     modal.style.visibility = 'visible';
                     modal.style.opacity = '1';
                     
-                    // Prevent body scroll
+                    // Prevent body scroll with enhanced GitHub Pages compatibility
                     if (document.body && document.body.style) {
                         document.body.style.overflow = 'hidden';
+                        document.body.style.overflowX = 'hidden';
+                        document.body.style.overflowY = 'hidden';
+                        document.body.classList.add('modal-open');
+                        
+                        // Also apply to html element for better browser compatibility
+                        const html = document.documentElement;
+                        if (html) {
+                            html.style.overflow = 'hidden';
+                        }
                     }
                     
                     // Focus management for accessibility
@@ -355,15 +364,38 @@ function closePriceModal() {
     const modal = document.getElementById('priceModal');
     if (modal) {
         modal.style.display = 'none';
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
     }
     
-    // Restore body scrolling
+    // Enhanced body scrolling restoration for GitHub Pages compatibility
     if (document.body) {
-        document.body.style.overflow = 'auto';
-        document.body.style.overflow = ''; // Reset to default
+        // Remove all overflow styles completely
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow-x');
+        document.body.style.removeProperty('overflow-y');
+        
+        // Force reflow to ensure changes take effect
+        document.body.offsetHeight;
+        
+        // Additional fallback methods for different browsers
+        setTimeout(() => {
+            document.body.classList.remove('modal-open');
+            document.documentElement.style.removeProperty('overflow');
+            document.documentElement.style.removeProperty('overflow-x');
+            document.documentElement.style.removeProperty('overflow-y');
+        }, 10);
     }
     
-    console.log('Price modal closed and scrolling restored');
+    // Additional GitHub Pages compatibility fixes
+    const html = document.documentElement;
+    if (html) {
+        html.style.removeProperty('overflow');
+        html.style.removeProperty('overflow-x');
+        html.style.removeProperty('overflow-y');
+    }
+    
+    console.log('Price modal closed and scrolling restored with enhanced compatibility');
 }
 
 // Toggle between capacity and details view
