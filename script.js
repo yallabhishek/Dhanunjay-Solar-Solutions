@@ -370,9 +370,27 @@ function calculatePrice(selectedKW) {
         console.log('Current URL:', window.location.href);
         console.log('User Agent:', navigator.userAgent);
         
+        // GitHub Pages specific check
+        const isGitHubPages = window.location.hostname.includes('github.io') || window.location.hostname.includes('githubusercontent.com');
+        console.log('GitHub Pages detected:', isGitHubPages);
+        
         // Detect Brave browser
         const isBrave = navigator.brave && navigator.brave.isBrave || false;
         console.log('Brave browser detected:', isBrave);
+        
+        // GitHub Pages fix: Ensure global variables are properly set
+        if (isGitHubPages) {
+            if (!window.currentBrand) {
+                window.currentBrand = currentBrand || 'tata';
+            }
+            if (!window.onGridPricing) {
+                window.onGridPricing = getBrandPricing();
+            }
+            console.log('GitHub Pages variables fixed:', {
+                currentBrand: window.currentBrand,
+                hasOnGridPricing: !!window.onGridPricing
+            });
+        }
         
         // Get current brand pricing with enhanced error handling
         const brandPricing = getBrandPricing();
@@ -424,9 +442,36 @@ function calculatePrice(selectedKW) {
         
         console.log('System data found:', systemData);
 
-        // Enhanced DOM element finder with Brave browser specific fixes
+        // Enhanced DOM element finder with GitHub Pages and Brave browser specific fixes
         const findElement = (id, fallbackSelectors = []) => {
             let element = null;
+            
+            // GitHub Pages specific element finding
+            if (isGitHubPages) {
+                // Method 1: Direct getElementById with GitHub Pages compatibility
+                try {
+                    element = document.getElementById(id);
+                    if (element) {
+                        console.log(`GitHub Pages: Found element ${id} via getElementById`);
+                        return element;
+                    }
+                } catch (e) {
+                    console.warn(`GitHub Pages getElementById failed for ${id}:`, e);
+                }
+                
+                // Method 2: Wait and retry for GitHub Pages
+                for (let i = 0; i < 3; i++) {
+                    try {
+                        element = document.getElementById(id);
+                        if (element) {
+                            console.log(`GitHub Pages: Found element ${id} on retry ${i + 1}`);
+                            return element;
+                        }
+                    } catch (e) {
+                        console.warn(`GitHub Pages retry ${i + 1} failed for ${id}:`, e);
+                    }
+                }
+            }
             
             // Method 1: Standard getElementById with Brave compatibility
             try {
@@ -605,6 +650,30 @@ function calculatePrice(selectedKW) {
         
         console.log('Update results:', updateResults);
         
+        // GitHub Pages specific retry mechanism
+        if (isGitHubPages) {
+            setTimeout(() => {
+                console.log('GitHub Pages retry mechanism starting...');
+                Object.keys(updateResults).forEach(key => {
+                    if (!updateResults[key]) {
+                        const elementId = key === 'capacity' ? 'capacityDisplay' : 
+                                        key === 'generation' ? 'generationDisplay' : 
+                                        key === 'savings' ? 'savingsDisplay' : 
+                                        key === 'totalPrice' ? 'totalPrice' : 'subsidyPrice';
+                        
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            const value = formattedValues[key === 'totalPrice' ? 'totalPrice' : key === 'subsidyPrice' ? 'subsidyPrice' : key];
+                            element.textContent = value;
+                            element.style.visibility = 'visible';
+                            element.style.display = 'inline';
+                            console.log(`✓ GitHub Pages retry successful for ${key}:`, value);
+                        }
+                    }
+                });
+            }, 200);
+        }
+        
         // Brave-specific retry mechanism for failed updates
         Object.keys(updateResults).forEach(key => {
             if (!updateResults[key]) {
@@ -717,7 +786,7 @@ function calculatePrice(selectedKW) {
             console.error('Error displaying price result:', displayError);
         }
         
-        // Final Brave-specific validation and retry
+        // Final GitHub Pages and Brave-specific validation and retry
         setTimeout(() => {
             const finalCheck = ['capacityDisplay', 'generationDisplay', 'savingsDisplay', 'totalPrice', 'subsidyPrice'];
             finalCheck.forEach(elementId => {
@@ -727,7 +796,7 @@ function calculatePrice(selectedKW) {
                     const value = formattedValues[valueKey === 'total' ? 'totalPrice' : valueKey === 'subsidy' ? 'subsidyPrice' : valueKey];
                     if (value) {
                         element.textContent = value;
-                        console.log(`✓ Final Brave fix applied to ${elementId}:`, value);
+                        console.log(`✓ Final fix applied to ${elementId}:`, value);
                     }
                 }
             });
@@ -735,7 +804,7 @@ function calculatePrice(selectedKW) {
         
     } catch (error) {
         console.error('Error in calculatePrice function:', error);
-        // Emergency fallback for Brave
+        // Emergency fallback for GitHub Pages and Brave
         setTimeout(() => {
             const elements = document.querySelectorAll('.detail-value, .price-amount, .subsidy-amount');
             if (elements.length > 0 && selectedKW && currentBrand) {
@@ -755,7 +824,7 @@ function calculatePrice(selectedKW) {
                             el.textContent = values[index];
                         }
                     });
-                    console.log('✓ Emergency Brave fallback completed');
+                    console.log('✓ Emergency fallback completed');
                 }
             }
         }, 500);
@@ -848,17 +917,9 @@ function initializeWebsite() {
                     loadingScreen.style.display = 'none';
                 }, 500);
             }
-        }, 4500);
-
-        // Initialize all functionality with error handling
-        try { initNavigation(); } catch (e) { console.error('Navigation init error:', e); }
-        try { initSliders(); } catch (e) { console.error('Sliders init error:', e); }
-        try { initScrollEffects(); } catch (e) { console.error('Scroll effects init error:', e); }
-        try { initVisitorTracking(); } catch (e) { console.error('Visitor tracking init error:', e); }
-        try { initTestimonialCarousel(); } catch (e) { console.error('Testimonial carousel init error:', e); }
-        try { initAdminSystem(); } catch (e) { console.error('Admin system init error:', e); }
+        }, 1000);
         
-        // Initialize brand logos with delay for better compatibility
+        // Initialize brand logos with delay for GitHub Pages
         setTimeout(() => {
             try { 
                 initBrandLogos(); 
@@ -877,6 +938,34 @@ function initializeWebsite() {
                 console.error('KW card prices update error:', e); 
             }
         }, 200);
+        
+        // GitHub Pages specific initialization
+        setTimeout(() => {
+            try {
+                // Force initialize pricing data for GitHub Pages
+                window.onGridPricing = getBrandPricing();
+                console.log('GitHub Pages pricing data initialized:', window.onGridPricing);
+                
+                // Ensure all DOM elements are ready
+                const priceModal = document.getElementById('priceModal');
+                if (priceModal) {
+                    console.log('Price modal found on GitHub Pages');
+                } else {
+                    console.warn('Price modal not found on GitHub Pages');
+                }
+                
+                // Check for price result elements
+                const priceResult = document.getElementById('priceResult');
+                if (priceResult) {
+                    console.log('Price result container found on GitHub Pages');
+                } else {
+                    console.warn('Price result container not found on GitHub Pages');
+                }
+                
+            } catch (e) {
+                console.error('GitHub Pages initialization error:', e);
+            }
+        }, 500);
         
         console.log('Website initialization completed');
         
