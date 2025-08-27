@@ -603,7 +603,7 @@ Net Price: Rs.${netPrice.toLocaleString()}
 
 Please share installation details.
 
-Thank you!`;
+Thank you!🙂`;
         
         // WhatsApp number
         const whatsappNumber = '919133921819';
