@@ -1,0 +1,27 @@
+# GitHub Pages Static Site Configuration
+# This file prevents Jekyll from processing SCSS and other files
+
+# Disable all Jekyll plugins and processing
+plugins: []
+theme: null
+markdown: kramdown
+highlighter: none
+
+# Disable SASS/SCSS processing completely
+sass:
+  sass_dir: _disabled_sass
+  style: compressed
+
+# Exclude problematic files and directories
+exclude:
+  - "*.scss"
+  - "assets/"
+  - "_sass/"
+  - "Gemfile*"
+  - "*.gemspec"
+  - "*.rb"
+  - "docs/"
+
+# Force GitHub Pages to treat this as a static site
+safe: true
+incremental: false
