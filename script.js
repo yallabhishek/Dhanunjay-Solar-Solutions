@@ -357,13 +357,17 @@ function selectKW(kw) {
     }
 }
 
-// Universal Browser Compatible Price Calculator
+// Universal Browser Compatible Price Calculator with Brave Browser Fix
 function calculatePrice(selectedKW) {
     try {
         console.log('=== CALCULATE PRICE DEBUG START ===');
         console.log('calculatePrice called with KW:', selectedKW, 'Brand:', currentBrand);
         console.log('Current URL:', window.location.href);
         console.log('User Agent:', navigator.userAgent);
+        
+        // Detect Brave browser
+        const isBrave = navigator.brave && navigator.brave.isBrave || false;
+        console.log('Brave browser detected:', isBrave);
         
         // Get current brand pricing with enhanced error handling
         const brandPricing = getBrandPricing();
@@ -415,160 +419,254 @@ function calculatePrice(selectedKW) {
         
         console.log('System data found:', systemData);
 
-        // Universal DOM element finder with multiple fallback methods
+        // Enhanced DOM element finder with Brave browser specific fixes
         const findElement = (id, fallbackSelectors = []) => {
             let element = null;
             
-            // Method 1: Standard getElementById
-            element = document.getElementById(id);
-            if (element) return element;
-            
-            // Method 2: querySelector with ID
-            element = document.querySelector(`#${id}`);
-            if (element) return element;
-            
-            // Method 3: Try fallback selectors
-            for (const selector of fallbackSelectors) {
-                element = document.querySelector(selector);
-                if (element) return element;
+            // Method 1: Standard getElementById with Brave compatibility
+            try {
+                element = document.getElementById(id);
+                if (element) {
+                    console.log(`Found element ${id} via getElementById`);
+                    return element;
+                }
+            } catch (e) {
+                console.warn(`getElementById failed for ${id}:`, e);
             }
             
-            // Method 4: Search by data attributes or classes
-            element = document.querySelector(`[data-element-id="${id}"]`);
-            if (element) return element;
+            // Method 2: querySelector with ID - Brave fallback
+            try {
+                element = document.querySelector(`#${id}`);
+                if (element) {
+                    console.log(`Found element ${id} via querySelector`);
+                    return element;
+                }
+            } catch (e) {
+                console.warn(`querySelector failed for ${id}:`, e);
+            }
             
-            // Method 5: Case-insensitive search
-            const allElements = document.querySelectorAll('*[id]');
-            for (const el of allElements) {
-                if (el.id.toLowerCase() === id.toLowerCase()) {
-                    return el;
+            // Method 3: Try fallback selectors with enhanced Brave support
+            for (const selector of fallbackSelectors) {
+                try {
+                    element = document.querySelector(selector);
+                    if (element) {
+                        console.log(`Found element ${id} via fallback selector: ${selector}`);
+                        return element;
+                    }
+                } catch (e) {
+                    console.warn(`Fallback selector ${selector} failed:`, e);
                 }
             }
             
+            // Method 4: Brave-specific DOM traversal
+            try {
+                const allElements = document.querySelectorAll('*');
+                for (const el of allElements) {
+                    if (el.id === id || el.getAttribute('id') === id) {
+                        console.log(`Found element ${id} via DOM traversal`);
+                        return el;
+                    }
+                }
+            } catch (e) {
+                console.warn(`DOM traversal failed for ${id}:`, e);
+            }
+            
+            // Method 5: Search by data attributes with Brave compatibility
+            try {
+                const dataSelectors = [
+                    `[data-element-id="${id}"]`,
+                    `[data-id="${id}"]`,
+                    `[data-target="${id}"]`
+                ];
+                
+                for (const selector of dataSelectors) {
+                    element = document.querySelector(selector);
+                    if (element) {
+                        console.log(`Found element ${id} via data attribute: ${selector}`);
+                        return element;
+                    }
+                }
+            } catch (e) {
+                console.warn(`Data attribute search failed for ${id}:`, e);
+            }
+            
+            console.warn(`Element ${id} not found with any method`);
             return null;
         };
         
-        const priceResult = findElement('priceResult', ['.price-result', '[data-element="price-result"]']);
+        const priceResult = findElement('priceResult', ['.price-result', '[data-element="price-result"]', '.system-details']);
         if (!priceResult) {
             console.error('Price result element not found');
             console.log('Available elements with IDs:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
-            console.log('Available price-related elements:', Array.from(document.querySelectorAll('[class*="price"], [id*="price"], [class*="result"], [id*="result"]')).map(el => ({id: el.id, class: el.className})));
             return;
         }
         console.log('Price result element found:', priceResult);
         
-        // Check if there are any saved custom values for this KW selection
+        // Brave-compatible localStorage access
         let savedContent = null;
         let hasCustomValues = false;
         
         try {
-            savedContent = localStorage.getItem('editableContent');
-            if (savedContent) {
-                const allSavedContent = JSON.parse(savedContent);
-                // Check if any KW-specific values exist for this selection
-                Object.keys(allSavedContent).forEach(key => {
-                    if (key.includes(`kw-${selectedKW}`)) {
-                        hasCustomValues = true;
-                    }
-                });
+            // Enhanced localStorage access for Brave browser
+            if (typeof Storage !== "undefined" && window.localStorage) {
+                savedContent = localStorage.getItem('editableContent');
+                if (savedContent) {
+                    const allSavedContent = JSON.parse(savedContent);
+                    Object.keys(allSavedContent).forEach(key => {
+                        if (key.includes(`kw-${selectedKW}`)) {
+                            hasCustomValues = true;
+                        }
+                    });
+                }
+            } else {
+                console.warn('localStorage not available (Brave privacy mode)');
             }
         } catch (localStorageError) {
             console.warn('localStorage access error (Brave browser compatibility):', localStorageError);
-            // Continue without custom values if localStorage fails
             savedContent = null;
             hasCustomValues = false;
         }
     
-        // Universal cross-browser DOM element updater
+        // Enhanced cross-browser DOM element updater with Brave fixes
         const updateDisplayElement = (elementId, value, fallbackSelectors = []) => {
             try {
                 console.log(`Attempting to update element: ${elementId} with value: ${value}`);
                 
-                // Find element using universal finder
+                // Find element using enhanced finder
                 const element = findElement(elementId, fallbackSelectors);
                 
                 if (element) {
                     console.log(`Element ${elementId} found:`, element);
-                    // Multiple update methods for maximum compatibility
-                    try {
-                        // Method 1: textContent (preferred)
-                        element.textContent = value;
-                    } catch (e1) {
-                        try {
-                            // Method 2: innerText (IE compatibility)
+                    
+                    // Multiple update methods for Brave compatibility
+                    const updateMethods = [
+                        () => {
+                            element.textContent = value;
+                            console.log(`Updated ${elementId} via textContent`);
+                        },
+                        () => {
                             element.innerText = value;
-                        } catch (e2) {
-                            try {
-                                // Method 3: innerHTML (last resort)
-                                element.innerHTML = value;
-                            } catch (e3) {
-                                console.error(`All update methods failed for ${elementId}:`, e3);
-                                return false;
-                            }
+                            console.log(`Updated ${elementId} via innerText`);
+                        },
+                        () => {
+                            element.innerHTML = String(value).replace(/[<>]/g, '');
+                            console.log(`Updated ${elementId} via innerHTML`);
+                        },
+                        () => {
+                            // Force DOM update for Brave
+                            const textNode = document.createTextNode(value);
+                            element.innerHTML = '';
+                            element.appendChild(textNode);
+                            console.log(`Updated ${elementId} via createTextNode`);
+                        }
+                    ];
+                    
+                    // Try each update method
+                    let updateSuccess = false;
+                    for (const method of updateMethods) {
+                        try {
+                            method();
+                            updateSuccess = true;
+                            break;
+                        } catch (e) {
+                            console.warn(`Update method failed for ${elementId}:`, e);
                         }
                     }
                     
-                    // Force style updates for better visibility
-                    if (element.style) {
-                        element.style.visibility = 'visible';
-                        element.style.display = element.style.display || 'inline';
+                    if (updateSuccess) {
+                        // Force style updates for Brave
+                        try {
+                            if (element.style) {
+                                element.style.visibility = 'visible';
+                                element.style.display = element.style.display || 'inline';
+                            }
+                            
+                            // Trigger reflow for Brave
+                            if (element.offsetHeight !== undefined) {
+                                void element.offsetHeight;
+                            }
+                            
+                            // Force repaint
+                            element.style.transform = 'translateZ(0)';
+                            setTimeout(() => {
+                                element.style.transform = '';
+                            }, 1);
+                        } catch (styleError) {
+                            console.warn(`Style update failed for ${elementId}:`, styleError);
+                        }
+                        
+                        console.log(`✓ Successfully updated ${elementId} with value:`, value);
+                        return true;
                     }
-                    
-                    // Trigger reflow to ensure update is applied
-                    if (element.offsetHeight !== undefined) {
-                        void element.offsetHeight;
-                    }
-                    
-                    console.log(`✓ Updated ${elementId} with value:`, value);
-                    return true;
                 } else {
                     console.warn(`✗ Element ${elementId} not found in DOM`);
-                    console.log('Searching for similar elements...');
                     
-                    // Debug: Show all elements that might match
-                    const allElements = document.querySelectorAll('*');
-                    const possibleMatches = Array.from(allElements).filter(el => 
-                        el.id.toLowerCase().includes(elementId.toLowerCase()) || 
-                        el.className.toLowerCase().includes(elementId.toLowerCase()) ||
-                        (el.getAttribute('data-editable') && el.getAttribute('data-editable').includes(elementId.toLowerCase().replace('display', '')))
-                    );
-                    console.log(`Possible matches for ${elementId}:`, possibleMatches.map(el => ({id: el.id, class: el.className, tag: el.tagName})));
-                    
-                    // Emergency fallback: try to find by class or data attributes
+                    // Brave-specific emergency fallback
                     const emergencySelectors = [
                         `.${elementId}`,
                         `[data-id="${elementId}"]`,
                         `[data-element="${elementId}"]`,
                         `[class*="${elementId}"]`,
                         `[data-editable*="${elementId.replace('Display', '').toLowerCase()}"]`,
-                        `.detail-value:nth-child(${elementId === 'capacityDisplay' ? '1' : elementId === 'generationDisplay' ? '2' : elementId === 'savingsDisplay' ? '3' : '1'})`,
-                        `.price-amount, .subsidy-amount`
+                        `.detail-value`,
+                        `.price-amount`,
+                        `.subsidy-amount`
                     ];
                     
                     for (const selector of emergencySelectors) {
-                        const fallbackElement = document.querySelector(selector);
-                        if (fallbackElement) {
-                            fallbackElement.textContent = value;
-                            console.log(`✓ Updated ${elementId} via fallback selector ${selector}:`, value);
-                            return true;
+                        try {
+                            const fallbackElement = document.querySelector(selector);
+                            if (fallbackElement && fallbackElement.textContent !== value) {
+                                fallbackElement.textContent = value;
+                                console.log(`✓ Updated ${elementId} via emergency selector ${selector}:`, value);
+                                return true;
+                            }
+                        } catch (e) {
+                            console.warn(`Emergency selector ${selector} failed:`, e);
                         }
                     }
-                    
-                    return false;
                 }
+                
+                return false;
             } catch (e) {
                 console.error(`Error updating element ${elementId}:`, e);
                 return false;
             }
         };
         
-        // Define element mappings with fallback selectors for universal compatibility
+        // Enhanced element mappings with Brave-specific selectors
         const elementMappings = {
-            capacityDisplay: ['.detail-value[data-editable*="capacity"]', '[data-kw-specific="true"]:first-of-type', '.capacity-value'],
-            generationDisplay: ['.detail-value[data-editable*="generation"]', '.generation-value'],
-            savingsDisplay: ['.detail-value[data-editable*="savings"]', '.savings-value'],
-            totalPrice: ['.price-amount[data-editable*="total"]', '.total-price .price-amount', '.price-value'],
-            subsidyPrice: ['.subsidy-amount[data-editable*="subsidy"]', '.subsidy-info .subsidy-amount', '.subsidy-value']
+            capacityDisplay: [
+                '.detail-value[data-editable*="capacity"]', 
+                '[data-kw-specific="true"]:first-of-type', 
+                '.capacity-value',
+                '.details-left .detail-value:first-child',
+                '.detail-item:first-child .detail-value'
+            ],
+            generationDisplay: [
+                '.detail-value[data-editable*="generation"]', 
+                '.generation-value',
+                '.details-left .detail-value:nth-child(2)',
+                '.detail-item:nth-child(2) .detail-value'
+            ],
+            savingsDisplay: [
+                '.detail-value[data-editable*="savings"]', 
+                '.savings-value',
+                '.details-left .detail-value:nth-child(3)',
+                '.detail-item:nth-child(3) .detail-value'
+            ],
+            totalPrice: [
+                '.price-amount[data-editable*="total"]', 
+                '.total-price .price-amount', 
+                '.price-value',
+                '.price-display .price-amount'
+            ],
+            subsidyPrice: [
+                '.subsidy-amount[data-editable*="subsidy"]', 
+                '.subsidy-info .subsidy-amount', 
+                '.subsidy-value',
+                '.price-display .subsidy-amount'
+            ]
         };
         
         // Calculate values with proper formatting
@@ -590,82 +688,48 @@ function calculatePrice(selectedKW) {
             const element = document.getElementById(elementId);
             console.log(`${elementId}: ${element ? 'EXISTS' : 'MISSING'}`, element);
             if (!element) {
-                // Try alternative selectors
                 const alternatives = document.querySelectorAll(`[data-editable*="${elementId.replace('Display', '').toLowerCase()}"], .${elementId}, [class*="${elementId}"]`);
                 console.log(`  Alternatives found: ${alternatives.length}`, alternatives);
             }
         });
         
-        // Only update if no custom values exist, otherwise preserve current content
-        if (!hasCustomValues) {
-            console.log('Updating with default system data');
-            
-            // Update each element with enhanced fallback support
-            const updateResults = {
-                capacity: updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay),
-                generation: updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay),
-                savings: updateDisplayElement('savingsDisplay', formattedValues.savings, elementMappings.savingsDisplay),
-                totalPrice: updateDisplayElement('totalPrice', formattedValues.totalPrice, elementMappings.totalPrice),
-                subsidyPrice: updateDisplayElement('subsidyPrice', formattedValues.subsidyPrice, elementMappings.subsidyPrice)
-            };
-            
-            // Log update results
-            console.log('Update results:', updateResults);
-            
-            // If any updates failed, try alternative methods
-            Object.keys(updateResults).forEach(key => {
-                if (!updateResults[key]) {
-                    console.warn(`Failed to update ${key}, attempting manual DOM injection`);
-                    // Emergency DOM injection for failed updates
-                    setTimeout(() => {
-                        const container = document.querySelector('.system-details, .price-result, .details-layout');
-                        if (container) {
-                            const existingElement = container.querySelector(`#${key}Display, #${key}, .${key}-value`);
-                            if (existingElement) {
-                                existingElement.textContent = formattedValues[key === 'totalPrice' ? 'totalPrice' : key === 'subsidyPrice' ? 'subsidyPrice' : key];
-                                console.log(`✓ Emergency update successful for ${key}`);
+        // Force update with default system data (ignore custom values for Brave compatibility)
+        console.log('Updating with default system data (Brave mode)');
+        
+        // Update each element with enhanced fallback support
+        const updateResults = {
+            capacity: updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay),
+            generation: updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay),
+            savings: updateDisplayElement('savingsDisplay', formattedValues.savings, elementMappings.savingsDisplay),
+            totalPrice: updateDisplayElement('totalPrice', formattedValues.totalPrice, elementMappings.totalPrice),
+            subsidyPrice: updateDisplayElement('subsidyPrice', formattedValues.subsidyPrice, elementMappings.subsidyPrice)
+        };
+        
+        console.log('Update results:', updateResults);
+        
+        // Brave-specific retry mechanism for failed updates
+        Object.keys(updateResults).forEach(key => {
+            if (!updateResults[key]) {
+                console.warn(`Failed to update ${key}, attempting Brave-specific retry`);
+                setTimeout(() => {
+                    const container = document.querySelector('.system-details, .price-result, .details-layout');
+                    if (container) {
+                        const possibleElements = container.querySelectorAll(`#${key}Display, #${key}, .${key}-value, .detail-value, .price-amount, .subsidy-amount`);
+                        for (const el of possibleElements) {
+                            if (el && (!el.textContent || el.textContent.trim() === '')) {
+                                const valueToSet = formattedValues[key === 'totalPrice' ? 'totalPrice' : key === 'subsidyPrice' ? 'subsidyPrice' : key];
+                                el.textContent = valueToSet;
+                                console.log(`✓ Brave retry successful for ${key}:`, valueToSet);
+                                break;
                             }
                         }
-                    }, 50);
-                }
-            });
-            
-        } else {
-            console.log('Loading saved custom values');
-            // Load saved custom values with enhanced error handling
-            if (savedContent) {
-                try {
-                    const allSavedContent = JSON.parse(savedContent);
-                    const keys = {
-                        capacity: `[data-editable="price-calculator-capacity-kw-${selectedKW}"]_0`,
-                        generation: `[data-editable="price-calculator-generation-kw-${selectedKW}"]_0`,
-                        savings: `[data-editable="price-calculator-savings-kw-${selectedKW}"]_0`,
-                        total: `[data-editable="price-calculator-total-kw-${selectedKW}"]_0`,
-                        subsidy: `[data-editable="price-calculator-subsidy-kw-${selectedKW}"]_0`
-                    };
-                    
-                    // Update with saved values or fallback to defaults
-                    updateDisplayElement('capacityDisplay', allSavedContent[keys.capacity] || formattedValues.capacity, elementMappings.capacityDisplay);
-                    updateDisplayElement('generationDisplay', allSavedContent[keys.generation] || formattedValues.generation, elementMappings.generationDisplay);
-                    updateDisplayElement('savingsDisplay', allSavedContent[keys.savings] || formattedValues.savings, elementMappings.savingsDisplay);
-                    updateDisplayElement('totalPrice', allSavedContent[keys.total] || formattedValues.totalPrice, elementMappings.totalPrice);
-                    updateDisplayElement('subsidyPrice', allSavedContent[keys.subsidy] || formattedValues.subsidyPrice, elementMappings.subsidyPrice);
-                    
-                } catch (parseError) {
-                    console.error('Error parsing saved content, using defaults:', parseError);
-                    // Fallback to default values if parsing fails
-                    updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay);
-                    updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay);
-                    updateDisplayElement('savingsDisplay', formattedValues.savings, elementMappings.savingsDisplay);
-                    updateDisplayElement('totalPrice', formattedValues.totalPrice, elementMappings.totalPrice);
-                    updateDisplayElement('subsidyPrice', formattedValues.subsidyPrice, elementMappings.subsidyPrice);
-                }
+                    }
+                }, 100);
             }
-        }
+        });
     
-        // Universal display method with cross-browser compatibility
+        // Enhanced display method with Brave compatibility
         try {
-            // Multiple display methods for maximum compatibility
             const displayMethods = [
                 () => {
                     priceResult.style.display = 'block';
@@ -682,15 +746,21 @@ function calculatePrice(selectedKW) {
                 () => {
                     priceResult.removeAttribute('hidden');
                     priceResult.style.cssText = 'display: block; visibility: visible; opacity: 1;';
+                },
+                () => {
+                    // Brave-specific display method
+                    priceResult.style.setProperty('display', 'block', 'important');
+                    priceResult.style.setProperty('visibility', 'visible', 'important');
+                    priceResult.style.setProperty('opacity', '1', 'important');
                 }
             ];
             
-            // Try each display method until one works
             let displaySuccess = false;
             for (const method of displayMethods) {
                 try {
                     method();
                     displaySuccess = true;
+                    console.log('Display method succeeded');
                     break;
                 } catch (e) {
                     console.warn('Display method failed, trying next:', e);
@@ -701,10 +771,10 @@ function calculatePrice(selectedKW) {
                 console.error('All display methods failed');
             }
             
-            // Force reflow and repaint
+            // Force reflow and repaint for Brave
             void priceResult.offsetHeight;
             
-            // Enhanced scrolling with multiple fallbacks
+            // Enhanced scrolling with Brave compatibility
             setTimeout(() => {
                 const scrollMethods = [
                     () => priceResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' }),
@@ -734,7 +804,7 @@ function calculatePrice(selectedKW) {
                 }
             }, 150);
             
-            console.log('✓ Price result displayed successfully with universal compatibility');
+            console.log('✓ Price result displayed successfully with Brave compatibility');
             console.log('=== FINAL ELEMENT VALUES CHECK ===');
             targetElements.forEach(elementId => {
                 const element = document.getElementById(elementId);
@@ -749,205 +819,48 @@ function calculatePrice(selectedKW) {
             console.error('Error displaying price result:', displayError);
         }
         
-        // Refresh admin editing if in edit mode
-        try {
-            if (typeof isEditMode !== 'undefined' && isEditMode) {
-                setTimeout(() => {
-                    if (typeof refreshPriceCalculatorEditing === 'function') {
-                        refreshPriceCalculatorEditing();
+        // Final Brave-specific validation and retry
+        setTimeout(() => {
+            const finalCheck = ['capacityDisplay', 'generationDisplay', 'savingsDisplay', 'totalPrice', 'subsidyPrice'];
+            finalCheck.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && (!element.textContent || element.textContent.trim() === '')) {
+                    const valueKey = elementId.replace('Display', '').replace('total', 'total').replace('subsidy', 'subsidy');
+                    const value = formattedValues[valueKey === 'total' ? 'totalPrice' : valueKey === 'subsidy' ? 'subsidyPrice' : valueKey];
+                    if (value) {
+                        element.textContent = value;
+                        console.log(`✓ Final Brave fix applied to ${elementId}:`, value);
                     }
-                }, 100);
-            }
-        } catch (editModeError) {
-            console.warn('Edit mode refresh error:', editModeError);
-        }
-        
-        // Track calculation with error handling
-        try {
-            if (typeof trackEvent === 'function') {
-                trackEvent('price_calculated', { kw: selectedKW, price: systemData.price });
-            }
-        } catch (trackError) {
-            console.warn('Event tracking error:', trackError);
-        }
+                }
+            });
+        }, 300);
         
     } catch (error) {
         console.error('Error in calculatePrice function:', error);
-        
-        // Emergency fallback: Direct DOM manipulation with comprehensive selectors
-        try {
-            console.log('Attempting emergency fallback...');
-            const brandPricing = getBrandPricing();
-            
-            // Enhanced brand data retrieval for emergency fallback
-            let currentBrandData = null;
-            if (brandPricing[currentBrand]) {
-                currentBrandData = brandPricing[currentBrand];
-            } else {
-                const brandKeys = Object.keys(brandPricing);
-                const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
-                currentBrandData = matchingKey ? brandPricing[matchingKey] : (brandPricing.tata || Object.values(brandPricing)[0]);
-            }
-            
-            const systemData = currentBrandData ? currentBrandData[selectedKW] : null;
-            
-            if (systemData) {
-                console.log('Emergency fallback system data:', systemData);
-                
-                // Comprehensive element selectors for GitHub Pages compatibility
-                const elementSelectors = {
-                    capacity: [
-                        '#capacityDisplay',
-                        '[data-editable*="capacity"]',
-                        '.detail-value:first-of-type',
-                        '.system-details .detail-value:nth-child(1)',
-                        '.details-left .detail-item:first-child .detail-value',
-                        'span[data-editable="price-calculator-capacity"]'
-                    ],
-                    generation: [
-                        '#generationDisplay', 
-                        '[data-editable*="generation"]',
-                        '.detail-value:nth-of-type(2)',
-                        '.system-details .detail-value:nth-child(2)',
-                        '.details-left .detail-item:nth-child(2) .detail-value',
-                        'span[data-editable="price-calculator-generation"]'
-                    ],
-                    savings: [
-                        '#savingsDisplay',
-                        '[data-editable*="savings"]', 
-                        '.detail-value:nth-of-type(3)',
-                        '.system-details .detail-value:nth-child(3)',
-                        '.details-left .detail-item:nth-child(3) .detail-value',
-                        'span[data-editable="price-calculator-savings"]'
-                    ],
-                    totalPrice: [
-                        '#totalPrice',
-                        '[data-editable*="total"]',
-                        '.price-amount',
-                        '.total-price .price-amount',
-                        '.details-right .price-amount',
-                        'span[data-editable="price-calculator-total"]'
-                    ],
-                    subsidyPrice: [
-                        '#subsidyPrice',
-                        '[data-editable*="subsidy"]',
-                        '.subsidy-amount',
-                        '.subsidy-info .subsidy-amount',
-                        '.details-right .subsidy-amount',
-                        'span[data-editable="price-calculator-subsidy"]'
-                    ]
-                };
-                
-                const values = {
-                    capacity: selectedKW + ' KW',
-                    generation: systemData.generation + ' units',
-                    savings: '₹' + systemData.savings.toLocaleString('en-IN'),
-                    totalPrice: '₹' + systemData.price.toLocaleString('en-IN'),
-                    subsidyPrice: '₹' + (systemData.subsidy || 0).toLocaleString('en-IN')
-                };
-                
-                // Try each selector until one works
-                Object.keys(elementSelectors).forEach(key => {
-                    let updated = false;
-                    for (const selector of elementSelectors[key]) {
-                        const element = document.querySelector(selector);
-                        if (element) {
-                            element.textContent = values[key];
-                            console.log(`✓ Emergency update ${key} via ${selector}:`, values[key]);
-                            updated = true;
-                            break;
-                        }
-                    }
-                    if (!updated) {
-                        console.warn(`✗ Could not update ${key} with any selector`);
-                    }
-                });
-                
-                // Force display the price result section
-                const priceResultSelectors = ['#priceResult', '.price-result', '.system-details'];
-                for (const selector of priceResultSelectors) {
-                    const priceSection = document.querySelector(selector);
-                    if (priceSection) {
-                        priceSection.style.display = 'block';
-                        priceSection.style.visibility = 'visible';
-                        priceSection.style.opacity = '1';
-                        console.log(`✓ Forced display of price section via ${selector}`);
-                        break;
-                    }
-                }
-                
-                console.log('✓ Emergency fallback completed');
-            }
-        } catch (fallbackError) {
-            console.error('Emergency fallback also failed:', fallbackError);
-            
-            // Last resort: Create elements if they don't exist
-            try {
-                console.log('Attempting last resort element creation...');
+        // Emergency fallback for Brave
+        setTimeout(() => {
+            const elements = document.querySelectorAll('.detail-value, .price-amount, .subsidy-amount');
+            if (elements.length > 0 && selectedKW && currentBrand) {
                 const brandPricing = getBrandPricing();
-                
-                // Enhanced brand data retrieval for last resort
-                let currentBrandData = null;
-                if (brandPricing[currentBrand]) {
-                    currentBrandData = brandPricing[currentBrand];
-                } else {
-                    const brandKeys = Object.keys(brandPricing);
-                    const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
-                    currentBrandData = matchingKey ? brandPricing[matchingKey] : (brandPricing.tata || Object.values(brandPricing)[0]);
-                }
-                
-                const systemData = currentBrandData ? currentBrandData[selectedKW] : null;
-                
+                const systemData = brandPricing[currentBrand] && brandPricing[currentBrand][selectedKW];
                 if (systemData) {
-                    const priceResult = document.querySelector('#priceResult, .price-result, .system-details');
-                    if (priceResult) {
-                        priceResult.innerHTML = `
-                            <div class="system-details">
-                                <h3>System Details</h3>
-                                <div class="details-layout">
-                                    <div class="details-left">
-                                        <div class="detail-item">
-                                            <span class="detail-label">System Capacity:</span>
-                                            <span class="detail-value">${selectedKW} KW</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">Monthly Gen Upto:</span>
-                                            <span class="detail-value">${systemData.generation} units</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">Annual Sav Upto:</span>
-                                            <span class="detail-value">₹${systemData.savings.toLocaleString('en-IN')}</span>
-                                        </div>
-                                    </div>
-                                    <div class="details-right">
-                                        <div class="price-display">
-                                            <div class="total-price">
-                                                <span class="price-label">Total System Price:</span>
-                                                <span class="price-amount">₹${systemData.price.toLocaleString('en-IN')}</span>
-                                            </div>
-                                            <div class="subsidy-info">
-                                                <span class="subsidy-label">Gov Subsidy:</span>
-                                                <span class="subsidy-amount">₹${(systemData.subsidy || 0).toLocaleString('en-IN')}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="system-actions" style="text-align: center; margin-top: 20px;">
-                                    <button onclick="redirectToWhatsAppWithDetails()" class="cta-btn interested-btn">💬 Interested - Contact Us</button>
-                                </div>
-                            </div>
-                        `;
-                        priceResult.style.display = 'block';
-                        priceResult.style.visibility = 'visible';
-                        priceResult.style.opacity = '1';
-                        console.log('✓ Last resort: Created price result content');
-                    }
+                    const values = [
+                        selectedKW + ' KW',
+                        systemData.generation + ' units',
+                        '₹' + systemData.savings.toLocaleString('en-IN'),
+                        '₹' + systemData.price.toLocaleString('en-IN'),
+                        '₹' + (systemData.subsidy || 0).toLocaleString('en-IN')
+                    ];
+                    
+                    elements.forEach((el, index) => {
+                        if (values[index] && (!el.textContent || el.textContent.trim() === '')) {
+                            el.textContent = values[index];
+                        }
+                    });
+                    console.log('✓ Emergency Brave fallback completed');
                 }
-            } catch (lastResortError) {
-                console.error('Last resort also failed:', lastResortError);
-                alert('Unable to display system data. Please refresh the page and try again.');
             }
-        }
+        }, 500);
     }
 }
 
@@ -1418,12 +1331,7 @@ Looking forward to going solar! 🔋⚡`;
         // Track the WhatsApp redirect
         try {
             if (typeof trackEvent === 'function') {
-                trackEvent('whatsapp_interested_clicked', {
-                    brand: currentBrand,
-                    kw: currentSelectedKW,
-                    totalPrice: totalPrice,
-                    netPrice: netPrice
-                });
+                trackEvent('whatsapp_interested_clicked', { brand: brand, kw: currentSelectedKW, totalPrice: totalPrice, netPrice: netPrice });
             }
         } catch (e) {
             console.warn('Tracking error:', e);
@@ -1982,224 +1890,6 @@ openQuoteModal = function() {
         trapFocus(document.getElementById('quote-modal'));
     }, 100);
 };
-
-// Performance monitoring
-function monitorPerformance() {
-    if ('performance' in window) {
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                
-                trackEvent('performance_metrics', {
-                    loadTime: perfData.loadEventEnd - perfData.loadEventStart,
-                    domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
-                    firstPaint: performance.getEntriesByType('paint')[0]?.startTime || 0
-                });
-            }, 1000);
-        });
-    }
-}
-
-monitorPerformance();
-
-// Admin Edit System
-let isEditMode = false;
-let isAdminLoggedIn = false;
-let originalContent = {};
-const ADMIN_PASSWORD = 'solar2024admin'; // Change this to a secure password
-
-// Check for admin access on page load
-function checkAdminAccess() {
-    // Check if admin is accessing via special URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-        document.getElementById('admin-toggle').style.display = 'block';
-    }
-    
-    // Check if admin was previously logged in
-    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-        isAdminLoggedIn = true;
-        document.getElementById('admin-toggle').style.display = 'block';
-    }
-}
-
-// Toggle edit mode
-function toggleEditMode() {
-    if (!isAdminLoggedIn) {
-        document.getElementById('admin-login-modal').style.display = 'block';
-        return;
-    }
-    
-    if (!isEditMode) {
-        enterEditMode();
-    } else {
-        exitEditMode();
-    }
-}
-
-// Enter edit mode
-function enterEditMode() {
-    isEditMode = true;
-    document.body.classList.add('edit-mode');
-    document.getElementById('edit-controls').style.display = 'block';
-    
-    // Store original content
-    storeOriginalContent();
-    
-    // Make content editable
-    makeContentEditable();
-    
-    // Update toggle button
-    const toggleBtn = document.querySelector('.edit-toggle-btn');
-    toggleBtn.innerHTML = '<i class="fas fa-eye"></i> View Mode';
-    toggleBtn.style.background = 'linear-gradient(45deg, #28a745, #17a2b8)';
-    
-    trackEvent('admin_edit_mode_entered');
-}
-
-// Exit edit mode
-function exitEditMode() {
-    isEditMode = false;
-    document.body.classList.remove('edit-mode');
-    document.getElementById('edit-controls').style.display = 'none';
-    
-    // Remove editable attributes
-    removeEditableAttributes();
-    
-    // Update toggle button
-    const toggleBtn = document.querySelector('.edit-toggle-btn');
-    toggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Mode';
-    toggleBtn.style.background = 'linear-gradient(45deg, var(--solar-orange), var(--solar-blue))';
-    
-    trackEvent('admin_edit_mode_exited');
-}
-
-// Store original content
-function storeOriginalContent() {
-    const editableElements = [
-        '.hero-title',
-        '.hero-subtitle', 
-        '.section-title',
-        '.section-subtitle',
-        '.about-text p',
-        '.highlight-card h3',
-        '.highlight-card p',
-        '.service-card h3',
-        '.service-card p',
-        '.contact-item h4',
-        '.contact-item p',
-        '.footer-slogan',
-        '[data-editable="price-calculator-capacity"]',
-        '[data-editable="price-calculator-generation"]',
-        '[data-editable="price-calculator-savings"]',
-        '[data-editable="price-calculator-total"]',
-        '[data-editable="price-calculator-subsidy"]'
-    ];
-    
-    editableElements.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach((element, index) => {
-            const key = `${selector}_${index}`;
-            originalContent[key] = element.innerHTML;
-        });
-    });
-}
-
-// Make content editable
-function makeContentEditable() {
-    const editableSelectors = [
-        '.hero-title',
-        '.hero-subtitle',
-        '.section-title', 
-        '.section-subtitle',
-        '.about-text p',
-        '.highlight-card h3',
-        '.highlight-card p',
-        '.service-card h3',
-        '.service-card p',
-        '.contact-item h4',
-        '.contact-item p',
-        '.footer-slogan',
-        '[data-editable="price-calculator-capacity"]',
-        '[data-editable="price-calculator-generation"]',
-        '[data-editable="price-calculator-savings"]',
-        '[data-editable="price-calculator-total"]',
-        '[data-editable="price-calculator-subsidy"]'
-    ];
-    
-    editableSelectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(element => {
-            element.classList.add('editable');
-            element.contentEditable = true;
-            element.setAttribute('data-original', element.innerHTML);
-            
-            // Add edit indicator
-            const indicator = document.createElement('div');
-            indicator.className = 'edit-indicator';
-            indicator.innerHTML = '✎';
-            element.style.position = 'relative';
-            element.appendChild(indicator);
-            
-            // Add tooltip
-            const tooltip = document.createElement('div');
-            tooltip.className = 'edit-tooltip';
-            tooltip.textContent = 'Click to edit this content';
-            element.appendChild(tooltip);
-        });
-    });
-}
-
-// Refresh price calculator editing when values are populated
-function refreshPriceCalculatorEditing() {
-    const priceCalculatorSelectors = [
-        '[data-editable="price-calculator-capacity"]',
-        '[data-editable="price-calculator-generation"]',
-        '[data-editable="price-calculator-savings"]',
-        '[data-editable="price-calculator-total"]',
-        '[data-editable="price-calculator-subsidy"]'
-    ];
-    
-    priceCalculatorSelectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(element => {
-            if (!element.classList.contains('editable')) {
-                element.classList.add('editable');
-                element.contentEditable = true;
-                element.setAttribute('data-original', element.innerHTML);
-                
-                // Add edit indicator
-                const indicator = document.createElement('div');
-                indicator.className = 'edit-indicator';
-                indicator.innerHTML = '✎';
-                element.style.position = 'relative';
-                element.appendChild(indicator);
-                
-                // Add tooltip
-                const tooltip = document.createElement('div');
-                tooltip.className = 'edit-tooltip';
-                tooltip.textContent = 'Click to edit this value';
-                element.appendChild(tooltip);
-            }
-        });
-    });
-}
-
-// Remove editable attributes
-function removeEditableAttributes() {
-    const editableElements = document.querySelectorAll('.editable');
-    editableElements.forEach(element => {
-        element.classList.remove('editable');
-        element.contentEditable = false;
-        element.style.position = '';
-        
-        // Remove indicators and tooltips
-        const indicator = element.querySelector('.edit-indicator');
-        const tooltip = element.querySelector('.edit-tooltip');
-        if (indicator) indicator.remove();
-        if (tooltip) tooltip.remove();
-    });
-}
 
 // Save changes
 function saveChanges() {
