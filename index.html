@@ -7,6 +7,9 @@
     <meta name="description" content="Smart, sustainable, and affordable solar solutions for every home & business. Professional solar panel installation and maintenance services.">
     <meta name="keywords" content="Solar Energy, Solar Panels Installation, Green Energy Solutions, Residential Solar, Commercial Solar">
     
+    <!-- Content Security Policy for better browser compatibility -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;">
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
@@ -245,19 +248,19 @@
             
             <div class="brands-container">
                 <div class="brands-slider">
-                    <div class="brand-logo" onclick="openPriceModalWithBrand('exide')" style="cursor: pointer;">
+                    <div class="brand-logo" data-brand="exide" style="cursor: pointer;">
                         <img src="exide-logo.png" alt="Exide" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij5FWElERTwvdGV4dD48L3N2Zz4='">
                     </div>
-                    <div class="brand-logo" onclick="openPriceModalWithBrand('luminous')" style="cursor: pointer;">
+                    <div class="brand-logo" data-brand="luminous" style="cursor: pointer;">
                         <img src="luminous-logo.png" alt="Luminous" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5MVU1JTk9VUzwvdGV4dD48L3N2Zz4='">
                     </div>
-                    <div class="brand-logo" onclick="openPriceModalWithBrand('adani')" style="cursor: pointer;">
+                    <div class="brand-logo" data-brand="adani" style="cursor: pointer;">
                         <img src="adani-logo.png" alt="Adani Solar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5BREFOSSE8L3RleHQ+PHRleHQgeD0iNjAiIHk9IjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPlNvbGFyPC90ZXh0Pjwvc3ZnPg=='">
                     </div>
-                    <div class="brand-logo" onclick="openPriceModalWithBrand('tata')" style="cursor: pointer;">
+                    <div class="brand-logo" data-brand="tata" style="cursor: pointer;">
                         <img src="tata-power-logo.png" alt="Tata Power" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5UQVRBPC90ZXh0Pjx0ZXh0IHg9IjYwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzY2NiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj5QT1dFUjwvdGV4dD48L3N2Zz4='">
                     </div>
-                    <div class="brand-logo" onclick="openPriceModalWithBrand('waaree')" style="cursor: pointer;">
+                    <div class="brand-logo" data-brand="waaree" style="cursor: pointer;">
                         <img src="waaree-logo.png" alt="Waaree" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIj5XQUFSRUU8L3RleHQ+PHRleHQgeD0iNjAiIHk9IjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPk9uZSB3aXRoIHRoZSBTdW48L3RleHQ+PC9zdmc+'">
                     </div>
                 </div>

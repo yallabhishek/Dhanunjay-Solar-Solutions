@@ -147,38 +147,106 @@ function openPriceModalWithBrand(brand) {
     try {
         console.log('Opening price modal for brand:', brand);
         
-        currentBrand = brand;
-        onGridPricing = getBrandPricing();
-        currentSelectedKW = null; // Reset selected KW
-        
-        const modal = document.getElementById('priceModal');
-        const priceResult = document.getElementById('priceResult');
-        
-        if (!modal) {
-            console.error('Price modal not found');
+        // Validate brand parameter
+        if (!brand || typeof brand !== 'string') {
+            console.error('Invalid brand parameter:', brand);
+            alert('Unable to open price calculator. Please try again.');
             return;
         }
         
-        // Reset form
-        document.querySelectorAll('.kw-card').forEach(card => {
-            card.classList.remove('selected');
-        });
+        // Set current brand and update pricing
+        currentBrand = brand.toLowerCase();
+        onGridPricing = getBrandPricing();
+        currentSelectedKW = null; // Reset selected KW
         
-        if (priceResult) {
+        // Find modal element with multiple fallback attempts
+        let modal = document.getElementById('priceModal');
+        if (!modal) {
+            // Try alternative selectors
+            modal = document.querySelector('[id="priceModal"]') || 
+                   document.querySelector('.price-modal') ||
+                   document.querySelector('#price-modal');
+        }
+        
+        if (!modal) {
+            console.error('Price modal element not found in DOM');
+            alert('Unable to open price calculator. Please refresh the page and try again.');
+            return;
+        }
+        
+        // Find price result element
+        let priceResult = document.getElementById('priceResult');
+        if (!priceResult) {
+            priceResult = document.querySelector('[id="priceResult"]') || 
+                         document.querySelector('.price-result');
+        }
+        
+        // Reset form state
+        try {
+            const kwCards = document.querySelectorAll('.kw-card');
+            kwCards.forEach(card => {
+                if (card && card.classList) {
+                    card.classList.remove('selected');
+                }
+            });
+        } catch (e) {
+            console.warn('Error resetting KW cards:', e);
+        }
+        
+        // Hide price result
+        if (priceResult && priceResult.style) {
             priceResult.style.display = 'none';
         }
         
         // Update KW card prices with selected brand data
-        updateKWCardPrices();
+        try {
+            updateKWCardPrices();
+        } catch (e) {
+            console.warn('Error updating KW card prices:', e);
+        }
         
-        // Show modal with slight delay for better browser compatibility
-        setTimeout(() => {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }, 10);
+        // Show modal with enhanced browser compatibility
+        const showModal = () => {
+            try {
+                if (modal && modal.style) {
+                    modal.style.display = 'block';
+                    modal.style.visibility = 'visible';
+                    modal.style.opacity = '1';
+                    
+                    // Prevent body scroll
+                    if (document.body && document.body.style) {
+                        document.body.style.overflow = 'hidden';
+                    }
+                    
+                    // Focus management for accessibility
+                    if (modal.focus) {
+                        modal.focus();
+                    }
+                    
+                    console.log('Price modal opened successfully for brand:', brand);
+                }
+            } catch (e) {
+                console.error('Error showing modal:', e);
+                alert('Unable to open price calculator. Please try again.');
+            }
+        };
         
-        // Track price modal view
-        trackEvent('price_calculator_opened', { brand: brand });
+        // Use requestAnimationFrame for better browser compatibility
+        if (window.requestAnimationFrame) {
+            requestAnimationFrame(showModal);
+        } else {
+            // Fallback for older browsers
+            setTimeout(showModal, 16);
+        }
+        
+        // Track price modal view (with error handling)
+        try {
+            if (typeof trackEvent === 'function') {
+                trackEvent('price_calculator_opened', { brand: brand });
+            }
+        } catch (e) {
+            console.warn('Error tracking event:', e);
+        }
         
     } catch (error) {
         console.error('Error opening price modal:', error);
@@ -314,82 +382,170 @@ function showDetailsView() {
     calculatePrice(currentSelectedKW);
 }
 
-// DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Set sun/moon based on time
-    setCelestialBody();
-    
-    // Hide loading screen after page loads
-    setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        loadingScreen.style.opacity = '0';
+// Enhanced DOM Content Loaded for better Brave browser compatibility
+function initializeWebsite() {
+    try {
+        console.log('Initializing website...');
+        
+        // Set sun/moon based on time
+        setCelestialBody();
+        
+        // Hide loading screen after page loads
         setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
-    }, 4500);
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        }, 4500);
 
-    // Initialize all functionality
-    initNavigation();
-    initSliders();
-    initScrollEffects();
-    initVisitorTracking();
-    initTestimonialCarousel();
-    initAdminSystem(); // Add admin system initialization
-    initBrandLogos(); // Add brand logo initialization
-    
-    // Update KW card prices on page load
-    updateKWCardPrices();
+        // Initialize all functionality with error handling
+        try { initNavigation(); } catch (e) { console.error('Navigation init error:', e); }
+        try { initSliders(); } catch (e) { console.error('Sliders init error:', e); }
+        try { initScrollEffects(); } catch (e) { console.error('Scroll effects init error:', e); }
+        try { initVisitorTracking(); } catch (e) { console.error('Visitor tracking init error:', e); }
+        try { initTestimonialCarousel(); } catch (e) { console.error('Testimonial carousel init error:', e); }
+        try { initAdminSystem(); } catch (e) { console.error('Admin system init error:', e); }
+        
+        // Initialize brand logos with delay for better compatibility
+        setTimeout(() => {
+            try { 
+                initBrandLogos(); 
+                console.log('Brand logos initialized successfully');
+            } catch (e) { 
+                console.error('Brand logos init error:', e); 
+            }
+        }, 100);
+        
+        // Update KW card prices on page load
+        setTimeout(() => {
+            try { 
+                updateKWCardPrices(); 
+                console.log('KW card prices updated successfully');
+            } catch (e) { 
+                console.error('KW card prices update error:', e); 
+            }
+        }, 200);
+        
+        console.log('Website initialization completed');
+        
+    } catch (error) {
+        console.error('Website initialization error:', error);
+    }
+}
+
+// Multiple event listeners for maximum browser compatibility
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeWebsite);
+} else {
+    // DOM is already loaded
+    initializeWebsite();
+}
+
+// Fallback initialization
+window.addEventListener('load', function() {
+    // Double-check brand logos are initialized
+    setTimeout(() => {
+        const brandLogos = document.querySelectorAll('.brand-logo');
+        if (brandLogos.length > 0) {
+            let hasEventListeners = false;
+            brandLogos.forEach(logo => {
+                if (logo.onclick || logo.getAttribute('data-initialized')) {
+                    hasEventListeners = true;
+                }
+            });
+            
+            if (!hasEventListeners) {
+                console.log('Re-initializing brand logos as fallback');
+                initBrandLogos();
+            }
+        }
+    }, 500);
 });
 
 // Initialize brand logo click handlers for better browser compatibility
 function initBrandLogos() {
+    // Wait for DOM to be fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBrandLogos);
+        return;
+    }
+    
     // Add event listeners to brand logos for better Brave browser compatibility
     const brandLogos = document.querySelectorAll('.brand-logo');
     
-    brandLogos.forEach(logo => {
+    console.log('Initializing brand logos, found:', brandLogos.length);
+    
+    brandLogos.forEach((logo, index) => {
         // Remove existing onclick handlers
         logo.removeAttribute('onclick');
         
-        // Add proper event listeners
-        logo.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Get brand from data attribute or determine from image src
-            let brand = this.getAttribute('data-brand');
-            
-            if (!brand) {
-                const img = this.querySelector('img');
-                if (img) {
-                    const src = img.src.toLowerCase();
-                    if (src.includes('exide')) brand = 'exide';
-                    else if (src.includes('luminous')) brand = 'luminous';
-                    else if (src.includes('adani')) brand = 'adani';
-                    else if (src.includes('tata')) brand = 'tata';
-                    else if (src.includes('waaree')) brand = 'waaree';
+        // Add proper event listeners with better error handling
+        const clickHandler = function(e) {
+            try {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Brand logo clicked, element:', this);
+                
+                // Get brand from data attribute or determine from image src
+                let brand = this.getAttribute('data-brand');
+                
+                if (!brand) {
+                    const img = this.querySelector('img');
+                    if (img) {
+                        const src = img.src.toLowerCase();
+                        if (src.includes('exide')) brand = 'exide';
+                        else if (src.includes('luminous')) brand = 'luminous';
+                        else if (src.includes('adani')) brand = 'adani';
+                        else if (src.includes('tata')) brand = 'tata';
+                        else if (src.includes('waaree')) brand = 'waaree';
+                    }
                 }
+                
+                if (brand) {
+                    console.log('Opening price modal for brand:', brand);
+                    openPriceModalWithBrand(brand);
+                } else {
+                    console.error('Unable to determine brand from logo');
+                    alert('Unable to open price calculator. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error in brand logo click handler:', error);
+                alert('Unable to open price calculator. Please try again.');
             }
-            
-            if (brand) {
-                console.log('Brand logo clicked:', brand);
-                openPriceModalWithBrand(brand);
-            } else {
-                console.error('Unable to determine brand from logo');
-            }
+        };
+        
+        // Add click event listener
+        logo.addEventListener('click', clickHandler);
+        
+        // Add touch event for mobile devices
+        logo.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            clickHandler.call(this, e);
         });
         
         // Add keyboard support for accessibility
         logo.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                this.click();
+                clickHandler.call(this, e);
             }
         });
         
         // Make focusable for keyboard navigation
         logo.setAttribute('tabindex', '0');
+        logo.setAttribute('role', 'button');
+        logo.setAttribute('aria-label', `Open price calculator for ${logo.getAttribute('data-brand') || 'brand'}`);
+        logo.setAttribute('data-initialized', 'true');
         logo.style.cursor = 'pointer';
+        
+        console.log(`Brand logo ${index + 1} initialized for brand:`, logo.getAttribute('data-brand'));
     });
+    
+    console.log('Brand logos initialization completed');
 }
 
 // Set sun or moon based on current time
