@@ -346,7 +346,10 @@ function selectKW(kw) {
 // Universal Browser Compatible Price Calculator
 function calculatePrice(selectedKW) {
     try {
+        console.log('=== CALCULATE PRICE DEBUG START ===');
         console.log('calculatePrice called with KW:', selectedKW, 'Brand:', currentBrand);
+        console.log('Current URL:', window.location.href);
+        console.log('User Agent:', navigator.userAgent);
         
         // Get current brand pricing with enhanced error handling
         const brandPricing = getBrandPricing();
@@ -405,8 +408,11 @@ function calculatePrice(selectedKW) {
         const priceResult = findElement('priceResult', ['.price-result', '[data-element="price-result"]']);
         if (!priceResult) {
             console.error('Price result element not found');
+            console.log('Available elements with IDs:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+            console.log('Available price-related elements:', Array.from(document.querySelectorAll('[class*="price"], [id*="price"], [class*="result"], [id*="result"]')).map(el => ({id: el.id, class: el.className})));
             return;
         }
+        console.log('Price result element found:', priceResult);
         
         // Check if there are any saved custom values for this KW selection
         let savedContent = null;
@@ -433,10 +439,13 @@ function calculatePrice(selectedKW) {
         // Universal cross-browser DOM element updater
         const updateDisplayElement = (elementId, value, fallbackSelectors = []) => {
             try {
+                console.log(`Attempting to update element: ${elementId} with value: ${value}`);
+                
                 // Find element using universal finder
                 const element = findElement(elementId, fallbackSelectors);
                 
                 if (element) {
+                    console.log(`Element ${elementId} found:`, element);
                     // Multiple update methods for maximum compatibility
                     try {
                         // Method 1: textContent (preferred)
@@ -471,13 +480,26 @@ function calculatePrice(selectedKW) {
                     return true;
                 } else {
                     console.warn(`✗ Element ${elementId} not found in DOM`);
+                    console.log('Searching for similar elements...');
+                    
+                    // Debug: Show all elements that might match
+                    const allElements = document.querySelectorAll('*');
+                    const possibleMatches = Array.from(allElements).filter(el => 
+                        el.id.toLowerCase().includes(elementId.toLowerCase()) || 
+                        el.className.toLowerCase().includes(elementId.toLowerCase()) ||
+                        (el.getAttribute('data-editable') && el.getAttribute('data-editable').includes(elementId.toLowerCase().replace('display', '')))
+                    );
+                    console.log(`Possible matches for ${elementId}:`, possibleMatches.map(el => ({id: el.id, class: el.className, tag: el.tagName})));
                     
                     // Emergency fallback: try to find by class or data attributes
                     const emergencySelectors = [
                         `.${elementId}`,
                         `[data-id="${elementId}"]`,
                         `[data-element="${elementId}"]`,
-                        `[class*="${elementId}"]`
+                        `[class*="${elementId}"]`,
+                        `[data-editable*="${elementId.replace('Display', '').toLowerCase()}"]`,
+                        `.detail-value:nth-child(${elementId === 'capacityDisplay' ? '1' : elementId === 'generationDisplay' ? '2' : elementId === 'savingsDisplay' ? '3' : '1'})`,
+                        `.price-amount, .subsidy-amount`
                     ];
                     
                     for (const selector of emergencySelectors) {
@@ -517,6 +539,19 @@ function calculatePrice(selectedKW) {
         };
         
         console.log('Formatted values:', formattedValues);
+        
+        // Debug: Check if all target elements exist before updating
+        const targetElements = ['capacityDisplay', 'generationDisplay', 'savingsDisplay', 'totalPrice', 'subsidyPrice'];
+        console.log('=== ELEMENT EXISTENCE CHECK ===');
+        targetElements.forEach(elementId => {
+            const element = document.getElementById(elementId);
+            console.log(`${elementId}: ${element ? 'EXISTS' : 'MISSING'}`, element);
+            if (!element) {
+                // Try alternative selectors
+                const alternatives = document.querySelectorAll(`[data-editable*="${elementId.replace('Display', '').toLowerCase()}"], .${elementId}, [class*="${elementId}"]`);
+                console.log(`  Alternatives found: ${alternatives.length}`, alternatives);
+            }
+        });
         
         // Only update if no custom values exist, otherwise preserve current content
         if (!hasCustomValues) {
@@ -657,6 +692,16 @@ function calculatePrice(selectedKW) {
             }, 150);
             
             console.log('✓ Price result displayed successfully with universal compatibility');
+            console.log('=== FINAL ELEMENT VALUES CHECK ===');
+            targetElements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    console.log(`${elementId} final value:`, element.textContent);
+                } else {
+                    console.log(`${elementId}: STILL MISSING`);
+                }
+            });
+            console.log('=== CALCULATE PRICE DEBUG END ===');
         } catch (displayError) {
             console.error('Error displaying price result:', displayError);
         }
@@ -686,7 +731,7 @@ function calculatePrice(selectedKW) {
     } catch (error) {
         console.error('Error in calculatePrice function:', error);
         
-        // Emergency fallback: Direct DOM manipulation
+        // Emergency fallback: Direct DOM manipulation with comprehensive selectors
         try {
             console.log('Attempting emergency fallback...');
             const brandPricing = getBrandPricing();
@@ -694,26 +739,151 @@ function calculatePrice(selectedKW) {
             const systemData = currentBrandData[selectedKW];
             
             if (systemData) {
-                // Direct element updates as last resort
-                const elements = {
-                    capacity: document.querySelector('#capacityDisplay, .detail-value:first-of-type, [data-editable*="capacity"]'),
-                    generation: document.querySelector('#generationDisplay, .detail-value:nth-of-type(2), [data-editable*="generation"]'),
-                    savings: document.querySelector('#savingsDisplay, .detail-value:nth-of-type(3), [data-editable*="savings"]'),
-                    totalPrice: document.querySelector('#totalPrice, .price-amount, [data-editable*="total"]'),
-                    subsidyPrice: document.querySelector('#subsidyPrice, .subsidy-amount, [data-editable*="subsidy"]')
+                console.log('Emergency fallback system data:', systemData);
+                
+                // Comprehensive element selectors for GitHub Pages compatibility
+                const elementSelectors = {
+                    capacity: [
+                        '#capacityDisplay',
+                        '[data-editable*="capacity"]',
+                        '.detail-value:first-of-type',
+                        '.system-details .detail-value:nth-child(1)',
+                        '.details-left .detail-item:first-child .detail-value',
+                        'span[data-editable="price-calculator-capacity"]'
+                    ],
+                    generation: [
+                        '#generationDisplay', 
+                        '[data-editable*="generation"]',
+                        '.detail-value:nth-of-type(2)',
+                        '.system-details .detail-value:nth-child(2)',
+                        '.details-left .detail-item:nth-child(2) .detail-value',
+                        'span[data-editable="price-calculator-generation"]'
+                    ],
+                    savings: [
+                        '#savingsDisplay',
+                        '[data-editable*="savings"]', 
+                        '.detail-value:nth-of-type(3)',
+                        '.system-details .detail-value:nth-child(3)',
+                        '.details-left .detail-item:nth-child(3) .detail-value',
+                        'span[data-editable="price-calculator-savings"]'
+                    ],
+                    totalPrice: [
+                        '#totalPrice',
+                        '[data-editable*="total"]',
+                        '.price-amount',
+                        '.total-price .price-amount',
+                        '.details-right .price-amount',
+                        'span[data-editable="price-calculator-total"]'
+                    ],
+                    subsidyPrice: [
+                        '#subsidyPrice',
+                        '[data-editable*="subsidy"]',
+                        '.subsidy-amount',
+                        '.subsidy-info .subsidy-amount',
+                        '.details-right .subsidy-amount',
+                        'span[data-editable="price-calculator-subsidy"]'
+                    ]
                 };
                 
-                if (elements.capacity) elements.capacity.textContent = selectedKW + ' KW';
-                if (elements.generation) elements.generation.textContent = systemData.generation + ' units';
-                if (elements.savings) elements.savings.textContent = '₹' + systemData.savings.toLocaleString('en-IN');
-                if (elements.totalPrice) elements.totalPrice.textContent = '₹' + systemData.price.toLocaleString('en-IN');
-                if (elements.subsidyPrice) elements.subsidyPrice.textContent = '₹' + (systemData.subsidy || 0).toLocaleString('en-IN');
+                const values = {
+                    capacity: selectedKW + ' KW',
+                    generation: systemData.generation + ' units',
+                    savings: '₹' + systemData.savings.toLocaleString('en-IN'),
+                    totalPrice: '₹' + systemData.price.toLocaleString('en-IN'),
+                    subsidyPrice: '₹' + (systemData.subsidy || 0).toLocaleString('en-IN')
+                };
+                
+                // Try each selector until one works
+                Object.keys(elementSelectors).forEach(key => {
+                    let updated = false;
+                    for (const selector of elementSelectors[key]) {
+                        const element = document.querySelector(selector);
+                        if (element) {
+                            element.textContent = values[key];
+                            console.log(`✓ Emergency update ${key} via ${selector}:`, values[key]);
+                            updated = true;
+                            break;
+                        }
+                    }
+                    if (!updated) {
+                        console.warn(`✗ Could not update ${key} with any selector`);
+                    }
+                });
+                
+                // Force display the price result section
+                const priceResultSelectors = ['#priceResult', '.price-result', '.system-details'];
+                for (const selector of priceResultSelectors) {
+                    const priceSection = document.querySelector(selector);
+                    if (priceSection) {
+                        priceSection.style.display = 'block';
+                        priceSection.style.visibility = 'visible';
+                        priceSection.style.opacity = '1';
+                        console.log(`✓ Forced display of price section via ${selector}`);
+                        break;
+                    }
+                }
                 
                 console.log('✓ Emergency fallback completed');
             }
         } catch (fallbackError) {
             console.error('Emergency fallback also failed:', fallbackError);
-            alert('Unable to display system data. Please refresh the page and try again.');
+            
+            // Last resort: Create elements if they don't exist
+            try {
+                console.log('Attempting last resort element creation...');
+                const brandPricing = getBrandPricing();
+                const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+                const systemData = currentBrandData[selectedKW];
+                
+                if (systemData) {
+                    const priceResult = document.querySelector('#priceResult, .price-result, .system-details');
+                    if (priceResult) {
+                        priceResult.innerHTML = `
+                            <div class="system-details">
+                                <h3>System Details</h3>
+                                <div class="details-layout">
+                                    <div class="details-left">
+                                        <div class="detail-item">
+                                            <span class="detail-label">System Capacity:</span>
+                                            <span class="detail-value">${selectedKW} KW</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Monthly Gen Upto:</span>
+                                            <span class="detail-value">${systemData.generation} units</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Annual Sav Upto:</span>
+                                            <span class="detail-value">₹${systemData.savings.toLocaleString('en-IN')}</span>
+                                        </div>
+                                    </div>
+                                    <div class="details-right">
+                                        <div class="price-display">
+                                            <div class="total-price">
+                                                <span class="price-label">Total System Price:</span>
+                                                <span class="price-amount">₹${systemData.price.toLocaleString('en-IN')}</span>
+                                            </div>
+                                            <div class="subsidy-info">
+                                                <span class="subsidy-label">Gov Subsidy:</span>
+                                                <span class="subsidy-amount">₹${(systemData.subsidy || 0).toLocaleString('en-IN')}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="system-actions" style="text-align: center; margin-top: 20px;">
+                                    <button onclick="redirectToWhatsAppWithDetails()" class="cta-btn interested-btn">💬 Interested - Contact Us</button>
+                                </div>
+                            </div>
+                        `;
+                        priceResult.style.display = 'block';
+                        priceResult.style.visibility = 'visible';
+                        priceResult.style.opacity = '1';
+                        console.log('✓ Last resort: Created price result content');
+                    }
+                }
+            } catch (lastResortError) {
+                console.error('Last resort also failed:', lastResortError);
+                alert('Unable to display system data. Please refresh the page and try again.');
+            }
         }
     }
 }
