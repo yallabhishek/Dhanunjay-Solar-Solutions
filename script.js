@@ -1922,6 +1922,12 @@ window.directPriceDisplay = function(brand, kw) {
     console.log('=== DIRECT PRICE DISPLAY ===');
     console.log('Brand:', brand, 'KW:', kw);
     
+    // Set global variables for WhatsApp function
+    window.currentBrand = brand;
+    window.currentSelectedKW = kw;
+    currentBrand = brand;
+    currentSelectedKW = kw;
+    
     // Simple brand pricing data
     const pricing = {
         tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 28800, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 54000} },
@@ -1967,6 +1973,7 @@ window.directPriceDisplay = function(brand, kw) {
     });
     
     console.log('=== DIRECT DISPLAY COMPLETE ===');
+    console.log('Global variables set - Brand:', currentBrand, 'KW:', currentSelectedKW);
 };
 
 // Override selectKW to use direct approach
