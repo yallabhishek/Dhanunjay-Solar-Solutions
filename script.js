@@ -744,61 +744,100 @@ function redirectToWhatsAppWithDetails() {
         const subsidyAmount = systemData.subsidy || 0;
         const netPrice = totalPrice - subsidyAmount;
         
-        // Create shorter, more compatible message for better cross-platform support
+        // Create optimized message for WhatsApp auto-send
         const brandName = currentBrand.charAt(0).toUpperCase() + currentBrand.slice(1);
-        const message = `Hi DhanunJay Solar Solutions!
+        const message = `🌞 *INTERESTED IN SOLAR SYSTEM* 🌞
 
-Interested in ${brandName} ${currentSelectedKW}KW Solar System:
+Hi DhanunJay Solar Solutions!
 
-Capacity: ${currentSelectedKW} KW
-Generation: ${systemData.generation} units/month
-Annual Savings: Rs.${systemData.savings.toLocaleString()}
-Subsidy: Rs.${subsidyAmount.toLocaleString()}
-Total Price: Rs.${totalPrice.toLocaleString()}
-Net Price: Rs.${netPrice.toLocaleString()}
+I'm interested in the *${brandName} ${currentSelectedKW}KW Solar System*
 
-Please share installation details.
+📋 *System Details:*
+• Capacity: ${currentSelectedKW} KW
+• Monthly Generation: ${systemData.generation} units
+• Annual Savings: ₹${systemData.savings.toLocaleString()}
+• Government Subsidy: ₹${subsidyAmount.toLocaleString()}
+• Total System Price: ₹${totalPrice.toLocaleString()}
+• *Final Price: ₹${netPrice.toLocaleString()}*
 
-Thank you!🙂`;
+Please share:
+✅ Installation timeline
+✅ Site visit details
+✅ Payment options
+✅ Warranty information
+
+Looking forward to going solar! 🔋⚡`;
         
         // WhatsApp number
         const whatsappNumber = '919133921819';
         
-        // Create WhatsApp URL with better encoding
+        // Create WhatsApp URL with better encoding for auto-send
         const encodedMessage = encodeURIComponent(message);
         const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
         
-        console.log('WhatsApp URL:', whatsappURL);
+        console.log('Opening WhatsApp with predefined message...');
         
         // Track the WhatsApp redirect
-        trackEvent('whatsapp_redirect_from_price_calculator', {
-            brand: currentBrand,
-            kw: currentSelectedKW,
-            totalPrice: totalPrice,
-            netPrice: netPrice
-        });
-        
-        // Better cross-platform WhatsApp opening
-        if (navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i)) {
-            // Mobile device - open directly
-            window.location.href = whatsappURL;
-        } else {
-            // Desktop - try to open WhatsApp Web, fallback to new tab
-            const whatsappWeb = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
-            const newWindow = window.open(whatsappWeb, '_blank');
-            
-            // Fallback to regular WhatsApp if web version doesn't work
-            setTimeout(() => {
-                if (newWindow && newWindow.closed) {
-                    window.open(whatsappURL, '_blank');
-                }
-            }, 1000);
+        try {
+            if (typeof trackEvent === 'function') {
+                trackEvent('whatsapp_interested_clicked', {
+                    brand: currentBrand,
+                    kw: currentSelectedKW,
+                    totalPrice: totalPrice,
+                    netPrice: netPrice
+                });
+            }
+        } catch (e) {
+            console.warn('Tracking error:', e);
         }
+        
+        // Enhanced cross-platform WhatsApp opening with auto-send capability
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // Mobile device - open WhatsApp app directly
+            try {
+                // Try to open WhatsApp app first
+                window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodedMessage}`;
+                
+                // Fallback to web WhatsApp after short delay
+                setTimeout(() => {
+                    window.open(whatsappURL, '_blank');
+                }, 1000);
+            } catch (error) {
+                // Direct fallback to web WhatsApp
+                window.open(whatsappURL, '_blank');
+            }
+        } else {
+            // Desktop - open WhatsApp Web in new tab
+            const newWindow = window.open(whatsappURL, '_blank', 'noopener,noreferrer');
+            
+            // Check if popup was blocked
+            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                // Popup blocked, try alternative method
+                alert('Please allow popups for this site to open WhatsApp, or manually visit: ' + whatsappURL);
+                
+                // Copy to clipboard as fallback
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(whatsappURL).then(() => {
+                        console.log('WhatsApp link copied to clipboard');
+                    }).catch(err => {
+                        console.error('Could not copy to clipboard:', err);
+                    });
+                }
+            }
+        }
+        
+        // Close the price modal after opening WhatsApp
+        setTimeout(() => {
+            closePriceModal();
+        }, 500);
         
     } catch (error) {
         console.error('Error opening WhatsApp:', error);
-        // Fallback - simple WhatsApp link
-        window.open(`https://wa.me/919133921819`, '_blank');
+        // Ultimate fallback - simple WhatsApp link
+        const fallbackURL = `https://wa.me/919133921819`;
+        window.open(fallbackURL, '_blank');
     }
 }
 
