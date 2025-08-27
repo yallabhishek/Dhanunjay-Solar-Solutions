@@ -822,57 +822,46 @@ Looking forward to going solar! 🔋⚡`;
                 window.open(whatsappApiURL, '_blank');
             }
         } else {
-            // Desktop handling
+            // Desktop handling - force WhatsApp Web to avoid app detection
             try {
                 let targetURL;
                 
                 if (isBrave) {
-                    // Brave desktop - use simpler encoding and API URL
+                    // Brave desktop - use simpler encoding and force web.whatsapp.com
                     const simpleMessage = message.replace(/[^\w\s\-_.,!?()]/g, ' ');
                     const simpleEncoded = encodeURIComponent(simpleMessage);
-                    targetURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
-                    console.log('Using Brave-compatible URL:', targetURL);
+                    targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
+                    console.log('Using Brave-compatible Web URL:', targetURL);
                 } else {
-                    // Other desktop browsers - use web.whatsapp.com
-                    targetURL = whatsappWebURL;
+                    // Other desktop browsers - always use web.whatsapp.com
+                    targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
                 }
                 
-                const newWindow = window.open(targetURL, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+                console.log('Opening WhatsApp Web directly:', targetURL);
                 
-                // Check if popup was blocked
-                if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                    console.log('Popup blocked, trying alternative method');
-                    
-                    // Try direct navigation for Brave
-                    if (isBrave) {
-                        window.location.href = targetURL;
-                    } else {
-                        // Show user-friendly message with clickable link
-                        const userMessage = `WhatsApp couldn't open automatically. Click here to open: ${targetURL}`;
-                        
-                        if (confirm('WhatsApp couldn\'t open automatically. Click OK to try again, or Cancel to copy the link.')) {
-                            window.location.href = targetURL;
-                        } else {
-                            // Copy to clipboard as fallback
-                            if (navigator.clipboard && navigator.clipboard.writeText) {
-                                navigator.clipboard.writeText(targetURL).then(() => {
-                                    alert('WhatsApp link copied to clipboard! Paste it in your browser.');
-                                }).catch(err => {
-                                    console.error('Could not copy to clipboard:', err);
-                                    alert('Please manually visit: ' + targetURL);
-                                });
-                            } else {
-                                alert('Please manually visit: ' + targetURL);
-                            }
-                        }
-                    }
+                // Force opening in new tab to avoid app detection dialog
+                const newWindow = window.open('about:blank', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes');
+                
+                if (newWindow) {
+                    // Navigate to WhatsApp Web in the new window
+                    newWindow.location.href = targetURL;
+                    console.log('WhatsApp Web opened in new window');
                 } else {
-                    console.log('WhatsApp opened successfully in new window');
+                    // Popup blocked - try direct navigation
+                    console.log('Popup blocked, using direct navigation');
+                    window.location.href = targetURL;
                 }
+                
             } catch (error) {
                 console.error('Desktop WhatsApp error:', error);
-                // Ultimate fallback
-                window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}`, '_blank');
+                // Ultimate fallback - try direct navigation
+                try {
+                    const fallbackURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+                    window.location.href = fallbackURL;
+                } catch (fallbackError) {
+                    console.error('Fallback error:', fallbackError);
+                    alert('Unable to open WhatsApp. Please visit: https://web.whatsapp.com and search for +91 9133921819');
+                }
             }
         }
         
