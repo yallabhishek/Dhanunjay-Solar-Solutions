@@ -791,40 +791,88 @@ Looking forward to going solar! 🔋⚡`;
             console.warn('Tracking error:', e);
         }
         
-        // Enhanced cross-platform WhatsApp opening with auto-send capability
+        // Enhanced cross-platform WhatsApp opening with browser-specific handling
         const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isBrave = navigator.brave && navigator.brave.isBrave || false;
+        
+        // Create different URL formats for better compatibility
+        const whatsappWebURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+        const whatsappApiURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+        
+        console.log('Browser detection - Mobile:', isMobile, 'Brave:', isBrave);
+        console.log('Message length:', message.length, 'Encoded length:', encodedMessage.length);
         
         if (isMobile) {
-            // Mobile device - open WhatsApp app directly
+            // Mobile device handling
             try {
-                // Try to open WhatsApp app first
-                window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodedMessage}`;
-                
-                // Fallback to web WhatsApp after short delay
-                setTimeout(() => {
-                    window.open(whatsappURL, '_blank');
-                }, 1000);
+                if (isBrave) {
+                    // Brave mobile - use API URL which works better
+                    window.open(whatsappApiURL, '_blank');
+                } else {
+                    // Other mobile browsers - try app first, then web
+                    window.location.href = `whatsapp://send?phone=${whatsappNumber}&text=${encodedMessage}`;
+                    
+                    // Fallback to web WhatsApp after short delay
+                    setTimeout(() => {
+                        window.open(whatsappURL, '_blank');
+                    }, 1500);
+                }
             } catch (error) {
-                // Direct fallback to web WhatsApp
-                window.open(whatsappURL, '_blank');
+                console.error('Mobile WhatsApp error:', error);
+                window.open(whatsappApiURL, '_blank');
             }
         } else {
-            // Desktop - open WhatsApp Web in new tab
-            const newWindow = window.open(whatsappURL, '_blank', 'noopener,noreferrer');
-            
-            // Check if popup was blocked
-            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                // Popup blocked, try alternative method
-                alert('Please allow popups for this site to open WhatsApp, or manually visit: ' + whatsappURL);
+            // Desktop handling
+            try {
+                let targetURL;
                 
-                // Copy to clipboard as fallback
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(whatsappURL).then(() => {
-                        console.log('WhatsApp link copied to clipboard');
-                    }).catch(err => {
-                        console.error('Could not copy to clipboard:', err);
-                    });
+                if (isBrave) {
+                    // Brave desktop - use simpler encoding and API URL
+                    const simpleMessage = message.replace(/[^\w\s\-_.,!?()]/g, ' ');
+                    const simpleEncoded = encodeURIComponent(simpleMessage);
+                    targetURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
+                    console.log('Using Brave-compatible URL:', targetURL);
+                } else {
+                    // Other desktop browsers - use web.whatsapp.com
+                    targetURL = whatsappWebURL;
                 }
+                
+                const newWindow = window.open(targetURL, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+                
+                // Check if popup was blocked
+                if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                    console.log('Popup blocked, trying alternative method');
+                    
+                    // Try direct navigation for Brave
+                    if (isBrave) {
+                        window.location.href = targetURL;
+                    } else {
+                        // Show user-friendly message with clickable link
+                        const userMessage = `WhatsApp couldn't open automatically. Click here to open: ${targetURL}`;
+                        
+                        if (confirm('WhatsApp couldn\'t open automatically. Click OK to try again, or Cancel to copy the link.')) {
+                            window.location.href = targetURL;
+                        } else {
+                            // Copy to clipboard as fallback
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                                navigator.clipboard.writeText(targetURL).then(() => {
+                                    alert('WhatsApp link copied to clipboard! Paste it in your browser.');
+                                }).catch(err => {
+                                    console.error('Could not copy to clipboard:', err);
+                                    alert('Please manually visit: ' + targetURL);
+                                });
+                            } else {
+                                alert('Please manually visit: ' + targetURL);
+                            }
+                        }
+                    }
+                } else {
+                    console.log('WhatsApp opened successfully in new window');
+                }
+            } catch (error) {
+                console.error('Desktop WhatsApp error:', error);
+                // Ultimate fallback
+                window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}`, '_blank');
             }
         }
         
