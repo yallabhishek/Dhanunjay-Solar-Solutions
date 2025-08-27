@@ -288,75 +288,168 @@ function selectKW(kw) {
 
 // Calculate and display price for selected KW
 function calculatePrice(selectedKW) {
-    // Get current brand pricing
-    const brandPricing = getBrandPricing();
-    const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
-    const systemData = currentBrandData[selectedKW];
-    if (!systemData) return;
+    try {
+        console.log('calculatePrice called with KW:', selectedKW, 'Brand:', currentBrand);
+        
+        // Get current brand pricing with enhanced error handling
+        const brandPricing = getBrandPricing();
+        if (!brandPricing) {
+            console.error('Brand pricing data not available');
+            return;
+        }
+        
+        const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+        if (!currentBrandData) {
+            console.error('Current brand data not available for:', currentBrand);
+            return;
+        }
+        
+        const systemData = currentBrandData[selectedKW];
+        if (!systemData) {
+            console.error('System data not available for KW:', selectedKW);
+            return;
+        }
+        
+        console.log('System data found:', systemData);
 
-    const priceResult = document.getElementById('priceResult');
-    
-    // Check if there are any saved custom values for this KW selection
-    const savedContent = localStorage.getItem('editableContent');
-    let hasCustomValues = false;
-    if (savedContent) {
-        const allSavedContent = JSON.parse(savedContent);
-        // Check if any KW-specific values exist for this selection
-        Object.keys(allSavedContent).forEach(key => {
-            if (key.includes(`kw-${selectedKW}`)) {
-                hasCustomValues = true;
+        const priceResult = document.getElementById('priceResult');
+        if (!priceResult) {
+            console.error('Price result element not found');
+            return;
+        }
+        
+        // Check if there are any saved custom values for this KW selection
+        let savedContent = null;
+        let hasCustomValues = false;
+        
+        try {
+            savedContent = localStorage.getItem('editableContent');
+            if (savedContent) {
+                const allSavedContent = JSON.parse(savedContent);
+                // Check if any KW-specific values exist for this selection
+                Object.keys(allSavedContent).forEach(key => {
+                    if (key.includes(`kw-${selectedKW}`)) {
+                        hasCustomValues = true;
+                    }
+                });
             }
-        });
-    }
+        } catch (localStorageError) {
+            console.warn('localStorage access error (Brave browser compatibility):', localStorageError);
+            // Continue without custom values if localStorage fails
+            savedContent = null;
+            hasCustomValues = false;
+        }
     
-    // Only update if no custom values exist, otherwise preserve current content
-    if (!hasCustomValues) {
-        document.getElementById('capacityDisplay').textContent = selectedKW + ' KW';
-        document.getElementById('generationDisplay').textContent = systemData.generation + ' units';
-        document.getElementById('savingsDisplay').textContent = '₹' + systemData.savings.toLocaleString();
+        // Enhanced DOM element access with Brave browser compatibility
+        const updateDisplayElement = (elementId, value) => {
+            try {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                    console.log(`Updated ${elementId} with value:`, value);
+                } else {
+                    console.warn(`Element ${elementId} not found in DOM`);
+                }
+            } catch (e) {
+                console.error(`Error updating element ${elementId}:`, e);
+            }
+        };
         
-        // Use subsidy amount from current brand data directly as gov subsidy
-        let subsidyAmount = systemData.subsidy || 0;
-        
-        document.getElementById('totalPrice').textContent = '₹' + systemData.price.toLocaleString();
-        document.getElementById('subsidyPrice').textContent = '₹' + subsidyAmount.toLocaleString();
-    } else {
-        // Load saved custom values
-        if (savedContent) {
-            const allSavedContent = JSON.parse(savedContent);
-            const capacityKey = `[data-editable="price-calculator-capacity-kw-${selectedKW}"]_0`;
-            const generationKey = `[data-editable="price-calculator-generation-kw-${selectedKW}"]_0`;
-            const savingsKey = `[data-editable="price-calculator-savings-kw-${selectedKW}"]_0`;
-            const totalKey = `[data-editable="price-calculator-total-kw-${selectedKW}"]_0`;
-            const subsidyKey = `[data-editable="price-calculator-subsidy-kw-${selectedKW}"]_0`;
+        // Only update if no custom values exist, otherwise preserve current content
+        if (!hasCustomValues) {
+            console.log('Updating with default system data');
             
-            if (allSavedContent[capacityKey]) document.getElementById('capacityDisplay').textContent = allSavedContent[capacityKey];
-            if (allSavedContent[generationKey]) document.getElementById('generationDisplay').textContent = allSavedContent[generationKey];
-            if (allSavedContent[savingsKey]) document.getElementById('savingsDisplay').textContent = allSavedContent[savingsKey];
-            if (allSavedContent[totalKey]) document.getElementById('totalPrice').textContent = allSavedContent[totalKey];
-            if (allSavedContent[subsidyKey]) {
-                document.getElementById('subsidyPrice').textContent = allSavedContent[subsidyKey];
-            } else {
-                // Use subsidy amount directly from current brand data if no custom subsidy saved
-                let subsidyAmount = systemData.subsidy || 0;
-                document.getElementById('subsidyPrice').textContent = '₹' + subsidyAmount.toLocaleString();
+            updateDisplayElement('capacityDisplay', selectedKW + ' KW');
+            updateDisplayElement('generationDisplay', systemData.generation + ' units');
+            updateDisplayElement('savingsDisplay', '₹' + systemData.savings.toLocaleString());
+            
+            // Use subsidy amount from current brand data directly as gov subsidy
+            let subsidyAmount = systemData.subsidy || 0;
+            
+            updateDisplayElement('totalPrice', '₹' + systemData.price.toLocaleString());
+            updateDisplayElement('subsidyPrice', '₹' + subsidyAmount.toLocaleString());
+        } else {
+            console.log('Loading saved custom values');
+            // Load saved custom values
+            if (savedContent) {
+                try {
+                    const allSavedContent = JSON.parse(savedContent);
+                    const capacityKey = `[data-editable="price-calculator-capacity-kw-${selectedKW}"]_0`;
+                    const generationKey = `[data-editable="price-calculator-generation-kw-${selectedKW}"]_0`;
+                    const savingsKey = `[data-editable="price-calculator-savings-kw-${selectedKW}"]_0`;
+                    const totalKey = `[data-editable="price-calculator-total-kw-${selectedKW}"]_0`;
+                    const subsidyKey = `[data-editable="price-calculator-subsidy-kw-${selectedKW}"]_0`;
+                    
+                    if (allSavedContent[capacityKey]) updateDisplayElement('capacityDisplay', allSavedContent[capacityKey]);
+                    if (allSavedContent[generationKey]) updateDisplayElement('generationDisplay', allSavedContent[generationKey]);
+                    if (allSavedContent[savingsKey]) updateDisplayElement('savingsDisplay', allSavedContent[savingsKey]);
+                    if (allSavedContent[totalKey]) updateDisplayElement('totalPrice', allSavedContent[totalKey]);
+                    if (allSavedContent[subsidyKey]) {
+                        updateDisplayElement('subsidyPrice', allSavedContent[subsidyKey]);
+                    } else {
+                        // Use subsidy amount directly from current brand data if no custom subsidy saved
+                        let subsidyAmount = systemData.subsidy || 0;
+                        updateDisplayElement('subsidyPrice', '₹' + subsidyAmount.toLocaleString());
+                    }
+                } catch (parseError) {
+                    console.error('Error parsing saved content:', parseError);
+                    // Fallback to default values if parsing fails
+                    updateDisplayElement('capacityDisplay', selectedKW + ' KW');
+                    updateDisplayElement('generationDisplay', systemData.generation + ' units');
+                    updateDisplayElement('savingsDisplay', '₹' + systemData.savings.toLocaleString());
+                    updateDisplayElement('totalPrice', '₹' + systemData.price.toLocaleString());
+                    updateDisplayElement('subsidyPrice', '₹' + (systemData.subsidy || 0).toLocaleString());
+                }
             }
         }
+    
+        // Show result with animation and enhanced Brave compatibility
+        try {
+            priceResult.style.display = 'block';
+            priceResult.style.visibility = 'visible';
+            priceResult.style.opacity = '1';
+            
+            // Enhanced scrolling for Brave browser
+            setTimeout(() => {
+                try {
+                    priceResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch (scrollError) {
+                    console.warn('Smooth scroll failed, using fallback:', scrollError);
+                    priceResult.scrollIntoView();
+                }
+            }, 100);
+            
+            console.log('Price result displayed successfully');
+        } catch (displayError) {
+            console.error('Error displaying price result:', displayError);
+        }
+        
+        // Refresh admin editing if in edit mode
+        try {
+            if (typeof isEditMode !== 'undefined' && isEditMode) {
+                setTimeout(() => {
+                    if (typeof refreshPriceCalculatorEditing === 'function') {
+                        refreshPriceCalculatorEditing();
+                    }
+                }, 100);
+            }
+        } catch (editModeError) {
+            console.warn('Edit mode refresh error:', editModeError);
+        }
+        
+        // Track calculation with error handling
+        try {
+            if (typeof trackEvent === 'function') {
+                trackEvent('price_calculated', { kw: selectedKW, price: systemData.price });
+            }
+        } catch (trackError) {
+            console.warn('Event tracking error:', trackError);
+        }
+        
+    } catch (error) {
+        console.error('Error in calculatePrice function:', error);
+        alert('Unable to display system data. Please try refreshing the page.');
     }
-    
-    // Show result with animation
-    priceResult.style.display = 'block';
-    priceResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
-    // Refresh admin editing if in edit mode
-    if (isEditMode) {
-        setTimeout(() => {
-            refreshPriceCalculatorEditing();
-        }, 100);
-    }
-    
-    // Track calculation
-    trackEvent('price_calculated', { kw: selectedKW, price: systemData.price });
 }
 
 // Close price modal
