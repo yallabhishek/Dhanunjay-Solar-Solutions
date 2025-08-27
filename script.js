@@ -154,9 +154,23 @@ function openPriceModalWithBrand(brand) {
             return;
         }
         
-        // Set current brand and update pricing
-        currentBrand = brand.toLowerCase();
-        onGridPricing = getBrandPricing();
+        // Set current brand and update pricing with validation
+        const normalizedBrand = brand.toLowerCase();
+        const brandPricing = getBrandPricing();
+        
+        // Verify brand exists in pricing data
+        const availableBrands = Object.keys(brandPricing).map(k => k.toLowerCase());
+        if (availableBrands.includes(normalizedBrand)) {
+            currentBrand = normalizedBrand;
+        } else {
+            console.warn(`Brand '${normalizedBrand}' not found in pricing data. Available:`, availableBrands);
+            // Find closest match or use default
+            const exactMatch = Object.keys(brandPricing).find(k => k.toLowerCase() === normalizedBrand);
+            currentBrand = exactMatch ? exactMatch.toLowerCase() : 'tata';
+        }
+        
+        console.log('Set current brand to:', currentBrand);
+        onGridPricing = brandPricing;
         currentSelectedKW = null; // Reset selected KW
         
         // Find modal element with multiple fallback attempts
@@ -358,11 +372,32 @@ function calculatePrice(selectedKW) {
             return;
         }
         
-        const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+        // Enhanced brand data retrieval with case-insensitive matching
+        let currentBrandData = null;
+        
+        // Try exact match first
+        if (brandPricing[currentBrand]) {
+            currentBrandData = brandPricing[currentBrand];
+        } else {
+            // Try case-insensitive matching
+            const brandKeys = Object.keys(brandPricing);
+            const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
+            if (matchingKey) {
+                currentBrandData = brandPricing[matchingKey];
+                console.log(`Found brand data using case-insensitive match: ${matchingKey}`);
+            } else {
+                // Fallback to tata if brand not found
+                currentBrandData = brandPricing.tata || brandPricing.Tata || Object.values(brandPricing)[0];
+                console.warn(`Brand '${currentBrand}' not found, using fallback:`, Object.keys(brandPricing)[0]);
+            }
+        }
+        
         if (!currentBrandData) {
-            console.error('Current brand data not available for:', currentBrand);
+            console.error('No brand data available at all. Available brands:', Object.keys(brandPricing));
             return;
         }
+        
+        console.log('Using brand data for:', currentBrand, currentBrandData);
         
         const systemData = currentBrandData[selectedKW];
         if (!systemData) {
@@ -735,8 +770,18 @@ function calculatePrice(selectedKW) {
         try {
             console.log('Attempting emergency fallback...');
             const brandPricing = getBrandPricing();
-            const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
-            const systemData = currentBrandData[selectedKW];
+            
+            // Enhanced brand data retrieval for emergency fallback
+            let currentBrandData = null;
+            if (brandPricing[currentBrand]) {
+                currentBrandData = brandPricing[currentBrand];
+            } else {
+                const brandKeys = Object.keys(brandPricing);
+                const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
+                currentBrandData = matchingKey ? brandPricing[matchingKey] : (brandPricing.tata || Object.values(brandPricing)[0]);
+            }
+            
+            const systemData = currentBrandData ? currentBrandData[selectedKW] : null;
             
             if (systemData) {
                 console.log('Emergency fallback system data:', systemData);
@@ -832,8 +877,18 @@ function calculatePrice(selectedKW) {
             try {
                 console.log('Attempting last resort element creation...');
                 const brandPricing = getBrandPricing();
-                const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
-                const systemData = currentBrandData[selectedKW];
+                
+                // Enhanced brand data retrieval for last resort
+                let currentBrandData = null;
+                if (brandPricing[currentBrand]) {
+                    currentBrandData = brandPricing[currentBrand];
+                } else {
+                    const brandKeys = Object.keys(brandPricing);
+                    const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
+                    currentBrandData = matchingKey ? brandPricing[matchingKey] : (brandPricing.tata || Object.values(brandPricing)[0]);
+                }
+                
+                const systemData = currentBrandData ? currentBrandData[selectedKW] : null;
                 
                 if (systemData) {
                     const priceResult = document.querySelector('#priceResult, .price-result, .system-details');
