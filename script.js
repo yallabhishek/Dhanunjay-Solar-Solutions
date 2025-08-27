@@ -193,10 +193,13 @@ function openPriceModalWithBrand(brand) {
             console.warn('Error resetting KW cards:', e);
         }
         
-        // Hide price result
+        // Hide price result initially
         if (priceResult && priceResult.style) {
             priceResult.style.display = 'none';
         }
+        
+        // Force show System Capacity tab and hide System Details tab
+        showCapacityView();
         
         // Update KW card prices with selected brand data
         try {
@@ -349,7 +352,18 @@ function calculatePrice(selectedKW) {
 
 // Close price modal
 function closePriceModal() {
-    document.getElementById('priceModal').style.display = 'none';
+    const modal = document.getElementById('priceModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // Restore body scrolling
+    if (document.body) {
+        document.body.style.overflow = 'auto';
+        document.body.style.overflow = ''; // Reset to default
+    }
+    
+    console.log('Price modal closed and scrolling restored');
 }
 
 // Toggle between capacity and details view

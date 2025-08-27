@@ -459,11 +459,16 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Interested Button - Only shown when system details are displayed -->
+                        <div class="system-actions" style="text-align: center; margin-top: 20px;">
+                            <button onclick="redirectToWhatsAppWithDetails()" class="cta-btn interested-btn">💬 Interested - Contact Us</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="price-modal-footer">
-                <button onclick="redirectToWhatsAppWithDetails()" class="cta-btn">Interested</button>
+            <div class="price-modal-footer" style="display: none;">
+                <!-- Footer hidden - button moved to system details -->
             </div>
         </div>
     </div>
