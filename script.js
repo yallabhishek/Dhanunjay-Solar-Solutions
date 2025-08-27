@@ -1917,4 +1917,77 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Direct price display function - bypasses all complex logic
+window.directPriceDisplay = function(brand, kw) {
+    console.log('=== DIRECT PRICE DISPLAY ===');
+    console.log('Brand:', brand, 'KW:', kw);
+    
+    // Simple brand pricing data
+    const pricing = {
+        tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 28800, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 54000} },
+        exide: { 1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 3: {gen: 390, sav: 46800, price: 185000, sub: 55500} },
+        luminous: { 1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 3: {gen: 375, sav: 45000, price: 182000, sub: 54600} },
+        adani: { 1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 3: {gen: 405, sav: 48600, price: 190000, sub: 57000} },
+        waaree: { 1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 3: {gen: 384, sav: 46080, price: 187000, sub: 56100} }
+    };
+    
+    const data = pricing[brand] && pricing[brand][kw];
+    if (!data) {
+        console.error('No data found for', brand, kw);
+        return;
+    }
+    
+    // Show price result
+    const priceResult = document.getElementById('priceResult');
+    if (priceResult) {
+        priceResult.style.display = 'block';
+        priceResult.style.visibility = 'visible';
+        priceResult.style.opacity = '1';
+    }
+    
+    // Direct element updates
+    const updates = [
+        ['capacityDisplay', kw + ' KW'],
+        ['generationDisplay', data.gen + ' units'],
+        ['savingsDisplay', '₹' + data.sav.toLocaleString('en-IN')],
+        ['totalPrice', '₹' + data.price.toLocaleString('en-IN')],
+        ['subsidyPrice', '₹' + data.sub.toLocaleString('en-IN')]
+    ];
+    
+    updates.forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = value;
+            el.style.display = 'inline';
+            el.style.visibility = 'visible';
+            console.log('✓', id, '=', value);
+        } else {
+            console.error('✗ Element not found:', id);
+        }
+    });
+    
+    console.log('=== DIRECT DISPLAY COMPLETE ===');
+};
+
+// Override selectKW to use direct approach
+const originalSelectKW = selectKW;
+selectKW = function(kw) {
+    console.log('selectKW override called:', kw);
+    currentSelectedKW = kw;
+    
+    // Update card selection
+    document.querySelectorAll('.kw-card').forEach(card => card.classList.remove('selected'));
+    const selectedCard = document.querySelector(`[data-kw="${kw}"], .kw-card:nth-child(${kw})`);
+    if (selectedCard) selectedCard.classList.add('selected');
+    
+    // Direct price display
+    window.directPriceDisplay(currentBrand || 'tata', kw);
+    
+    // Show details view
+    document.getElementById('detailsBtn').classList.add('active');
+    document.getElementById('capacityBtn').classList.remove('active');
+    document.querySelector('.kw-selector-container').style.display = 'none';
+    document.getElementById('priceResult').style.display = 'block';
+};
+
 console.log('DhanunJay Solar Solutions - Website with Direct Edit Loaded Successfully! 🌞⚡✏️');
