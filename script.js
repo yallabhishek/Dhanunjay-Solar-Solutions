@@ -372,23 +372,31 @@ function calculatePrice(selectedKW) {
             return;
         }
         
+        console.log('Available brands in pricing data:', Object.keys(brandPricing));
+        console.log('Looking for brand:', currentBrand);
+        
         // Enhanced brand data retrieval with case-insensitive matching
         let currentBrandData = null;
         
         // Try exact match first
         if (brandPricing[currentBrand]) {
             currentBrandData = brandPricing[currentBrand];
+            console.log(`✓ Found exact brand match: ${currentBrand}`);
         } else {
+            console.warn(`✗ Exact match failed for: ${currentBrand}`);
             // Try case-insensitive matching
             const brandKeys = Object.keys(brandPricing);
+            console.log('Trying case-insensitive matching against:', brandKeys);
             const matchingKey = brandKeys.find(key => key.toLowerCase() === currentBrand.toLowerCase());
             if (matchingKey) {
                 currentBrandData = brandPricing[matchingKey];
-                console.log(`Found brand data using case-insensitive match: ${matchingKey}`);
+                console.log(`✓ Found brand data using case-insensitive match: ${matchingKey}`);
             } else {
+                console.warn('No case-insensitive match found, using fallback');
                 // Fallback to tata if brand not found
                 currentBrandData = brandPricing.tata || brandPricing.Tata || Object.values(brandPricing)[0];
-                console.warn(`Brand '${currentBrand}' not found, using fallback:`, Object.keys(brandPricing)[0]);
+                const fallbackBrand = Object.keys(brandPricing)[0];
+                console.warn(`Brand '${currentBrand}' not found, using fallback: ${fallbackBrand}`);
             }
         }
         
