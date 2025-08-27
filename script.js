@@ -266,27 +266,84 @@ function openPriceModalWithBrand(brand) {
     }
 }
 
-// Select KW option
+// Universal KW Selection with Cross-Browser Compatibility
 function selectKW(kw) {
-    // Remove selection from all cards
-    document.querySelectorAll('.kw-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Add selection to clicked card
-    document.querySelector(`[data-kw="${kw}"]`).classList.add('selected');
-    
-    // Update current selected KW for tracking
-    currentSelectedKW = kw;
-    
-    // Calculate and show price
-    calculatePrice(kw);
-    
-    // Automatically switch to details view
-    showDetailsView();
+    try {
+        console.log('selectKW called with:', kw);
+        
+        // Enhanced card selection with multiple fallback methods
+        const removeSelectionFromAllCards = () => {
+            const selectors = ['.kw-card', '[data-kw]', '.kw-option', '.capacity-card'];
+            
+            for (const selector of selectors) {
+                const cards = document.querySelectorAll(selector);
+                cards.forEach(card => {
+                    if (card.classList) {
+                        card.classList.remove('selected', 'active', 'chosen');
+                    }
+                });
+            }
+        };
+        
+        const selectCurrentCard = (kw) => {
+            const selectors = [
+                `[data-kw="${kw}"]`,
+                `.kw-card[data-kw="${kw}"]`,
+                `.kw-option[data-value="${kw}"]`,
+                `.capacity-${kw}kw`,
+                `#kw-${kw}`
+            ];
+            
+            for (const selector of selectors) {
+                const card = document.querySelector(selector);
+                if (card) {
+                    if (card.classList) {
+                        card.classList.add('selected');
+                    }
+                    console.log(`✓ Selected card using selector: ${selector}`);
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        // Remove selection from all cards
+        removeSelectionFromAllCards();
+        
+        // Add selection to clicked card
+        const selectionSuccess = selectCurrentCard(kw);
+        if (!selectionSuccess) {
+            console.warn('Could not find card to select for KW:', kw);
+        }
+        
+        // Update current selected KW for tracking
+        currentSelectedKW = kw;
+        console.log('Current selected KW updated to:', currentSelectedKW);
+        
+        // Calculate and show price with delay for better compatibility
+        setTimeout(() => {
+            calculatePrice(kw);
+        }, 50);
+        
+        // Automatically switch to details view with delay
+        setTimeout(() => {
+            showDetailsView();
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in selectKW function:', error);
+        // Fallback: still try to calculate price
+        currentSelectedKW = kw;
+        try {
+            calculatePrice(kw);
+            showDetailsView();
+        } catch (fallbackError) {
+            console.error('Fallback also failed:', fallbackError);
+        }
+    }
 }
 
-// Calculate and display price for selected KW
+// Universal Browser Compatible Price Calculator
 function calculatePrice(selectedKW) {
     try {
         console.log('calculatePrice called with KW:', selectedKW, 'Brand:', currentBrand);
@@ -312,7 +369,40 @@ function calculatePrice(selectedKW) {
         
         console.log('System data found:', systemData);
 
-        const priceResult = document.getElementById('priceResult');
+        // Universal DOM element finder with multiple fallback methods
+        const findElement = (id, fallbackSelectors = []) => {
+            let element = null;
+            
+            // Method 1: Standard getElementById
+            element = document.getElementById(id);
+            if (element) return element;
+            
+            // Method 2: querySelector with ID
+            element = document.querySelector(`#${id}`);
+            if (element) return element;
+            
+            // Method 3: Try fallback selectors
+            for (const selector of fallbackSelectors) {
+                element = document.querySelector(selector);
+                if (element) return element;
+            }
+            
+            // Method 4: Search by data attributes or classes
+            element = document.querySelector(`[data-element-id="${id}"]`);
+            if (element) return element;
+            
+            // Method 5: Case-insensitive search
+            const allElements = document.querySelectorAll('*[id]');
+            for (const el of allElements) {
+                if (el.id.toLowerCase() === id.toLowerCase()) {
+                    return el;
+                }
+            }
+            
+            return null;
+        };
+        
+        const priceResult = findElement('priceResult', ['.price-result', '[data-element="price-result"]']);
         if (!priceResult) {
             console.error('Price result element not found');
             return;
@@ -340,86 +430,233 @@ function calculatePrice(selectedKW) {
             hasCustomValues = false;
         }
     
-        // Enhanced DOM element access with Brave browser compatibility
-        const updateDisplayElement = (elementId, value) => {
+        // Universal cross-browser DOM element updater
+        const updateDisplayElement = (elementId, value, fallbackSelectors = []) => {
             try {
-                const element = document.getElementById(elementId);
+                // Find element using universal finder
+                const element = findElement(elementId, fallbackSelectors);
+                
                 if (element) {
-                    element.textContent = value;
-                    console.log(`Updated ${elementId} with value:`, value);
+                    // Multiple update methods for maximum compatibility
+                    try {
+                        // Method 1: textContent (preferred)
+                        element.textContent = value;
+                    } catch (e1) {
+                        try {
+                            // Method 2: innerText (IE compatibility)
+                            element.innerText = value;
+                        } catch (e2) {
+                            try {
+                                // Method 3: innerHTML (last resort)
+                                element.innerHTML = value;
+                            } catch (e3) {
+                                console.error(`All update methods failed for ${elementId}:`, e3);
+                                return false;
+                            }
+                        }
+                    }
+                    
+                    // Force style updates for better visibility
+                    if (element.style) {
+                        element.style.visibility = 'visible';
+                        element.style.display = element.style.display || 'inline';
+                    }
+                    
+                    // Trigger reflow to ensure update is applied
+                    if (element.offsetHeight !== undefined) {
+                        void element.offsetHeight;
+                    }
+                    
+                    console.log(`✓ Updated ${elementId} with value:`, value);
+                    return true;
                 } else {
-                    console.warn(`Element ${elementId} not found in DOM`);
+                    console.warn(`✗ Element ${elementId} not found in DOM`);
+                    
+                    // Emergency fallback: try to find by class or data attributes
+                    const emergencySelectors = [
+                        `.${elementId}`,
+                        `[data-id="${elementId}"]`,
+                        `[data-element="${elementId}"]`,
+                        `[class*="${elementId}"]`
+                    ];
+                    
+                    for (const selector of emergencySelectors) {
+                        const fallbackElement = document.querySelector(selector);
+                        if (fallbackElement) {
+                            fallbackElement.textContent = value;
+                            console.log(`✓ Updated ${elementId} via fallback selector ${selector}:`, value);
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
             } catch (e) {
                 console.error(`Error updating element ${elementId}:`, e);
+                return false;
             }
         };
+        
+        // Define element mappings with fallback selectors for universal compatibility
+        const elementMappings = {
+            capacityDisplay: ['.detail-value[data-editable*="capacity"]', '[data-kw-specific="true"]:first-of-type', '.capacity-value'],
+            generationDisplay: ['.detail-value[data-editable*="generation"]', '.generation-value'],
+            savingsDisplay: ['.detail-value[data-editable*="savings"]', '.savings-value'],
+            totalPrice: ['.price-amount[data-editable*="total"]', '.total-price .price-amount', '.price-value'],
+            subsidyPrice: ['.subsidy-amount[data-editable*="subsidy"]', '.subsidy-info .subsidy-amount', '.subsidy-value']
+        };
+        
+        // Calculate values with proper formatting
+        const subsidyAmount = systemData.subsidy || 0;
+        const formattedValues = {
+            capacity: selectedKW + ' KW',
+            generation: systemData.generation + ' units',
+            savings: '₹' + systemData.savings.toLocaleString('en-IN'),
+            totalPrice: '₹' + systemData.price.toLocaleString('en-IN'),
+            subsidyPrice: '₹' + subsidyAmount.toLocaleString('en-IN')
+        };
+        
+        console.log('Formatted values:', formattedValues);
         
         // Only update if no custom values exist, otherwise preserve current content
         if (!hasCustomValues) {
             console.log('Updating with default system data');
             
-            updateDisplayElement('capacityDisplay', selectedKW + ' KW');
-            updateDisplayElement('generationDisplay', systemData.generation + ' units');
-            updateDisplayElement('savingsDisplay', '₹' + systemData.savings.toLocaleString());
+            // Update each element with enhanced fallback support
+            const updateResults = {
+                capacity: updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay),
+                generation: updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay),
+                savings: updateDisplayElement('savingsDisplay', formattedValues.savings, elementMappings.savingsDisplay),
+                totalPrice: updateDisplayElement('totalPrice', formattedValues.totalPrice, elementMappings.totalPrice),
+                subsidyPrice: updateDisplayElement('subsidyPrice', formattedValues.subsidyPrice, elementMappings.subsidyPrice)
+            };
             
-            // Use subsidy amount from current brand data directly as gov subsidy
-            let subsidyAmount = systemData.subsidy || 0;
+            // Log update results
+            console.log('Update results:', updateResults);
             
-            updateDisplayElement('totalPrice', '₹' + systemData.price.toLocaleString());
-            updateDisplayElement('subsidyPrice', '₹' + subsidyAmount.toLocaleString());
+            // If any updates failed, try alternative methods
+            Object.keys(updateResults).forEach(key => {
+                if (!updateResults[key]) {
+                    console.warn(`Failed to update ${key}, attempting manual DOM injection`);
+                    // Emergency DOM injection for failed updates
+                    setTimeout(() => {
+                        const container = document.querySelector('.system-details, .price-result, .details-layout');
+                        if (container) {
+                            const existingElement = container.querySelector(`#${key}Display, #${key}, .${key}-value`);
+                            if (existingElement) {
+                                existingElement.textContent = formattedValues[key === 'totalPrice' ? 'totalPrice' : key === 'subsidyPrice' ? 'subsidyPrice' : key];
+                                console.log(`✓ Emergency update successful for ${key}`);
+                            }
+                        }
+                    }, 50);
+                }
+            });
+            
         } else {
             console.log('Loading saved custom values');
-            // Load saved custom values
+            // Load saved custom values with enhanced error handling
             if (savedContent) {
                 try {
                     const allSavedContent = JSON.parse(savedContent);
-                    const capacityKey = `[data-editable="price-calculator-capacity-kw-${selectedKW}"]_0`;
-                    const generationKey = `[data-editable="price-calculator-generation-kw-${selectedKW}"]_0`;
-                    const savingsKey = `[data-editable="price-calculator-savings-kw-${selectedKW}"]_0`;
-                    const totalKey = `[data-editable="price-calculator-total-kw-${selectedKW}"]_0`;
-                    const subsidyKey = `[data-editable="price-calculator-subsidy-kw-${selectedKW}"]_0`;
+                    const keys = {
+                        capacity: `[data-editable="price-calculator-capacity-kw-${selectedKW}"]_0`,
+                        generation: `[data-editable="price-calculator-generation-kw-${selectedKW}"]_0`,
+                        savings: `[data-editable="price-calculator-savings-kw-${selectedKW}"]_0`,
+                        total: `[data-editable="price-calculator-total-kw-${selectedKW}"]_0`,
+                        subsidy: `[data-editable="price-calculator-subsidy-kw-${selectedKW}"]_0`
+                    };
                     
-                    if (allSavedContent[capacityKey]) updateDisplayElement('capacityDisplay', allSavedContent[capacityKey]);
-                    if (allSavedContent[generationKey]) updateDisplayElement('generationDisplay', allSavedContent[generationKey]);
-                    if (allSavedContent[savingsKey]) updateDisplayElement('savingsDisplay', allSavedContent[savingsKey]);
-                    if (allSavedContent[totalKey]) updateDisplayElement('totalPrice', allSavedContent[totalKey]);
-                    if (allSavedContent[subsidyKey]) {
-                        updateDisplayElement('subsidyPrice', allSavedContent[subsidyKey]);
-                    } else {
-                        // Use subsidy amount directly from current brand data if no custom subsidy saved
-                        let subsidyAmount = systemData.subsidy || 0;
-                        updateDisplayElement('subsidyPrice', '₹' + subsidyAmount.toLocaleString());
-                    }
+                    // Update with saved values or fallback to defaults
+                    updateDisplayElement('capacityDisplay', allSavedContent[keys.capacity] || formattedValues.capacity, elementMappings.capacityDisplay);
+                    updateDisplayElement('generationDisplay', allSavedContent[keys.generation] || formattedValues.generation, elementMappings.generationDisplay);
+                    updateDisplayElement('savingsDisplay', allSavedContent[keys.savings] || formattedValues.savings, elementMappings.savingsDisplay);
+                    updateDisplayElement('totalPrice', allSavedContent[keys.total] || formattedValues.totalPrice, elementMappings.totalPrice);
+                    updateDisplayElement('subsidyPrice', allSavedContent[keys.subsidy] || formattedValues.subsidyPrice, elementMappings.subsidyPrice);
+                    
                 } catch (parseError) {
-                    console.error('Error parsing saved content:', parseError);
+                    console.error('Error parsing saved content, using defaults:', parseError);
                     // Fallback to default values if parsing fails
-                    updateDisplayElement('capacityDisplay', selectedKW + ' KW');
-                    updateDisplayElement('generationDisplay', systemData.generation + ' units');
-                    updateDisplayElement('savingsDisplay', '₹' + systemData.savings.toLocaleString());
-                    updateDisplayElement('totalPrice', '₹' + systemData.price.toLocaleString());
-                    updateDisplayElement('subsidyPrice', '₹' + (systemData.subsidy || 0).toLocaleString());
+                    updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay);
+                    updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay);
+                    updateDisplayElement('savingsDisplay', formattedValues.savings, elementMappings.savingsDisplay);
+                    updateDisplayElement('totalPrice', formattedValues.totalPrice, elementMappings.totalPrice);
+                    updateDisplayElement('subsidyPrice', formattedValues.subsidyPrice, elementMappings.subsidyPrice);
                 }
             }
         }
     
-        // Show result with animation and enhanced Brave compatibility
+        // Universal display method with cross-browser compatibility
         try {
-            priceResult.style.display = 'block';
-            priceResult.style.visibility = 'visible';
-            priceResult.style.opacity = '1';
-            
-            // Enhanced scrolling for Brave browser
-            setTimeout(() => {
-                try {
-                    priceResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } catch (scrollError) {
-                    console.warn('Smooth scroll failed, using fallback:', scrollError);
-                    priceResult.scrollIntoView();
+            // Multiple display methods for maximum compatibility
+            const displayMethods = [
+                () => {
+                    priceResult.style.display = 'block';
+                    priceResult.style.visibility = 'visible';
+                    priceResult.style.opacity = '1';
+                },
+                () => {
+                    priceResult.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important;');
+                },
+                () => {
+                    priceResult.classList.remove('hidden');
+                    priceResult.classList.add('visible');
+                },
+                () => {
+                    priceResult.removeAttribute('hidden');
+                    priceResult.style.cssText = 'display: block; visibility: visible; opacity: 1;';
                 }
-            }, 100);
+            ];
             
-            console.log('Price result displayed successfully');
+            // Try each display method until one works
+            let displaySuccess = false;
+            for (const method of displayMethods) {
+                try {
+                    method();
+                    displaySuccess = true;
+                    break;
+                } catch (e) {
+                    console.warn('Display method failed, trying next:', e);
+                }
+            }
+            
+            if (!displaySuccess) {
+                console.error('All display methods failed');
+            }
+            
+            // Force reflow and repaint
+            void priceResult.offsetHeight;
+            
+            // Enhanced scrolling with multiple fallbacks
+            setTimeout(() => {
+                const scrollMethods = [
+                    () => priceResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' }),
+                    () => priceResult.scrollIntoView({ behavior: 'auto', block: 'nearest' }),
+                    () => priceResult.scrollIntoView(true),
+                    () => priceResult.scrollIntoView(),
+                    () => {
+                        const rect = priceResult.getBoundingClientRect();
+                        window.scrollTo({
+                            top: window.pageYOffset + rect.top - 100,
+                            behavior: 'smooth'
+                        });
+                    },
+                    () => {
+                        const rect = priceResult.getBoundingClientRect();
+                        window.scrollTo(0, window.pageYOffset + rect.top - 100);
+                    }
+                ];
+                
+                for (const scrollMethod of scrollMethods) {
+                    try {
+                        scrollMethod();
+                        break;
+                    } catch (scrollError) {
+                        console.warn('Scroll method failed, trying next:', scrollError);
+                    }
+                }
+            }, 150);
+            
+            console.log('✓ Price result displayed successfully with universal compatibility');
         } catch (displayError) {
             console.error('Error displaying price result:', displayError);
         }
@@ -448,7 +685,36 @@ function calculatePrice(selectedKW) {
         
     } catch (error) {
         console.error('Error in calculatePrice function:', error);
-        alert('Unable to display system data. Please try refreshing the page.');
+        
+        // Emergency fallback: Direct DOM manipulation
+        try {
+            console.log('Attempting emergency fallback...');
+            const brandPricing = getBrandPricing();
+            const currentBrandData = brandPricing[currentBrand] || brandPricing.tata;
+            const systemData = currentBrandData[selectedKW];
+            
+            if (systemData) {
+                // Direct element updates as last resort
+                const elements = {
+                    capacity: document.querySelector('#capacityDisplay, .detail-value:first-of-type, [data-editable*="capacity"]'),
+                    generation: document.querySelector('#generationDisplay, .detail-value:nth-of-type(2), [data-editable*="generation"]'),
+                    savings: document.querySelector('#savingsDisplay, .detail-value:nth-of-type(3), [data-editable*="savings"]'),
+                    totalPrice: document.querySelector('#totalPrice, .price-amount, [data-editable*="total"]'),
+                    subsidyPrice: document.querySelector('#subsidyPrice, .subsidy-amount, [data-editable*="subsidy"]')
+                };
+                
+                if (elements.capacity) elements.capacity.textContent = selectedKW + ' KW';
+                if (elements.generation) elements.generation.textContent = systemData.generation + ' units';
+                if (elements.savings) elements.savings.textContent = '₹' + systemData.savings.toLocaleString('en-IN');
+                if (elements.totalPrice) elements.totalPrice.textContent = '₹' + systemData.price.toLocaleString('en-IN');
+                if (elements.subsidyPrice) elements.subsidyPrice.textContent = '₹' + (systemData.subsidy || 0).toLocaleString('en-IN');
+                
+                console.log('✓ Emergency fallback completed');
+            }
+        } catch (fallbackError) {
+            console.error('Emergency fallback also failed:', fallbackError);
+            alert('Unable to display system data. Please refresh the page and try again.');
+        }
     }
 }
 
