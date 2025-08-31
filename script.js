@@ -1258,7 +1258,7 @@ function openQuoteModalWithKW() {
     capacityInput.value = currentSelectedKW + ' kW';
 }
 
-// Redirect to WhatsApp with predefined message for selected system
+// Smart WhatsApp redirection - tries native app first, then falls back to web
 function redirectToWhatsAppWithDetails() {
     try {
         // Check if KW is selected
@@ -1287,30 +1287,139 @@ function redirectToWhatsAppWithDetails() {
         
         // Construct WhatsApp message with system details
         const netPrice = systemData.price - systemData.sub;
-        const message = `Hello, I am interested in the ${brand.toUpperCase()} solar system with ${currentSelectedKW} KW capacity. Total Price: ₹${systemData.price.toLocaleString('en-IN')}, Net Price after Subsidy: ₹${netPrice.toLocaleString('en-IN')}. Please provide more details.`;
+        const message = `Hello DhanunJay Solar Solutions,
+
+I am interested in your ${brand.toUpperCase()} solar system with the following specifications:
+
+🔋 System Capacity: ${currentSelectedKW} KW
+⚡ Monthly Generation: ${systemData.gen} units
+💰 Monthly Savings: ₹${systemData.sav.toLocaleString('en-IN')}
+💵 Total Price: ₹${systemData.price.toLocaleString('en-IN')}
+🎯 Government Subsidy: ₹${systemData.sub.toLocaleString('en-IN')}
+✅ Net Price After Subsidy: ₹${netPrice.toLocaleString('en-IN')}
+
+Please provide more details about installation, warranty, and next steps.
+
+Thank you!`;
         const encodedMessage = encodeURIComponent(message);
         
         // WhatsApp number to contact
-        const whatsappNumber = '9346476607';
+        const whatsappNumber = '919133921819';
         
-        // Detect if Brave browser and handle URL accordingly
-        const isBrave = navigator.brave && navigator.brave.isBrave || false;
-        let targetURL = '';
+        // Smart WhatsApp redirection - Always try native app first
+        const openWhatsAppSmart = () => {
+            // Create URLs for both native app and web
+            const nativeAppURL = 'whatsapp://send?phone=' + whatsappNumber + '&text=' + encodedMessage;
+            const webURL = 'https://web.whatsapp.com/send?phone=' + whatsappNumber + '&text=' + encodedMessage;
+            
+            console.log('Opening WhatsApp...');
+            console.log('Phone:', whatsappNumber);
+            console.log('Native URL:', nativeAppURL);
+            console.log('Web URL:', webURL);
+            
+            // Detect device type
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Function to try native app with proper detection
+            const tryNativeApp = function() {
+                var appOpened = false;
+                var startTime = new Date().getTime();
+                
+                console.log('Attempting to open native WhatsApp app...');
+                
+                // Method 1: Try direct window.location for mobile
+                if (isMobile) {
+                    try {
+                        window.location.href = nativeAppURL;
+                        appOpened = true;
+                        console.log('Mobile: Redirected to native app');
+                    } catch (e) {
+                        console.warn('Mobile native app failed:', e);
+                    }
+                } else {
+                    // Method 2: For desktop, try multiple approaches
+                    
+                    // Create hidden iframe to test app availability
+                    try {
+                        var iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.style.width = '1px';
+                        iframe.style.height = '1px';
+                        iframe.src = nativeAppURL;
+                        document.body.appendChild(iframe);
+                        
+                        // Remove iframe after test
+                        setTimeout(function() {
+                            try {
+                                if (iframe && iframe.parentNode) {
+                                    document.body.removeChild(iframe);
+                                }
+                            } catch (e) {}
+                        }, 1000);
+                        
+                        console.log('Desktop: Created iframe for app detection');
+                    } catch (e) {
+                        console.warn('Desktop iframe method failed:', e);
+                    }
+                    
+                    // Try window.open with native URL
+                    setTimeout(function() {
+                        try {
+                            var appWindow = window.open(nativeAppURL, '_blank');
+                            if (appWindow) {
+                                console.log('Desktop: Opened native app via window.open');
+                                appOpened = true;
+                            }
+                        } catch (e) {
+                            console.warn('Desktop window.open failed:', e);
+                        }
+                    }, 100);
+                    
+                    // Try location.href as backup
+                    setTimeout(function() {
+                        if (!appOpened) {
+                            try {
+                                window.location.href = nativeAppURL;
+                                console.log('Desktop: Tried location.href for native app');
+                            } catch (e) {
+                                console.warn('Desktop location.href failed:', e);
+                            }
+                        }
+                    }, 300);
+                }
+                
+                // Fallback to web version after delay
+                setTimeout(function() {
+                    console.log('Fallback: Opening WhatsApp Web...');
+                    try {
+                        window.open(webURL, '_blank');
+                    } catch (e) {
+                        console.error('Web fallback failed:', e);
+                        // Last resort - direct navigation
+                        window.location.href = webURL;
+                    }
+                }, isMobile ? 2500 : 3000); // Longer delay for desktop app detection
+            };
+            
+            // Execute native app attempt
+            tryNativeApp();
+        };
         
-        if (isBrave) {
-            // Brave browser - use simplified URL
-            const simpleMessage = `Hello, I am interested in the ${brand.toUpperCase()} solar system with ${currentSelectedKW} KW.`;
-            const simpleEncoded = encodeURIComponent(simpleMessage);
-            targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${simpleEncoded}`;
-            console.log('Using Brave-compatible Web URL:', targetURL);
-        } else {
-            // Other desktop browsers - always use web.whatsapp.com
-            targetURL = `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+        // Execute smart WhatsApp opening
+        openWhatsAppSmart();
+        
+        // Track the interaction
+        try {
+            if (typeof trackEvent === 'function') {
+                trackEvent('whatsapp_contact', { 
+                    brand: brand, 
+                    kw: currentSelectedKW,
+                    method: 'smart_redirect'
+                });
+            }
+        } catch (e) {
+            console.warn('Error tracking event:', e);
         }
-        
-        console.log('Opening WhatsApp Web with message:', message);
-        console.log('Target URL:', targetURL);
-        window.open(targetURL, '_blank');
         
     } catch (error) {
         console.error('Error redirecting to WhatsApp:', error);
