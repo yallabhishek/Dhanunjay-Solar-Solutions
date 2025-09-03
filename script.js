@@ -574,6 +574,35 @@ function calculatePrice(selectedKW) {
             return null;
         };
         
+        // Define the missing updateDisplayElement function
+        const updateDisplayElement = (elementId, value, fallbackSelectors = []) => {
+            try {
+                // Try to find element by ID first
+                let element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                    console.log(`✓ Updated ${elementId} with value: ${value}`);
+                    return true;
+                }
+                
+                // Try fallback selectors
+                for (const selector of fallbackSelectors) {
+                    element = document.querySelector(selector);
+                    if (element) {
+                        element.textContent = value;
+                        console.log(`✓ Updated ${elementId} via fallback selector ${selector} with value: ${value}`);
+                        return true;
+                    }
+                }
+                
+                console.warn(`✗ Could not find element ${elementId} to update with value: ${value}`);
+                return false;
+            } catch (error) {
+                console.error(`Error updating element ${elementId}:`, error);
+                return false;
+            }
+        };
+        
         const priceResult = findElement('priceResult', ['.price-result', '[data-element="price-result"]', '.system-details']);
         if (!priceResult) {
             console.error('Price result element not found');
@@ -1297,13 +1326,13 @@ function redirectToWhatsAppWithDetails() {
             return;
         }
         
-        // Use hardcoded pricing data (same as directPriceDisplay)
+        // Use complete pricing data (same as directPriceDisplay)
         const pricing = {
-            tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 28800, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 54000} },
-            exide: { 1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 3: {gen: 390, sav: 46800, price: 185000, sub: 55500} },
-            luminous: { 1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 3: {gen: 375, sav: 45000, price: 182000, sub: 54600} },
-            adani: { 1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 3: {gen: 405, sav: 48600, price: 190000, sub: 57000} },
-            waaree: { 1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 3: {gen: 384, sav: 46080, price: 187000, sub: 56100} }
+            tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 144000, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 78000}, 4: {gen: 480, sav: 57600, price: 240000, sub: 72000}, 5: {gen: 600, sav: 72000, price: 300000, sub: 90000}, 6: {gen: 720, sav: 86400, price: 350000, sub: 105000}, 7: {gen: 840, sav: 100800, price: 380000, sub: 114000}, 8: {gen: 960, sav: 115200, price: 400000, sub: 120000}, 9: {gen: 1080, sav: 129600, price: 420000, sub: 126000}, 10: {gen: 1200, sav: 144000, price: 450000, sub: 135000} },
+            exide: { 1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 3: {gen: 390, sav: 46800, price: 185000, sub: 55500}, 4: {gen: 520, sav: 62400, price: 245000, sub: 73500}, 5: {gen: 650, sav: 78000, price: 305000, sub: 91500}, 6: {gen: 780, sav: 93600, price: 355000, sub: 106500}, 7: {gen: 910, sav: 109200, price: 385000, sub: 115500}, 8: {gen: 1040, sav: 124800, price: 405000, sub: 121500}, 9: {gen: 1170, sav: 140400, price: 425000, sub: 127500}, 10: {gen: 1300, sav: 156000, price: 445000, sub: 133500} },
+            luminous: { 1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 3: {gen: 375, sav: 45000, price: 182000, sub: 54600}, 4: {gen: 500, sav: 60000, price: 242000, sub: 72600}, 5: {gen: 625, sav: 75000, price: 302000, sub: 90600}, 6: {gen: 750, sav: 90000, price: 352000, sub: 105600}, 7: {gen: 875, sav: 105000, price: 382000, sub: 114600}, 8: {gen: 1000, sav: 120000, price: 402000, sub: 120600}, 9: {gen: 1125, sav: 135000, price: 422000, sub: 126600}, 10: {gen: 1250, sav: 150000, price: 442000, sub: 132600} },
+            adani: { 1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 3: {gen: 405, sav: 48600, price: 190000, sub: 57000}, 4: {gen: 540, sav: 64800, price: 250000, sub: 75000}, 5: {gen: 675, sav: 81000, price: 310000, sub: 93000}, 6: {gen: 810, sav: 97200, price: 360000, sub: 108000}, 7: {gen: 945, sav: 113400, price: 390000, sub: 117000}, 8: {gen: 1080, sav: 129600, price: 410000, sub: 123000}, 9: {gen: 1215, sav: 145800, price: 430000, sub: 129000}, 10: {gen: 1350, sav: 162000, price: 450000, sub: 135000} },
+            waaree: { 1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 3: {gen: 384, sav: 46080, price: 187000, sub: 56100}, 4: {gen: 512, sav: 61440, price: 247000, sub: 74100}, 5: {gen: 640, sav: 76800, price: 307000, sub: 92100}, 6: {gen: 768, sav: 92160, price: 357000, sub: 107100}, 7: {gen: 896, sav: 107520, price: 387000, sub: 116100}, 8: {gen: 1024, sav: 122880, price: 407000, sub: 122100}, 9: {gen: 1152, sav: 138240, price: 427000, sub: 128100}, 10: {gen: 1280, sav: 153600, price: 447000, sub: 134100} }
         };
         
         // Get system data from hardcoded pricing
@@ -1817,6 +1846,17 @@ function scrollToTop() {
     });
 }
 
+// Smooth scroll to brands section function
+function scrollToBrands() {
+    const brandsSection = document.getElementById('brands');
+    if (brandsSection) {
+        brandsSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
 // Add scroll to top button
 const scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '↑';
@@ -1974,13 +2014,68 @@ window.directPriceDisplay = function(brand, kw) {
     currentBrand = brand;
     currentSelectedKW = kw;
     
-    // Simple brand pricing data
+    // Complete brand pricing data for all KW values 1-10
     const pricing = {
-        tata: { 1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 2: {gen: 240, sav: 28800, price: 125000, sub: 37500}, 3: {gen: 360, sav: 43200, price: 180000, sub: 54000} },
-        exide: { 1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 3: {gen: 390, sav: 46800, price: 185000, sub: 55500} },
-        luminous: { 1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 3: {gen: 375, sav: 45000, price: 182000, sub: 54600} },
-        adani: { 1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 3: {gen: 405, sav: 48600, price: 190000, sub: 57000} },
-        waaree: { 1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 3: {gen: 384, sav: 46080, price: 187000, sub: 56100} }
+        tata: { 
+            1: {gen: 120, sav: 14400, price: 60000, sub: 18000}, 
+            2: {gen: 240, sav: 144000, price: 125000, sub: 37500}, 
+            3: {gen: 360, sav: 43200, price: 180000, sub: 78000},
+            4: {gen: 480, sav: 57600, price: 240000, sub: 72000},
+            5: {gen: 600, sav: 72000, price: 300000, sub: 90000},
+            6: {gen: 720, sav: 86400, price: 350000, sub: 105000},
+            7: {gen: 840, sav: 100800, price: 380000, sub: 114000},
+            8: {gen: 960, sav: 115200, price: 400000, sub: 120000},
+            9: {gen: 1080, sav: 129600, price: 420000, sub: 126000},
+            10: {gen: 1200, sav: 144000, price: 450000, sub: 135000}
+        },
+        exide: { 
+            1: {gen: 130, sav: 15600, price: 65000, sub: 19500}, 
+            2: {gen: 260, sav: 31200, price: 130000, sub: 39000}, 
+            3: {gen: 390, sav: 46800, price: 185000, sub: 55500},
+            4: {gen: 520, sav: 62400, price: 245000, sub: 73500},
+            5: {gen: 650, sav: 78000, price: 305000, sub: 91500},
+            6: {gen: 780, sav: 93600, price: 355000, sub: 106500},
+            7: {gen: 910, sav: 109200, price: 385000, sub: 115500},
+            8: {gen: 1040, sav: 124800, price: 405000, sub: 121500},
+            9: {gen: 1170, sav: 140400, price: 425000, sub: 127500},
+            10: {gen: 1300, sav: 156000, price: 445000, sub: 133500}
+        },
+        luminous: { 
+            1: {gen: 125, sav: 15000, price: 62000, sub: 18600}, 
+            2: {gen: 250, sav: 30000, price: 128000, sub: 38400}, 
+            3: {gen: 375, sav: 45000, price: 182000, sub: 54600},
+            4: {gen: 500, sav: 60000, price: 242000, sub: 72600},
+            5: {gen: 625, sav: 75000, price: 302000, sub: 90600},
+            6: {gen: 750, sav: 90000, price: 352000, sub: 105600},
+            7: {gen: 875, sav: 105000, price: 382000, sub: 114600},
+            8: {gen: 1000, sav: 120000, price: 402000, sub: 120600},
+            9: {gen: 1125, sav: 135000, price: 422000, sub: 126600},
+            10: {gen: 1250, sav: 150000, price: 442000, sub: 132600}
+        },
+        adani: { 
+            1: {gen: 135, sav: 16200, price: 68000, sub: 20400}, 
+            2: {gen: 270, sav: 32400, price: 135000, sub: 40500}, 
+            3: {gen: 405, sav: 48600, price: 190000, sub: 57000},
+            4: {gen: 540, sav: 64800, price: 250000, sub: 75000},
+            5: {gen: 675, sav: 81000, price: 310000, sub: 93000},
+            6: {gen: 810, sav: 97200, price: 360000, sub: 108000},
+            7: {gen: 945, sav: 113400, price: 390000, sub: 117000},
+            8: {gen: 1080, sav: 129600, price: 410000, sub: 123000},
+            9: {gen: 1215, sav: 145800, price: 430000, sub: 129000},
+            10: {gen: 1350, sav: 162000, price: 450000, sub: 135000}
+        },
+        waaree: { 
+            1: {gen: 128, sav: 15360, price: 64000, sub: 19200}, 
+            2: {gen: 256, sav: 30720, price: 132000, sub: 39600}, 
+            3: {gen: 384, sav: 46080, price: 187000, sub: 56100},
+            4: {gen: 512, sav: 61440, price: 247000, sub: 74100},
+            5: {gen: 640, sav: 76800, price: 307000, sub: 92100},
+            6: {gen: 768, sav: 92160, price: 357000, sub: 107100},
+            7: {gen: 896, sav: 107520, price: 387000, sub: 116100},
+            8: {gen: 1024, sav: 122880, price: 407000, sub: 122100},
+            9: {gen: 1152, sav: 138240, price: 427000, sub: 128100},
+            10: {gen: 1280, sav: 153600, price: 447000, sub: 134100}
+        }
     };
     
     const data = pricing[brand] && pricing[brand][kw];
