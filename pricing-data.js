@@ -40,8 +40,8 @@ const SOLAR_PRICING_DATA = {
     "6": { "generation": 720, "savings": 60000, "price": 400000, "subsidy": 78000 },
     "7": { "generation": 840, "savings": 72000, "price": 475000, "subsidy": 78000 },
     "8": { "generation": 960, "savings": 84000, "price": 530000, "subsidy": 78000 },
-    "9": { "generation": 1080, "savings": 96000, "price": 5950000, "subsidy": 78000 },
-    "10": { "generation": 1200, "savings": 108000, "price": 655000, "subsidy": 78000 }
+    "9": { "generation": 1080, "savings": 96000, "price": 595000, "subsidy": 78000 },
+    "10": { "generation": 1200, "savings": 108000, "price": 650000, "subsidy": 78000 }
   },
   
   // 💡 LUMINOUS SOLAR
@@ -54,8 +54,8 @@ const SOLAR_PRICING_DATA = {
     "6": { "generation": 720, "savings": 60000, "price": 405000, "subsidy": 78000 },
     "7": { "generation": 840, "savings": 72000, "price": 480000, "subsidy": 78000 },
     "8": { "generation": 960, "savings": 84000, "price": 535000, "subsidy": 78000 },
-    "9": { "generation": 1080, "savings": 96000, "price": 600000, "subsidy": 78000 },
-    "10": { "generation": 1200, "savings": 108000, "price": 655000, "subsidy": 78000 }
+    "9": { "generation": 1080, "savings": 96000, "price": 595000, "subsidy": 78000 },
+    "10": { "generation": 1200, "savings": 108000, "price": 650000, "subsidy": 78000 }
   },
   
   // ⚡ ADANI SOLAR
