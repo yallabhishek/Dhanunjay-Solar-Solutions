@@ -452,12 +452,6 @@
         </a>
     </div>
 
-    <!-- Admin Toggle Button -->
-    <div id="admin-toggle" class="admin-toggle" style="display: none;">
-        <button onclick="showAdminLogin()" class="admin-btn">
-            <i class="fas fa-edit"></i> Admin
-        </button>
-    </div>
 
     <!-- On-Grid Price Calculator Modal -->
     <div id="priceModal" class="modal">
@@ -561,6 +555,13 @@
                             </div>
                         </div>
                         
+                        <!-- Edit Controls - Hidden by default, shown only with admin access -->
+                        <div class="edit-controls" id="editControls" style="text-align: center; margin-top: 15px; display: none;">
+                            <button id="editModeBtn" onclick="requestEditAccess()" class="edit-btn">✏️ Edit Values</button>
+                            <button id="saveBtn" onclick="saveEditedValues()" class="save-btn" style="display: none;">💾 Save Changes</button>
+                            <button id="cancelBtn" onclick="cancelEdit()" class="cancel-btn" style="display: none;">❌ Cancel</button>
+                        </div>
+                        
                         <!-- Interested Button - Only shown when system details are displayed -->
                         <div class="system-actions" style="text-align: center; margin-top: 20px;">
                             <button onclick="redirectToWhatsAppWithDetails()" class="cta-btn interested-btn">💬 Interested - Contact Us</button>
@@ -574,24 +575,6 @@
         </div>
     </div>
 
-    <!-- Admin Login Modal -->
-    <div id="admin-login-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>🔐 Admin Access</h3>
-                <span class="close" onclick="closeAdminModal()">&times;</span>
-            </div>
-            <form id="admin-login-form" class="admin-login-form">
-                <div class="form-group">
-                    <label for="admin-password">Admin Password</label>
-                    <input type="password" id="admin-password" name="password" required>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-submit">Login</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Test Button for Price Display - HIDDEN -->
     <div id="test-controls" style="display: none;">
@@ -671,5 +654,47 @@
 
     <!-- JavaScript -->
     <script src="script.js"></script>
+    
+    <!-- Test localStorage sync -->
+    <script>
+    // Add test function to window for debugging
+    window.testLocalStorageSync = function() {
+        console.log('🧪 Testing localStorage sync...');
+        
+        // Check what's in localStorage
+        const keys = ['solarPricingData', 'brandPricingData', 'onGridPricing'];
+        keys.forEach(key => {
+            const data = localStorage.getItem(key);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    console.log(`✅ ${key}:`, parsed);
+                    if (parsed.exide && parsed.exide[1]) {
+                        console.log(`📊 Exide 1KW from ${key}:`, parsed.exide[1]);
+                    }
+                } catch (e) {
+                    console.log(`❌ ${key}: Invalid JSON`);
+                }
+            } else {
+                console.log(`❌ ${key}: Not found`);
+            }
+        });
+        
+        // Test getBrandPricing function
+        const brandData = getBrandPricing();
+        console.log('🔍 getBrandPricing() result:', brandData);
+        if (brandData.exide && brandData.exide[1]) {
+            console.log('📊 Exide 1KW from getBrandPricing():', brandData.exide[1]);
+        }
+    };
+    
+    // Auto-run test on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            console.log('🚀 Auto-testing localStorage sync...');
+            window.testLocalStorageSync();
+        }, 1000);
+    });
+    </script>
 </body>
 </html>

@@ -34,6 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Brand-specific Solar System Pricing Data
 function getBrandPricing() {
+    // Check for custom pricing data from admin panel
+    const customData = localStorage.getItem('customPricingData');
+    const solarData = localStorage.getItem('solarPricingData');
+    const brandData = localStorage.getItem('brandPricingData');
+    
+    console.log('🔍 Checking for admin data...');
+    console.log('customPricingData:', !!customData);
+    console.log('solarPricingData:', !!solarData);
+    console.log('brandPricingData:', !!brandData);
+    
+    // Define default pricing structure
     const defaultBrandPricing = {
         tata: {
             1: { generation: 120, savings: 14400, price: 60000, subsidy: 18000 },
@@ -48,40 +59,40 @@ function getBrandPricing() {
             10: { generation: 1200, savings: 144000, price: 450000, subsidy: 135000 }
         },
         exide: {
-            1: { generation: 130, savings: 15600, price: 65000, subsidy: 19500 },
-            2: { generation: 260, savings: 31200, price: 130000, subsidy: 39000 },
-            3: { generation: 390, savings: 46800, price: 185000, subsidy: 55500 },
-            4: { generation: 520, savings: 62400, price: 245000, subsidy: 73500 },
-            5: { generation: 650, savings: 78000, price: 305000, subsidy: 91500 },
-            6: { generation: 780, savings: 93600, price: 355000, subsidy: 106500 },
-            7: { generation: 910, savings: 109200, price: 385000, subsidy: 115500 },
-            8: { generation: 1040, savings: 124800, price: 405000, subsidy: 121500 },
-            9: { generation: 1170, savings: 140400, price: 425000, subsidy: 127500 },
-            10: { generation: 1300, savings: 156000, price: 445000, subsidy: 133500 }
+            1: { generation: 110, savings: 13200, price: 58000, subsidy: 17400 },
+            2: { generation: 220, savings: 132000, price: 128000, subsidy: 38400 },
+            3: { generation: 330, savings: 39600, price: 185000, subsidy: 80000 },
+            4: { generation: 440, savings: 52800, price: 245000, subsidy: 73500 },
+            5: { generation: 550, savings: 66000, price: 305000, subsidy: 91500 },
+            6: { generation: 660, savings: 79200, price: 360000, subsidy: 108000 },
+            7: { generation: 770, savings: 92400, price: 395000, subsidy: 118500 },
+            8: { generation: 880, savings: 105600, price: 410000, subsidy: 123000 },
+            9: { generation: 990, savings: 118800, price: 425000, subsidy: 127500 },
+            10: { generation: 1100, savings: 132000, price: 440000, subsidy: 132000 }
         },
         luminous: {
-            1: { generation: 125, savings: 15000, price: 62000, subsidy: 18600 },
-            2: { generation: 250, savings: 30000, price: 128000, subsidy: 38400 },
-            3: { generation: 375, savings: 45000, price: 182000, subsidy: 54600 },
-            4: { generation: 500, savings: 60000, price: 242000, subsidy: 72600 },
-            5: { generation: 625, savings: 75000, price: 302000, subsidy: 90600 },
-            6: { generation: 750, savings: 90000, price: 352000, subsidy: 105600 },
-            7: { generation: 875, savings: 105000, price: 382000, subsidy: 114600 },
-            8: { generation: 1000, savings: 120000, price: 402000, subsidy: 120600 },
-            9: { generation: 1125, savings: 135000, price: 422000, subsidy: 126600 },
-            10: { generation: 1250, savings: 150000, price: 442000, subsidy: 132600 }
+            1: { generation: 115, savings: 13800, price: 55000, subsidy: 16500 },
+            2: { generation: 230, savings: 138000, price: 115000, subsidy: 34500 },
+            3: { generation: 345, savings: 41400, price: 165000, subsidy: 72000 },
+            4: { generation: 460, savings: 55200, price: 220000, subsidy: 66000 },
+            5: { generation: 575, savings: 69000, price: 275000, subsidy: 82500 },
+            6: { generation: 690, savings: 82800, price: 320000, subsidy: 96000 },
+            7: { generation: 805, savings: 96600, price: 355000, subsidy: 106500 },
+            8: { generation: 920, savings: 110400, price: 370000, subsidy: 111000 },
+            9: { generation: 1035, savings: 124200, price: 385000, subsidy: 115500 },
+            10: { generation: 1150, savings: 138000, price: 395000, subsidy: 118500 }
         },
         adani: {
-            1: { generation: 135, savings: 16200, price: 68000, subsidy: 20400 },
-            2: { generation: 270, savings: 32400, price: 135000, subsidy: 40500 },
-            3: { generation: 405, savings: 48600, price: 190000, subsidy: 57000 },
-            4: { generation: 540, savings: 64800, price: 250000, subsidy: 75000 },
-            5: { generation: 675, savings: 81000, price: 310000, subsidy: 93000 },
-            6: { generation: 810, savings: 97200, price: 360000, subsidy: 108000 },
-            7: { generation: 945, savings: 113400, price: 390000, subsidy: 117000 },
-            8: { generation: 1080, savings: 129600, price: 410000, subsidy: 123000 },
-            9: { generation: 1215, savings: 145800, price: 430000, subsidy: 129000 },
-            10: { generation: 1350, savings: 162000, price: 450000, subsidy: 135000 }
+            1: { generation: 125, savings: 15000, price: 65000, subsidy: 19500 },
+            2: { generation: 250, savings: 150000, price: 135000, subsidy: 40500 },
+            3: { generation: 375, savings: 45000, price: 195000, subsidy: 85000 },
+            4: { generation: 500, savings: 60000, price: 260000, subsidy: 78000 },
+            5: { generation: 625, savings: 75000, price: 325000, subsidy: 97500 },
+            6: { generation: 750, savings: 90000, price: 380000, subsidy: 114000 },
+            7: { generation: 875, savings: 105000, price: 420000, subsidy: 126000 },
+            8: { generation: 1000, savings: 120000, price: 435000, subsidy: 130500 },
+            9: { generation: 1125, savings: 135000, price: 450000, subsidy: 135000 },
+            10: { generation: 1250, savings: 150000, price: 465000, subsidy: 139500 }
         },
         waaree: {
             1: { generation: 128, savings: 15360, price: 64000, subsidy: 19200 },
@@ -97,13 +108,29 @@ function getBrandPricing() {
         }
     };
     
-    try {
-        const savedBrandPricing = localStorage.getItem('brandPricingData');
-        return savedBrandPricing ? JSON.parse(savedBrandPricing) : defaultBrandPricing;
-    } catch (error) {
-        console.warn('Error accessing localStorage for brand pricing, using defaults:', error);
-        return defaultBrandPricing;
+    // Try to use admin data if available
+    if (customData || solarData || brandData) {
+        try {
+            const adminData = JSON.parse(customData || solarData || brandData);
+            console.log('✅ Using admin pricing data:', adminData);
+            
+            // Merge admin data with defaults
+            const mergedData = { ...defaultBrandPricing };
+            Object.keys(adminData).forEach(brand => {
+                if (!mergedData[brand]) mergedData[brand] = {};
+                Object.keys(adminData[brand]).forEach(kw => {
+                    mergedData[brand][kw] = { ...mergedData[brand][kw], ...adminData[brand][kw] };
+                });
+            });
+            
+            return mergedData;
+        } catch (error) {
+            console.error('❌ Error parsing admin data:', error);
+        }
     }
+    
+    console.log('📋 Using default pricing data');
+    return defaultBrandPricing;
 }
 
 // Legacy function for backward compatibility
@@ -112,9 +139,24 @@ function getOnGridPricing() {
     return brandPricing; // Return all brand data
 }
 
-let onGridPricing = getBrandPricing();
+let onGridPricing = null;
 let currentBrand = 'tata'; // Default brand
 let currentSelectedKW = null; // Track selected KW
+let isEditMode = false;
+let originalValues = {};
+let editedData = {};
+
+// Force refresh pricing data on page load and when needed
+function refreshPricingData() {
+    onGridPricing = getBrandPricing();
+    console.log('🔄 Pricing data refreshed:', onGridPricing);
+    return onGridPricing;
+}
+
+// Initialize pricing data
+document.addEventListener('DOMContentLoaded', function() {
+    refreshPricingData();
+});
 
 // Select brand by logo click
 function selectBrand(brand) {
@@ -143,15 +185,26 @@ function updateBrandPricing() {
 
 // Update KW card prices from current brand data
 function updateKWCardPrices() {
-    // Refresh pricing data from localStorage
+    // Force refresh pricing data from localStorage before updating
     onGridPricing = getBrandPricing();
-    const currentBrandData = onGridPricing[currentBrand] || onGridPricing.tata;
+    console.log('🔄 Refreshing KW card prices for brand:', currentBrand);
     
-    // Update each KW card price
+    const brandData = onGridPricing[currentBrand];
+    if (!brandData) {
+        console.warn('❌ No brand data found for:', currentBrand);
+        return;
+    }
+    
+    console.log('📊 Brand data for', currentBrand, ':', brandData);
+    
     for (let kw = 1; kw <= 10; kw++) {
-        const priceElement = document.getElementById(`kw-price-${kw}`);
-        if (priceElement && currentBrandData[kw]) {
-            priceElement.textContent = '₹' + currentBrandData[kw].price.toLocaleString();
+        const card = document.querySelector(`[data-kw="${kw}"]`);
+        if (card && brandData[kw]) {
+            const priceElement = card.querySelector('.kw-price');
+            if (priceElement) {
+                priceElement.textContent = `₹${brandData[kw].price.toLocaleString()}`;
+                console.log(`💰 Updated ${kw}KW price to:`, brandData[kw].price);
+            }
         }
     }
 }
@@ -189,42 +242,28 @@ function openPriceModalWithBrand(brand) {
             return;
         }
         
-        // Set current brand and update pricing with validation
-        const normalizedBrand = brand.toLowerCase();
-        const brandPricing = getBrandPricing();
+        // Force refresh pricing data to get latest admin changes
+        refreshPricingData();
+        const brandPricing = onGridPricing;
+        console.log('🔄 Forced refresh of pricing data for brand modal:', brand);
         
-        // Verify brand exists in pricing data
+        const normalizedBrand = brand.toLowerCase();
+        
         const availableBrands = Object.keys(brandPricing).map(k => k.toLowerCase());
         if (availableBrands.includes(normalizedBrand)) {
             currentBrand = normalizedBrand;
         } else {
-            console.warn(`Brand '${normalizedBrand}' not found in pricing data. Available:`, availableBrands);
-            // Find closest match or use default
-            const exactMatch = Object.keys(brandPricing).find(k => k.toLowerCase() === normalizedBrand);
-            currentBrand = exactMatch ? exactMatch.toLowerCase() : 'tata';
+            currentBrand = 'tata';
         }
         
-        console.log('Set current brand to:', currentBrand);
-        onGridPricing = brandPricing;
-        currentSelectedKW = null; // Reset selected KW
-        
-        // Find modal element with multiple fallback attempts
+        currentSelectedKW = null;
+        // Show modal and update prices
         let modal = document.getElementById('priceModal');
-        if (!modal) {
-            // Try alternative selectors
-            modal = document.querySelector('[id="priceModal"]') || 
-                   document.querySelector('.price-modal') ||
-                   document.querySelector('#price-modal');
-        }
-        
-        if (!modal) {
-            console.error('Price modal element not found in DOM');
-            alert('Unable to open price calculator. Please refresh the page and try again.');
-            return;
-        }
-        
-        // Find price result element
+        if (!modal) { alert('Unable to open price calculator.'); return; }
         let priceResult = document.getElementById('priceResult');
+        if (!priceResult) { priceResult = document.querySelector('.price-result'); }
+        document.querySelectorAll('.kw-card').forEach(card => card.classList.remove('selected'));
+        priceResult.style.display = 'none';
         if (!priceResult) {
             priceResult = document.querySelector('[id="priceResult"]') || 
                          document.querySelector('.price-result');
@@ -299,16 +338,18 @@ function openPriceModalWithBrand(brand) {
             // Fallback for older browsers
             setTimeout(showModal, 16);
         }
-        
         // Track price modal view (with error handling)
         try {
             if (typeof trackEvent === 'function') {
                 trackEvent('price_calculator_opened', { brand: brand });
             }
-        } catch (e) {
-            console.warn('Error tracking event:', e);
+            updateKWCardPrices();
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } catch (error) {
+            console.error('Error in openPriceModalWithBrand:', error);
+            alert('Unable to open price calculator. Please try again.');
         }
-        
     } catch (error) {
         console.error('Error opening price modal:', error);
         alert('Unable to open price calculator. Please try again.');
@@ -319,6 +360,10 @@ function openPriceModalWithBrand(brand) {
 function selectKW(kw) {
     try {
         console.log('selectKW called with:', kw);
+        currentSelectedKW = kw;
+        
+        // Force refresh pricing data to get latest admin changes
+        refreshPricingData();
         
         // Enhanced card selection with multiple fallback methods
         const removeSelectionFromAllCards = () => {
@@ -428,6 +473,10 @@ function calculatePrice(selectedKW) {
             console.error('Brand pricing data not available');
             return;
         }
+        
+        // Force refresh pricing data from localStorage  
+        onGridPricing = getBrandPricing();
+        console.log('🔄 Refreshed pricing data in calculatePrice');
         
         console.log('Available brands in pricing data:', Object.keys(brandPricing));
         console.log('Looking for brand:', currentBrand);
@@ -681,8 +730,6 @@ function calculatePrice(selectedKW) {
             subsidyPrice: '₹' + subsidyAmount.toLocaleString('en-IN')
         };
         
-        console.log('Formatted values:', formattedValues);
-        
         // Debug: Check if all target elements exist before updating
         const targetElements = ['capacityDisplay', 'generationDisplay', 'savingsDisplay', 'totalPrice', 'subsidyPrice'];
         console.log('=== ELEMENT EXISTENCE CHECK ===');
@@ -698,7 +745,59 @@ function calculatePrice(selectedKW) {
         // Force update with default system data (ignore custom values for Brave compatibility)
         console.log('Updating with default system data (Brave mode)');
         
-        // Update each element with enhanced fallback support
+        // Direct DOM update approach - force update all system detail elements
+        console.log('🔧 Direct DOM update approach');
+        
+        // Find and update all possible system detail elements
+        const detailElements = document.querySelectorAll('.detail-value, .price-amount, .subsidy-amount');
+        console.log('Found detail elements:', detailElements.length);
+        
+        detailElements.forEach((element, index) => {
+            const text = element.textContent.trim();
+            console.log(`Element ${index}:`, text, element);
+            
+            // Update based on content patterns
+            if (text.includes('units') || text.includes('130')) {
+                element.textContent = formattedValues.generation;
+                console.log('✅ Updated generation element to:', formattedValues.generation);
+            }
+            else if (text.includes('₹15,600') || (text.includes('₹') && text.includes('15') && text.includes('600'))) {
+                element.textContent = formattedValues.savings;
+                console.log('✅ Updated savings element to:', formattedValues.savings);
+            }
+            else if (text.includes('₹65,000') || (text.includes('₹') && text.includes('65') && text.includes('000'))) {
+                element.textContent = formattedValues.totalPrice;
+                console.log('✅ Updated price element to:', formattedValues.totalPrice);
+            }
+            else if (text.includes('₹19,500') || (text.includes('₹') && text.includes('19') && text.includes('500'))) {
+                element.textContent = formattedValues.subsidyPrice;
+                console.log('✅ Updated subsidy element to:', formattedValues.subsidyPrice);
+            }
+        });
+        
+        // Fallback: Update by element position
+        const systemDetailsElements = document.querySelectorAll('.system-details .detail-value, .price-result .detail-value');
+        if (systemDetailsElements.length >= 3) {
+            systemDetailsElements[1].textContent = formattedValues.generation; // Monthly Gen
+            systemDetailsElements[2].textContent = formattedValues.savings;   // Annual Savings
+            console.log('✅ Updated by position - generation and savings');
+        }
+        
+        // Update price elements specifically
+        const priceElements = document.querySelectorAll('.price-amount');
+        const subsidyElements = document.querySelectorAll('.subsidy-amount');
+        
+        if (priceElements.length > 0) {
+            priceElements[0].textContent = formattedValues.totalPrice;
+            console.log('✅ Updated first price element to:', formattedValues.totalPrice);
+        }
+        
+        if (subsidyElements.length > 0) {
+            subsidyElements[0].textContent = formattedValues.subsidyPrice;
+            console.log('✅ Updated first subsidy element to:', formattedValues.subsidyPrice);
+        }
+        
+        // Legacy update method as backup
         const updateResults = {
             capacity: updateDisplayElement('capacityDisplay', formattedValues.capacity, elementMappings.capacityDisplay),
             generation: updateDisplayElement('generationDisplay', formattedValues.generation, elementMappings.generationDisplay),
@@ -860,33 +959,8 @@ function calculatePrice(selectedKW) {
                 }
             });
         }, 300);
-        
     } catch (error) {
-        console.error('Error in calculatePrice function:', error);
-        // Emergency fallback for GitHub Pages and Brave
-        setTimeout(() => {
-            const elements = document.querySelectorAll('.detail-value, .price-amount, .subsidy-amount');
-            if (elements.length > 0 && selectedKW && currentBrand) {
-                const brandPricing = getBrandPricing();
-                const systemData = brandPricing[currentBrand] && brandPricing[currentBrand][selectedKW];
-                if (systemData) {
-                    const values = [
-                        selectedKW + ' KW',
-                        systemData.generation + ' units',
-                        '₹' + systemData.savings.toLocaleString('en-IN'),
-                        '₹' + systemData.price.toLocaleString('en-IN'),
-                        '₹' + (systemData.subsidy || 0).toLocaleString('en-IN')
-                    ];
-                    
-                    elements.forEach((el, index) => {
-                        if (values[index] && (!el.textContent || el.textContent.trim() === '')) {
-                            el.textContent = values[index];
-                        }
-                    });
-                    console.log('✓ Emergency fallback completed');
-                }
-            }
-        }, 500);
+        console.error('Error in calculatePrice:', error);
     }
 }
 
@@ -900,22 +974,23 @@ function closePriceModal() {
     }
     
     // Enhanced body scrolling restoration for GitHub Pages compatibility
-    if (document.body) {
-        // Remove all overflow styles completely
-        document.body.style.removeProperty('overflow');
-        document.body.style.removeProperty('overflow-x');
-        document.body.style.removeProperty('overflow-y');
-        
-        // Force reflow to ensure changes take effect
-        document.body.offsetHeight;
-        
-        // Additional fallback methods for different browsers
-        setTimeout(() => {
-            document.body.classList.remove('modal-open');
-            document.documentElement.style.removeProperty('overflow');
-            document.documentElement.style.removeProperty('overflow-x');
-            document.documentElement.style.removeProperty('overflow-y');
-        }, 10);
+    try {
+        if (document.body) {
+            // Remove all overflow styles completely
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('overflow-x');
+            document.body.style.removeProperty('overflow-y');
+            
+            // Force reflow to ensure changes take effect
+            document.body.offsetHeight;
+            
+            // Additional fallback methods for different browsers
+            setTimeout(() => {
+                document.body.style.overflow = '';
+            }, 100);
+        }
+    } catch (error) {
+        console.error('Error restoring scroll:', error);
     }
     
     // Additional GitHub Pages compatibility fixes
@@ -1614,9 +1689,25 @@ async function sendToCloudStorage(data) {
             console.log('Quote sent to cloud storage successfully');
         }
     } catch (error) {
-        console.log('Cloud storage failed, data saved locally only:', error);
+        console.error('Error sending to cloud storage:', error);
     }
 }
+
+// Show edit controls only with keyboard shortcut (Ctrl+Shift+E)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        const editControls = document.getElementById('editControls');
+        if (editControls && editControls.style.display === 'none') {
+            editControls.style.display = 'block';
+        }
+    }
+});
+
+// Initialize custom pricing on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCustomPricingData();
+});
 
 // Send email notification to admin
 async function sendEmailNotification(data) {
@@ -1627,38 +1718,33 @@ async function sendEmailNotification(data) {
             html: `
                 <h2>New Solar Quote Request</h2>
                 <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Phone:</strong> ${data.phone}</p>
                 <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>Mobile:</strong> ${data.mobile}</p>
-                <p><strong>Location:</strong> ${data.location}</p>
-                <p><strong>Capacity:</strong> ${data.capacity}</p>
-                <p><strong>Submitted:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                <p><strong>Address:</strong> ${data.address}</p>
+                <p><strong>System Capacity:</strong> ${data.capacity}</p>
+                <p><strong>Brand:</strong> ${data.brand}</p>
+                <p><strong>Monthly Generation:</strong> ${data.generation}</p>
+                <p><strong>Annual Savings:</strong> ${data.savings}</p>
+                <p><strong>Total Price:</strong> ${data.totalPrice}</p>
+                <p><strong>Government Subsidy:</strong> ${data.subsidy}</p>
+                <p><strong>Message:</strong> ${data.message}</p>
+                <hr>
+                <p><em>Sent from DhanunJay Solar Solutions Website</em></p>
             `
         };
         
-        // Using EmailJS for free email service
-        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                service_id: 'service_solar',
-                template_id: 'template_quote',
-                user_id: 'user_dhanunjay',
-                template_params: emailData
-            })
-        });
+        // Here you would integrate with your email service
+        // For now, we'll just log it
+        console.log('Email notification prepared:', emailData);
         
-        if (response.ok) {
-            console.log('Email notification sent successfully');
-        }
     } catch (error) {
-        console.log('Email notification failed:', error);
+        console.error('Error sending email notification:', error);
     }
 }
 
 // Visitor Tracking
 function initVisitorTracking() {
+    // ... (rest of the code remains the same)
     // Get visitor info
     const visitorData = {
         timestamp: new Date().toISOString(),
@@ -2002,6 +2088,244 @@ document.addEventListener('DOMContentLoaded', function() {
     initAdminSystem();
 });
 
+// Enter Edit Mode
+function enterEditMode() {
+    if (!isEditAuthorized) {
+        return;
+    }
+    
+    isEditMode = true;
+    
+    // Show edit controls
+    document.getElementById('editControls').style.display = 'block';
+    
+    // Store original values
+    originalValues = {
+        generation: document.getElementById('generationDisplay').textContent,
+        savings: document.getElementById('savingsDisplay').textContent,
+        totalPrice: document.getElementById('totalPrice').textContent,
+        subsidy: document.getElementById('subsidyPrice').textContent
+    };
+    
+    // Make fields editable
+    makeFieldsEditable();
+    
+    // Update UI
+    document.getElementById('editModeBtn').style.display = 'none';
+    document.getElementById('saveBtn').style.display = 'inline-block';
+    document.getElementById('cancelBtn').style.display = 'inline-block';
+    
+    console.log('Edit mode enabled');
+}
+
+// Exit Edit Mode
+function exitEditMode() {
+    isEditMode = false;
+    isEditAuthorized = false;
+    
+    // Remove editable fields
+    removeEditableFields();
+    
+    // Update UI
+    document.getElementById('editModeBtn').style.display = 'inline-block';
+    document.getElementById('saveBtn').style.display = 'none';
+    document.getElementById('cancelBtn').style.display = 'none';
+    
+    // Hide edit controls completely
+    document.getElementById('editControls').style.display = 'none';
+    
+    console.log('Edit mode disabled');
+}
+
+// Toggle Edit Mode
+function toggleEditMode() {
+    if (!isEditAuthorized) {
+        requestEditAccess();
+        return;
+    }
+    
+    isEditMode = !isEditMode;
+    
+    if (isEditMode) {
+        enterEditMode();
+    } else {
+        exitEditMode();
+    }
+}
+
+// Admin password for edit access
+const EDIT_PASSWORD = 'solar2024';
+let isEditAuthorized = false;
+
+// Request edit access with password
+function requestEditAccess() {
+    const password = prompt('🔐 Enter admin password to edit values:');
+    
+    if (password === EDIT_PASSWORD) {
+        isEditAuthorized = true;
+        enterEditMode();
+    } else if (password !== null) {
+        alert('❌ Incorrect password!');
+    }
+}
+
+// Make fields editable
+function makeFieldsEditable() {
+    const editableFields = [
+        { id: 'generationDisplay', type: 'number', suffix: ' units' },
+        { id: 'savingsDisplay', type: 'currency', prefix: '₹' },
+        { id: 'totalPrice', type: 'currency', prefix: '₹' },
+        { id: 'subsidyPrice', type: 'currency', prefix: '₹' }
+    ];
+    
+    editableFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (element) {
+            const currentValue = element.textContent;
+            let numericValue = currentValue.replace(/[^0-9]/g, '');
+            
+            element.classList.add('editable-field');
+            element.innerHTML = `<input type="number" value="${numericValue}" data-field="${field.id}" data-type="${field.type}" data-prefix="${field.prefix || ''}" data-suffix="${field.suffix || ''}">`;
+            
+            // Add event listener for real-time formatting
+            const input = element.querySelector('input');
+            input.addEventListener('input', formatInputValue);
+        }
+    });
+}
+
+// Format input value in real-time
+function formatInputValue(event) {
+    const input = event.target;
+    const type = input.dataset.type;
+    const prefix = input.dataset.prefix;
+    const suffix = input.dataset.suffix;
+    let value = parseInt(input.value) || 0;
+    
+    if (type === 'currency') {
+        input.parentElement.setAttribute('data-formatted', prefix + value.toLocaleString('en-IN'));
+    } else {
+        input.parentElement.setAttribute('data-formatted', value + suffix);
+    }
+}
+
+// Remove editable fields
+function removeEditableFields() {
+    const editableFields = document.querySelectorAll('.editable-field');
+    editableFields.forEach(field => {
+        const input = field.querySelector('input');
+        if (input) {
+            const formattedValue = field.getAttribute('data-formatted') || field.textContent;
+            field.classList.remove('editable-field');
+            field.innerHTML = formattedValue;
+        }
+    });
+}
+
+// Save edited values
+function saveEditedValues() {
+    const inputs = document.querySelectorAll('.editable-field input');
+    const newValues = {};
+    
+    inputs.forEach(input => {
+        const fieldId = input.dataset.field;
+        const type = input.dataset.type;
+        const value = parseInt(input.value) || 0;
+        
+        newValues[fieldId] = value;
+    });
+    
+    // Update the pricing data for current brand and KW
+    updatePricingData(currentBrand, currentSelectedKW, newValues);
+    
+    // Update display with formatted values
+    updateDisplayWithNewValues(newValues);
+    
+    // Exit edit mode
+    exitEditMode();
+    
+    alert('✅ Values saved successfully!');
+    console.log('Saved values:', newValues);
+}
+
+// Cancel edit
+function cancelEdit() {
+    // Restore original values
+    document.getElementById('generationDisplay').textContent = originalValues.generation;
+    document.getElementById('savingsDisplay').textContent = originalValues.savings;
+    document.getElementById('totalPrice').textContent = originalValues.totalPrice;
+    document.getElementById('subsidyPrice').textContent = originalValues.subsidy;
+    
+    // Exit edit mode
+    exitEditMode();
+    
+    console.log('Edit cancelled, values restored');
+}
+
+// Update pricing data in memory
+function updatePricingData(brand, kw, newValues) {
+    if (!onGridPricing[brand]) {
+        onGridPricing[brand] = {};
+    }
+    
+    if (!onGridPricing[brand][kw]) {
+        onGridPricing[brand][kw] = {};
+    }
+    
+    // Update the pricing data
+    onGridPricing[brand][kw] = {
+        generation: newValues.generationDisplay || onGridPricing[brand][kw].generation,
+        savings: newValues.savingsDisplay || onGridPricing[brand][kw].savings,
+        price: newValues.totalPrice || onGridPricing[brand][kw].price,
+        subsidy: newValues.subsidyPrice || onGridPricing[brand][kw].subsidy
+    };
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('customPricingData', JSON.stringify(onGridPricing));
+    
+    console.log(`Updated ${brand} ${kw}KW:`, onGridPricing[brand][kw]);
+}
+
+// Update display with new values
+function updateDisplayWithNewValues(newValues) {
+    Object.keys(newValues).forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        const value = newValues[fieldId];
+        
+        if (element) {
+            switch(fieldId) {
+                case 'generationDisplay':
+                    element.textContent = value + ' units';
+                    break;
+                case 'savingsDisplay':
+                case 'totalPrice':
+                case 'subsidyPrice':
+                    element.textContent = '₹' + value.toLocaleString('en-IN');
+                    break;
+            }
+        }
+    });
+}
+
+// Load custom pricing data on page load
+function loadCustomPricingData() {
+    const customData = localStorage.getItem('customPricingData');
+    if (customData) {
+        try {
+            const parsedData = JSON.parse(customData);
+            // Merge with default pricing
+            Object.keys(parsedData).forEach(brand => {
+                if (!onGridPricing[brand]) onGridPricing[brand] = {};
+                Object.keys(parsedData[brand]).forEach(kw => {
+                    onGridPricing[brand][kw] = { ...onGridPricing[brand][kw], ...parsedData[brand][kw] };
+                });
+            });
+            console.log('Custom pricing data loaded:', parsedData);
+        } catch (error) {
+            console.error('Error loading custom pricing data:', error);
+        }
+    }
+}
 
 // Direct price display function - bypasses all complex logic
 window.directPriceDisplay = function(brand, kw) {

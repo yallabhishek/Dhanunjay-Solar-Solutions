@@ -1120,17 +1120,84 @@ body {
     60% { transform: translateY(-5px); }
 }
 
-/* Modal Styles */
+/* Price Modal Styles */
 .modal {
     display: none;
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
+}
+
+/* Edit Mode Styles */
+.editable-field {
+    position: relative;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.editable-field:hover {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px dashed #ffc107;
+}
+
+.editable-field.editing {
+    background-color: rgba(255, 193, 7, 0.2);
+    border: 2px solid #ffc107;
+}
+
+.editable-field input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    width: 100%;
+    text-align: inherit;
+}
+
+.edit-btn, .save-btn, .cancel-btn {
+    padding: 8px 16px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.edit-btn {
+    background: #007bff;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #0056b3;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #1e7e34;
+}
+
+.cancel-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #c82333;
 }
 
 .modal-content {

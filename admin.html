@@ -3,24 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - DhanunJay Solar Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Solar Admin Panel - DhanunJay Solar Solutions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --solar-orange: #FF7C00;
-            --solar-blue: #1E90FF;
-            --golden-yellow: #FFB300;
-            --white: #FFFFFF;
-            --black: #000000;
-            --light-gray: #F5F5F5;
-            --text-gray: #CCCCCC;
-            --dark-gray: #333333;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -28,1322 +13,647 @@
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            background: var(--black);
-            color: var(--text-gray);
-            line-height: 1.6;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
         }
 
         .admin-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
         .admin-header {
-            background: linear-gradient(135deg, var(--solar-orange), var(--solar-blue));
-            padding: 30px;
-            border-radius: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 30px;
             text-align: center;
         }
 
         .admin-header h1 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--white);
-            font-size: 2.5rem;
+            color: #1e3c72;
             margin-bottom: 10px;
         }
 
         .admin-header p {
-            color: var(--white);
-            opacity: 0.9;
+            color: #666;
         }
 
-        .stats-grid {
+        .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 124, 0, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--solar-orange);
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        .stat-icon.visitors { color: var(--solar-blue); }
-        .stat-icon.bookings { color: var(--solar-orange); }
-        .stat-icon.pending { color: var(--warning); }
-        .stat-icon.completed { color: var(--success); }
-
-        .stat-number {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: var(--text-gray);
-            font-weight: 600;
-        }
-
-        .dashboard-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 124, 0, 0.2);
-            border-radius: 15px;
-            padding: 30px;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 124, 0, 0.2);
-        }
-
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.5rem;
-            color: var(--white);
-        }
-
-        .btn {
-            background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
-            color: var(--white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 124, 0, 0.3);
-        }
-
-        .btn-success {
-            background: var(--success);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: var(--black);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 124, 0, 0.1);
-        }
-
-        .data-table th {
-            background: rgba(255, 124, 0, 0.1);
-            color: var(--white);
-            font-weight: 600;
-        }
-
-        .data-table td {
-            color: var(--text-gray);
-        }
-
-        .data-table tr:hover {
-            background: rgba(255, 124, 0, 0.05);
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background: var(--warning);
-            color: var(--black);
-        }
-
-        .status-contacted {
-            background: var(--solar-blue);
-            color: var(--white);
-        }
-
-        .status-completed {
-            background: var(--success);
-            color: var(--white);
-        }
-
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-input {
-            padding: 10px;
-            border: 1px solid rgba(255, 124, 0, 0.3);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--white);
-        }
-
-        .filter-input:focus {
-            outline: none;
-            border-color: var(--solar-orange);
-        }
-
-        .charts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .chart-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 124, 0, 0.2);
-            border-radius: 15px;
+        .brand-selector {
+            background: white;
             padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .chart-title {
-            font-family: 'Poppins', sans-serif;
-            color: var(--white);
+        .brand-selector h3 {
             margin-bottom: 20px;
-            text-align: center;
+            color: #1e3c72;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
         }
 
-        .no-data {
-            text-align: center;
-            color: var(--text-gray);
-            padding: 40px;
-            font-style: italic;
-        }
-
-        .action-buttons {
+        .brand-list {
             display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .action-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
+        .brand-item {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
             transition: all 0.3s ease;
-        }
-
-        .refresh-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
-            color: var(--white);
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(255, 124, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .price-management-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .kw-option-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 124, 0, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .kw-option-card:hover {
-            border-color: var(--solar-orange);
-            box-shadow: 0 5px 15px rgba(255, 124, 0, 0.2);
-        }
-
-        .kw-option-card h3 {
-            color: var(--solar-orange);
-            font-family: 'Poppins', sans-serif;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .price-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .input-group label {
-            color: var(--text-gray);
-            font-size: 0.9rem;
+            text-transform: capitalize;
             font-weight: 500;
         }
 
-        .price-input {
-            padding: 10px;
-            border: 1px solid rgba(255, 124, 0, 0.3);
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            font-size: 1rem;
+        .brand-item:hover {
+            border-color: #FF7C00;
+            background: #fff5f0;
+        }
+
+        .brand-item.active {
+            border-color: #FF7C00;
+            background: #FF7C00;
+            color: white;
+        }
+
+        .pricing-editor {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .pricing-editor h3 {
+            margin-bottom: 20px;
+            color: #1e3c72;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .kw-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .kw-tab {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .kw-tab:hover {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .kw-tab.active {
+            border-color: #28a745;
+            background: #28a745;
+            color: white;
+        }
+
+        .pricing-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #FF7C00;
+        }
+
+        .action-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .price-input:focus {
-            outline: none;
-            border-color: var(--solar-orange);
-            box-shadow: 0 0 0 2px rgba(255, 124, 0, 0.2);
+        .btn-save {
+            background: #28a745;
+            color: white;
         }
 
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #c82333;
+        }
+
+        .btn-load {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-load:hover {
+            background: #0056b3;
+        }
+
+        .status-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-panel h3 {
+            margin-bottom: 20px;
+            color: #1e3c72;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-value {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-form h2 {
+            margin-bottom: 30px;
+            color: #1e3c72;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background: #FF7C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background: #e56a00;
+        }
+
+        .hidden {
+            display: none;
+        }
 
         @media (max-width: 768px) {
-            .admin-container {
-                padding: 10px;
-            }
-
-            .price-management-grid {
+            .admin-grid {
                 grid-template-columns: 1fr;
             }
-
-            .stats-grid {
+            
+            .pricing-form {
                 grid-template-columns: 1fr;
             }
-
-            .section-header {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .filters {
-                flex-direction: column;
-            }
-
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-
-            .data-table {
-                font-size: 0.9rem;
-            }
-
-            .data-table th,
-            .data-table td {
-                padding: 8px;
+            
+            .kw-tabs {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="admin-container">
-        <!-- Header -->
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-form">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+            <button onclick="login()">Access Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-container hidden">
         <div class="admin-header">
-            <h1>🌞 Admin Dashboard</h1>
-            <p>DhanunJay Solar Solutions - Analytics & Management</p>
+            <h1><i class="fas fa-solar-panel"></i> Solar Pricing Admin Panel</h1>
+            <p>Manage pricing data for all brands and system capacities</p>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-grid">
-            <h2>📊 Booking Management</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalBookings">0</div>
-                    <div class="stat-label">Total Bookings</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="pendingBookings">0</div>
-                    <div class="stat-label">Pending</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="completedBookings">0</div>
-                    <div class="stat-label">Completed</div>
-                </div>
-                <div class="stat-card">
-                    <button onclick="refreshCloudData()" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">
-                        🔄 Sync Cloud Data
-                    </button>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon completed">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-number" id="completed-bookings">0</div>
-                <div class="stat-label">Completed Bookings</div>
-            </div>
-        </div>
-
-        <!-- Bookings Management -->
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2 class="section-title">📋 Booking Management</h2>
-                <div>
-                    <button class="btn" onclick="exportBookings()">
-                        <i class="fas fa-download"></i> Export CSV
-                    </button>
-                    <button class="btn" onclick="refreshData()">
-                        <i class="fas fa-sync"></i> Refresh
-                    </button>
+        <div class="admin-grid">
+            <div class="brand-selector">
+                <h3><i class="fas fa-tags"></i> Select Brand</h3>
+                <div class="brand-list">
+                    <div class="brand-item active" data-brand="tata" onclick="selectBrand('tata')">
+                        <i class="fas fa-bolt"></i> Tata Power
+                    </div>
+                    <div class="brand-item" data-brand="exide" onclick="selectBrand('exide')">
+                        <i class="fas fa-battery-full"></i> Exide
+                    </div>
+                    <div class="brand-item" data-brand="luminous" onclick="selectBrand('luminous')">
+                        <i class="fas fa-lightbulb"></i> Luminous
+                    </div>
+                    <div class="brand-item" data-brand="adani" onclick="selectBrand('adani')">
+                        <i class="fas fa-industry"></i> Adani
+                    </div>
+                    <div class="brand-item" data-brand="waaree" onclick="selectBrand('waaree')">
+                        <i class="fas fa-sun"></i> Waaree
+                    </div>
                 </div>
             </div>
 
-            <div class="filters">
-                <input type="text" class="filter-input" id="search-bookings" placeholder="Search by name or mobile...">
-                <select class="filter-input" id="status-filter">
-                    <option value="">All Status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Contacted">Contacted</option>
-                    <option value="Completed">Completed</option>
-                </select>
-                <input type="date" class="filter-input" id="date-filter">
-            </div>
-
-            <div class="table-container">
-                <table class="data-table" id="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Mobile</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookings-tbody">
-                        <tr>
-                            <td colspan="6" class="no-data">No bookings found</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Price anagement -->
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2><i class="fas fa-calculator"></i> Price Calculator Management</h2>
-                <div class="brand-selector">
-                    <label for="adminBrandSelect">Select Brand to Edit:</label>
-                    <select id="adminBrandSelect" onchange="switchBrand()">
-                        <option value="tata">Tata Solar</option>
-                        <option value="adani">Adani Solar</option>
-                        <option value="luminous">Luminous Solar</option>
-                        <option value="exide">Exide Solar</option>
-                        <option value="waaree">Waaree Solar</option>
-                    </select>
+            <div class="pricing-editor">
+                <h3><i class="fas fa-edit"></i> Edit Pricing - <span id="currentBrand">Tata Power</span></h3>
+                
+                <div class="kw-tabs">
+                    <div class="kw-tab active" data-kw="1" onclick="selectKW(1)">1 KW</div>
+                    <div class="kw-tab" data-kw="2" onclick="selectKW(2)">2 KW</div>
+                    <div class="kw-tab" data-kw="3" onclick="selectKW(3)">3 KW</div>
+                    <div class="kw-tab" data-kw="4" onclick="selectKW(4)">4 KW</div>
+                    <div class="kw-tab" data-kw="5" onclick="selectKW(5)">5 KW</div>
+                    <div class="kw-tab" data-kw="6" onclick="selectKW(6)">6 KW</div>
+                    <div class="kw-tab" data-kw="7" onclick="selectKW(7)">7 KW</div>
+                    <div class="kw-tab" data-kw="8" onclick="selectKW(8)">8 KW</div>
+                    <div class="kw-tab" data-kw="9" onclick="selectKW(9)">9 KW</div>
+                    <div class="kw-tab" data-kw="10" onclick="selectKW(10)">10 KW</div>
                 </div>
-                <div class="section-actions">
-                    <button onclick="savePriceData()" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                    <button onclick="resetPriceData()" class="btn btn-secondary">
-                        <i class="fas fa-undo"></i> Reset to Default
-                    </button>
-                </div>
-            </div>
 
-            <div class="price-management-grid">
-                <div class="kw-option-card" data-kw="1">
-                    <h3>1 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-1" value="120" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-1" value="14400" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-1" value="60000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-1" value="18000" class="price-input">
-                        </div>
+                <div class="pricing-form">
+                    <div class="form-group">
+                        <label for="generation"><i class="fas fa-bolt"></i> Monthly Generation (units)</label>
+                        <input type="number" id="generation" placeholder="e.g., 120">
                     </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="2">
-                    <h3>2 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-2" value="240" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-2" value="144000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-2" value="125000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-2" value="37500" class="price-input">
-                        </div>
+                    <div class="form-group">
+                        <label for="savings"><i class="fas fa-rupee-sign"></i> Annual Savings (₹)</label>
+                        <input type="number" id="savings" placeholder="e.g., 14400">
                     </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="3">
-                    <h3>3 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-3" value="360" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-3" value="43200" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-3" value="180000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-3" value="78000" class="price-input">
-                        </div>
+                    <div class="form-group">
+                        <label for="price"><i class="fas fa-tag"></i> Total System Price (₹)</label>
+                        <input type="number" id="price" placeholder="e.g., 60000">
                     </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="4">
-                    <h3>4 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-4" value="480" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-4" value="57600" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-4" value="240000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-4" value="72000" class="price-input">
-                        </div>
+                    <div class="form-group">
+                        <label for="subsidy"><i class="fas fa-gift"></i> Government Subsidy (₹)</label>
+                        <input type="number" id="subsidy" placeholder="e.g., 18000">
                     </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="5">
-                    <h3>5 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-5" value="600" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-5" value="72000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-5" value="300000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-5" value="90000" class="price-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="6">
-                    <h3>6 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-6" value="720" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-6" value="86400" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-6" value="350000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-6" value="105000" class="price-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="7">
-                    <h3>7 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-7" value="840" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-7" value="100800" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-7" value="385000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-7" value="115500" class="price-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="8">
-                    <h3>8 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-8" value="960" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-8" value="115200" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-8" value="400000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-8" value="120000" class="price-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="9">
-                    <h3>9 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-9" value="1080" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-9" value="129600" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-9" value="415000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-9" value="124500" class="price-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kw-option-card" data-kw="10">
-                    <h3>10 KW System</h3>
-                    <div class="price-inputs">
-                        <div class="input-group">
-                            <label>Monthly Generation (units):</label>
-                            <input type="number" id="generation-10" value="1200" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Annual Savings (₹):</label>
-                            <input type="number" id="savings-10" value="144000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Total Price (₹):</label>
-                            <input type="number" id="price-10" value="425000" class="price-input">
-                        </div>
-                        <div class="input-group">
-                            <label>Subsidy (₹):</label>
-                            <input type="number" id="subsidy-10" value="127500" class="price-input">
-                        </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-save" onclick="savePricing()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn btn-load" onclick="loadPricing()">
+                            <i class="fas fa-sync"></i> Load Current
+                        </button>
+                        <button class="btn btn-reset" onclick="resetToDefaults()">
+                            <i class="fas fa-undo"></i> Reset to Default
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Visitor Analytics -->
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2 class="section-title">📊 Visitor Analytics</h2>
-                <button class="btn" onclick="exportVisitors()">
-                    <i class="fas fa-download"></i> Export CSV
-                </button>
+        <div class="status-panel">
+            <h3><i class="fas fa-info-circle"></i> System Status</h3>
+            <div class="status-item">
+                <span class="status-label">Current Brand:</span>
+                <span class="status-value" id="statusBrand">Tata Power</span>
             </div>
-
-            <div class="charts-container">
-                <div class="chart-card">
-                    <h3 class="chart-title">Visitors by Country</h3>
-                    <div id="country-chart"></div>
-                </div>
-
-                <div class="chart-card">
-                    <h3 class="chart-title">Daily Visitors (Last 7 Days)</h3>
-                    <div id="daily-chart"></div>
-                </div>
+            <div class="status-item">
+                <span class="status-label">Current Capacity:</span>
+                <span class="status-value" id="statusKW">1 KW</span>
             </div>
-
-            <div class="table-container">
-                <table class="data-table" id="visitors-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>IP Address</th>
-                            <th>Location</th>
-                            <th>Referrer</th>
-                            <th>Device</th>
-                        </tr>
-                    </thead>
-                    <tbody id="visitors-tbody">
-                        <tr>
-                            <td colspan="5" class="no-data">No visitor data found</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="status-item">
+                <span class="status-label">Last Saved:</span>
+                <span class="status-value" id="lastSaved">Never</span>
             </div>
-        </div>
-
-        <!-- Event Tracking -->
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2 class="section-title">🎯 Event Tracking</h2>
-                <button class="btn" onclick="clearEvents()">
-                    <i class="fas fa-trash"></i> Clear Events
-                </button>
-            </div>
-
-            <div class="table-container">
-                <table class="data-table" id="events-table">
-                    <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Timestamp</th>
-                            <th>Session ID</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody id="events-tbody">
-                        <tr>
-                            <td colspan="4" class="no-data">No events found</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="status-item">
+                <span class="status-label">Data Sync:</span>
+                <span class="status-value" id="syncStatus">Ready</span>
             </div>
         </div>
     </div>
 
-    <!-- Refresh Button -->
-    <button class="refresh-btn" onclick="refreshData()" title="Refresh Data">
-        <i class="fas fa-sync"></i>
-    </button>
-
     <script>
-        // Global variables
-        let bookingsData = [];
-        let visitorsData = [];
-        let eventsData = [];
+        // Admin configuration
+        const ADMIN_PASSWORD = 'solar2024';
+        let currentBrand = 'tata';
+        let currentKW = 1;
 
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            setupFilters();
-            // Removed auto-refresh to prevent overwriting user edits
+        // Default pricing data
+        const defaultPricing = {
+            tata: {
+                1: { generation: 120, savings: 14400, price: 60000, subsidy: 18000 },
+                2: { generation: 240, savings: 28800, price: 125000, subsidy: 37500 },
+                3: { generation: 360, savings: 43200, price: 180000, subsidy: 78000 },
+                4: { generation: 480, savings: 57600, price: 240000, subsidy: 72000 },
+                5: { generation: 600, savings: 72000, price: 300000, subsidy: 90000 },
+                6: { generation: 720, savings: 86400, price: 350000, subsidy: 105000 },
+                7: { generation: 840, savings: 100800, price: 385000, subsidy: 115500 },
+                8: { generation: 960, savings: 115200, price: 400000, subsidy: 120000 },
+                9: { generation: 1080, savings: 129600, price: 415000, subsidy: 124500 },
+                10: { generation: 1200, savings: 144000, price: 425000, subsidy: 127500 }
+            },
+            exide: {
+                1: { generation: 110, savings: 13200, price: 58000, subsidy: 17400 },
+                2: { generation: 220, savings: 26400, price: 118000, subsidy: 35400 },
+                3: { generation: 330, savings: 39600, price: 175000, subsidy: 52500 },
+                4: { generation: 440, savings: 52800, price: 235000, subsidy: 70500 },
+                5: { generation: 550, savings: 66000, price: 295000, subsidy: 88500 },
+                6: { generation: 660, savings: 79200, price: 345000, subsidy: 103500 },
+                7: { generation: 770, savings: 92400, price: 375000, subsidy: 112500 },
+                8: { generation: 880, savings: 105600, price: 395000, subsidy: 118500 },
+                9: { generation: 990, savings: 118800, price: 410000, subsidy: 123000 },
+                10: { generation: 1100, savings: 132000, price: 420000, subsidy: 126000 }
+            },
+            luminous: {
+                1: { generation: 115, savings: 13800, price: 59000, subsidy: 17700 },
+                2: { generation: 230, savings: 27600, price: 120000, subsidy: 36000 },
+                3: { generation: 345, savings: 41400, price: 177000, subsidy: 53100 },
+                4: { generation: 460, savings: 55200, price: 237000, subsidy: 71100 },
+                5: { generation: 575, savings: 69000, price: 297000, subsidy: 89100 },
+                6: { generation: 690, savings: 82800, price: 347000, subsidy: 104100 },
+                7: { generation: 805, savings: 96600, price: 377000, subsidy: 113100 },
+                8: { generation: 920, savings: 110400, price: 397000, subsidy: 119100 },
+                9: { generation: 1035, savings: 124200, price: 412000, subsidy: 123600 },
+                10: { generation: 1150, savings: 138000, price: 422000, subsidy: 126600 }
+            },
+            adani: {
+                1: { generation: 125, savings: 15000, price: 62000, subsidy: 18600 },
+                2: { generation: 250, savings: 30000, price: 127000, subsidy: 38100 },
+                3: { generation: 375, savings: 45000, price: 182000, subsidy: 54600 },
+                4: { generation: 500, savings: 60000, price: 242000, subsidy: 72600 },
+                5: { generation: 625, savings: 75000, price: 302000, subsidy: 90600 },
+                6: { generation: 750, savings: 90000, price: 352000, subsidy: 105600 },
+                7: { generation: 875, savings: 105000, price: 382000, subsidy: 114600 },
+                8: { generation: 1000, savings: 120000, price: 402000, subsidy: 120600 },
+                9: { generation: 1125, savings: 135000, price: 417000, subsidy: 125100 },
+                10: { generation: 1250, savings: 150000, price: 427000, subsidy: 128100 }
+            },
+            waaree: {
+                1: { generation: 128, savings: 15360, price: 61000, subsidy: 18300 },
+                2: { generation: 256, savings: 30720, price: 126000, subsidy: 37800 },
+                3: { generation: 384, savings: 46080, price: 181000, subsidy: 54300 },
+                4: { generation: 512, savings: 61440, price: 241000, subsidy: 72300 },
+                5: { generation: 640, savings: 76800, price: 301000, subsidy: 90300 },
+                6: { generation: 768, savings: 92160, price: 351000, subsidy: 105300 },
+                7: { generation: 896, savings: 107520, price: 381000, subsidy: 114300 },
+                8: { generation: 1024, savings: 122880, price: 401000, subsidy: 120300 },
+                9: { generation: 1152, savings: 138240, price: 416000, subsidy: 124800 },
+                10: { generation: 1280, savings: 153600, price: 426000, subsidy: 127800 }
+            }
+        };
+
+        // Login function
+        function login() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadPricing();
+            } else {
+                alert('❌ Incorrect password!');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // Brand selection
+        function selectBrand(brand) {
+            currentBrand = brand;
+            
+            // Update UI
+            document.querySelectorAll('.brand-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-brand="${brand}"]`).classList.add('active');
+            
+            // Update brand display
+            const brandNames = {
+                tata: 'Tata Power',
+                exide: 'Exide',
+                luminous: 'Luminous',
+                adani: 'Adani',
+                waaree: 'Waaree'
+            };
+            
+            document.getElementById('currentBrand').textContent = brandNames[brand];
+            document.getElementById('statusBrand').textContent = brandNames[brand];
+            
+            loadPricing();
+        }
+
+        // KW selection
+        function selectKW(kw) {
+            currentKW = kw;
+            
+            // Update UI
+            document.querySelectorAll('.kw-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-kw="${kw}"]`).classList.add('active');
+            
+            document.getElementById('statusKW').textContent = kw + ' KW';
+            
+            loadPricing();
+        }
+
+        // Load pricing data
+        function loadPricing() {
+            const savedData = localStorage.getItem('customPricingData');
+            let pricingData = defaultPricing;
+            
+            if (savedData) {
+                try {
+                    const customData = JSON.parse(savedData);
+                    // Merge custom data with defaults
+                    Object.keys(customData).forEach(brand => {
+                        if (!pricingData[brand]) pricingData[brand] = {};
+                        Object.keys(customData[brand]).forEach(kw => {
+                            pricingData[brand][kw] = { ...pricingData[brand][kw], ...customData[brand][kw] };
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error loading custom data:', error);
+                }
+            }
+            
+            const data = pricingData[currentBrand][currentKW];
+            if (data) {
+                document.getElementById('generation').value = data.generation;
+                document.getElementById('savings').value = data.savings;
+                document.getElementById('price').value = data.price;
+                document.getElementById('subsidy').value = data.subsidy;
+            }
+            
+            document.getElementById('syncStatus').textContent = 'Loaded';
+        }
+
+        // Save pricing data
+        function savePricing() {
+            const generation = parseInt(document.getElementById('generation').value) || 0;
+            const savings = parseInt(document.getElementById('savings').value) || 0;
+            const price = parseInt(document.getElementById('price').value) || 0;
+            const subsidy = parseInt(document.getElementById('subsidy').value) || 0;
+            
+            if (generation === 0 || savings === 0 || price === 0) {
+                alert('❌ Please fill all fields with valid values!');
+                return;
+            }
+            
+            // Get existing custom data
+            let customData = {};
+            const savedData = localStorage.getItem('customPricingData');
+            if (savedData) {
+                try {
+                    customData = JSON.parse(savedData);
+                } catch (error) {
+                    console.error('Error parsing saved data:', error);
+                }
+            }
+            
+            // Update the data
+            if (!customData[currentBrand]) {
+                customData[currentBrand] = {};
+            }
+            
+            customData[currentBrand][currentKW] = {
+                generation: generation,
+                savings: savings,
+                price: price,
+                subsidy: subsidy
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('customPricingData', JSON.stringify(customData));
+            
+            // Also save to main site keys for compatibility
+            localStorage.setItem('solarPricingData', JSON.stringify(customData));
+            localStorage.setItem('brandPricingData', JSON.stringify(customData));
+            localStorage.setItem('onGridPricing', JSON.stringify(customData));
+            
+            // Update status
+            document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
+            document.getElementById('syncStatus').textContent = 'Saved';
+            
+            alert('✅ Pricing data saved successfully!');
+            
+            console.log('Saved pricing data:', customData);
+        }
+
+        // Reset to defaults
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset to default values?')) {
+                const data = defaultPricing[currentBrand][currentKW];
+                document.getElementById('generation').value = data.generation;
+                document.getElementById('savings').value = data.savings;
+                document.getElementById('price').value = data.price;
+                document.getElementById('subsidy').value = data.subsidy;
+                
+                document.getElementById('syncStatus').textContent = 'Reset';
+            }
+        }
+
+        // Handle Enter key in password field
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
         });
 
-        // Load data from localStorage and cloud storage
-        async function loadData() {
-            // Load from localStorage first
-            bookingsData = JSON.parse(localStorage.getItem('solarBookings') || '[]');
-            visitorsData = JSON.parse(localStorage.getItem('solarVisitors') || '[]');
-            eventsData = JSON.parse(localStorage.getItem('solarEvents') || '[]');
-
-            // Also fetch from cloud storage for cross-device data
-            await loadCloudData();
-
-            updateStatistics();
-            renderBookings();
-            renderVisitors();
-            renderEvents();
-            renderCharts();
-            loadPriceData();
-        }
-
-        // Load data from cloud storage
-        async function loadCloudData() {
-            try {
-                const response = await fetch('https://api.jsonbin.io/v3/b/66cb5f5ce41b4d34e4217a8f/latest', {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': '$2a$10$8K9vN2mF5qL3pR7sT1wX4eY6hG8jD9kA2bC5fE3gH1iJ4kL6mN0oP'
-                    }
-                });
-                
-                if (response.ok) {
-                    const cloudData = await response.json();
-                    if (cloudData.record && cloudData.record.quotes) {
-                        // Merge cloud data with local data
-                        const cloudQuotes = cloudData.record.quotes;
-                        const localQuotes = JSON.parse(localStorage.getItem('solarBookings') || '[]');
-                        
-                        // Combine and deduplicate based on ID
-                        const allQuotes = [...localQuotes];
-                        cloudQuotes.forEach(cloudQuote => {
-                            if (!allQuotes.find(local => local.id === cloudQuote.id)) {
-                                allQuotes.push(cloudQuote);
-                            }
-                        });
-                        
-                        bookingsData = allQuotes;
-                        // Update localStorage with merged data
-                        localStorage.setItem('solarBookings', JSON.stringify(allQuotes));
-                        console.log('Cloud data loaded successfully, found', cloudQuotes.length, 'quotes');
-                    }
-                } else {
-                    console.log('Cloud storage response not OK:', response.status);
-                }
-            } catch (error) {
-                console.log('Cloud data loading failed, using local data only:', error);
-            }
-        }
-
-        // Manual refresh function for cloud data sync
-        async function refreshCloudData() {
-            const button = event.target;
-            button.innerHTML = '⏳ Syncing...';
-            button.disabled = true;
-            
-            try {
-                await loadCloudData();
-                updateStatistics();
-                renderBookings();
-                button.innerHTML = '✅ Synced!';
-                setTimeout(() => {
-                    button.innerHTML = '🔄 Sync Cloud Data';
-                    button.disabled = false;
-                }, 2000);
-            } catch (error) {
-                button.innerHTML = '❌ Failed';
-                setTimeout(() => {
-                    button.innerHTML = '🔄 Sync Cloud Data';
-                    button.disabled = false;
-                }, 2000);
-            }
-        }
-
-        // Load price data into dashboard inputs
-        function loadPriceData() {
-            // Default pricing data for all brands
-            const defaultBrandPricing = {
-                tata: {
-                    1: { generation: 120, savings: 14400, price: 60000, subsidy: 18000 },
-                    2: { generation: 240, savings: 144000, price: 125000, subsidy: 37500 },
-                    3: { generation: 360, savings: 43200, price: 180000, subsidy: 78000 },
-                    4: { generation: 480, savings: 57600, price: 240000, subsidy: 72000 },
-                    5: { generation: 600, savings: 72000, price: 300000, subsidy: 90000 },
-                    6: { generation: 720, savings: 86400, price: 350000, subsidy: 105000 },
-                    7: { generation: 840, savings: 100800, price: 385000, subsidy: 115500 },
-                    8: { generation: 960, savings: 115200, price: 400000, subsidy: 120000 },
-                    9: { generation: 1080, savings: 129600, price: 415000, subsidy: 124500 },
-                    10: { generation: 1200, savings: 144000, price: 425000, subsidy: 127500 }
-                },
-                adani: {
-                    1: { generation: 125, savings: 15000, price: 65000, subsidy: 19500 },
-                    2: { generation: 250, savings: 150000, price: 135000, subsidy: 40500 },
-                    3: { generation: 375, savings: 45000, price: 195000, subsidy: 85000 },
-                    4: { generation: 500, savings: 60000, price: 260000, subsidy: 78000 },
-                    5: { generation: 625, savings: 75000, price: 325000, subsidy: 97500 },
-                    6: { generation: 750, savings: 90000, price: 380000, subsidy: 114000 },
-                    7: { generation: 875, savings: 105000, price: 420000, subsidy: 126000 },
-                    8: { generation: 1000, savings: 120000, price: 435000, subsidy: 130500 },
-                    9: { generation: 1125, savings: 135000, price: 450000, subsidy: 135000 },
-                    10: { generation: 1250, savings: 150000, price: 465000, subsidy: 139500 }
-                },
-                luminous: {
-                    1: { generation: 115, savings: 13800, price: 55000, subsidy: 16500 },
-                    2: { generation: 230, savings: 138000, price: 115000, subsidy: 34500 },
-                    3: { generation: 345, savings: 41400, price: 165000, subsidy: 72000 },
-                    4: { generation: 460, savings: 55200, price: 220000, subsidy: 66000 },
-                    5: { generation: 575, savings: 69000, price: 275000, subsidy: 82500 },
-                    6: { generation: 690, savings: 82800, price: 320000, subsidy: 96000 },
-                    7: { generation: 805, savings: 96600, price: 355000, subsidy: 106500 },
-                    8: { generation: 920, savings: 110400, price: 370000, subsidy: 111000 },
-                    9: { generation: 1035, savings: 124200, price: 385000, subsidy: 115500 },
-                    10: { generation: 1150, savings: 138000, price: 395000, subsidy: 118500 }
-                },
-                exide: {
-                    1: { generation: 110, savings: 13200, price: 58000, subsidy: 17400 },
-                    2: { generation: 220, savings: 132000, price: 128000, subsidy: 38400 },
-                    3: { generation: 330, savings: 39600, price: 185000, subsidy: 80000 },
-                    4: { generation: 440, savings: 52800, price: 245000, subsidy: 73500 },
-                    5: { generation: 550, savings: 66000, price: 305000, subsidy: 91500 },
-                    6: { generation: 660, savings: 79200, price: 360000, subsidy: 108000 },
-                    7: { generation: 770, savings: 92400, price: 395000, subsidy: 118500 },
-                    8: { generation: 880, savings: 105600, price: 410000, subsidy: 123000 },
-                    9: { generation: 990, savings: 118800, price: 425000, subsidy: 127500 },
-                    10: { generation: 1100, savings: 132000, price: 440000, subsidy: 132000 }
-                }
-            };
-
-            // Load saved pricing or use defaults
-            const savedBrandPricing = JSON.parse(localStorage.getItem('brandPricingData') || '{}');
-            const brandPricingData = Object.keys(savedBrandPricing).length > 0 ? savedBrandPricing : defaultBrandPricing;
-            
-            // Get current brand data
-            const currentBrandData = brandPricingData[currentAdminBrand] || defaultBrandPricing[currentAdminBrand];
-
-            // Populate input fields for current brand
-            for (let kw = 1; kw <= 10; kw++) {
-                const data = currentBrandData[kw];
-                if (data) {
-                    // Only update if not currently being edited (to prevent overwriting user input)
-                    if (document.activeElement.id !== `generation-${kw}`) {
-                        document.getElementById(`generation-${kw}`).value = data.generation;
-                    }
-                    if (document.activeElement.id !== `savings-${kw}`) {
-                        document.getElementById(`savings-${kw}`).value = data.savings;
-                    }
-                    if (document.activeElement.id !== `price-${kw}`) {
-                        document.getElementById(`price-${kw}`).value = data.price;
-                    }
-                    if (document.activeElement.id !== `subsidy-${kw}`) {
-                        document.getElementById(`subsidy-${kw}`).value = data.subsidy || 0;
-                    }
-                }
-            }
-        }
-
-        // Switch brand in admin panel
-        function switchBrand() {
-            currentAdminBrand = document.getElementById('adminBrandSelect').value;
-            loadPriceData();
-        } 
-
-        // Save price data to localStorage (brand-specific)
-        function savePriceData() {
-            // Get current brand pricing data from localStorage
-            const savedBrandPricing = JSON.parse(localStorage.getItem('brandPricingData') || '{}');
-            
-            // Create pricing data for current brand
-            const currentBrandPricing = {};
-            for (let kw = 1; kw <= 10; kw++) {
-                currentBrandPricing[kw] = {
-                    generation: parseInt(document.getElementById(`generation-${kw}`).value),
-                    savings: parseInt(document.getElementById(`savings-${kw}`).value),
-                    price: parseInt(document.getElementById(`price-${kw}`).value),
-                    subsidy: parseInt(document.getElementById(`subsidy-${kw}`).value)
-                };
-            }
-
-            // Update the specific brand data
-            savedBrandPricing[currentAdminBrand] = currentBrandPricing;
-
-            // Save brand-specific data to localStorage
-            localStorage.setItem('brandPricingData', JSON.stringify(savedBrandPricing));
-            
-            // Update legacy storage with all brand data for main website
-            localStorage.setItem('solarPricingData', JSON.stringify(savedBrandPricing));
-            localStorage.setItem('onGridPricing', JSON.stringify(savedBrandPricing));
-
-            alert(`✅ ${currentAdminBrand.toUpperCase()} Solar pricing data saved successfully! Changes will be reflected on the main website.`);
-        }
-
-        // Reset price data to defaults (brand-specific)
-        function resetPriceData() {
-            if (confirm(`Are you sure you want to reset ${currentAdminBrand.toUpperCase()} Solar pricing data to default values?`)) {
-                // Get current brand pricing data
-                const savedBrandPricing = JSON.parse(localStorage.getItem('brandPricingData') || '{}');
-                
-                // Remove current brand data (will reload defaults)
-                delete savedBrandPricing[currentAdminBrand];
-                
-                // Save updated brand data
-                localStorage.setItem('brandPricingData', JSON.stringify(savedBrandPricing));
-                
-                // Reload data for current brand
-                loadPriceData();
-                alert(`🔄 ${currentAdminBrand.toUpperCase()} Solar pricing data reset to default values!`);
-            }
-        }
-
-        let currentAdminBrand = 'tata'; // Default brand for admin
-
-
-        // Update statistics cards
-        function updateStatistics() {
-            document.getElementById('total-visitors').textContent = visitorsData.length;
-            document.getElementById('total-bookings').textContent = bookingsData.length;
-            
-            const pendingBookings = bookingsData.filter(b => b.status === 'Pending').length;
-            const completedBookings = bookingsData.filter(b => b.status === 'Completed').length;
-            
-            document.getElementById('pending-bookings').textContent = pendingBookings;
-            document.getElementById('completed-bookings').textContent = completedBookings;
-        }
-
-        // Render bookings table
-        function renderBookings(filteredData = null) {
-            const data = filteredData || bookingsData;
-            const tbody = document.getElementById('bookings-tbody');
-            
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="no-data">No bookings found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(booking => `
-                <tr>
-                    <td>${booking.name}</td>
-                    <td>${booking.mobile}</td>
-                    <td>${booking.location}</td>
-                    <td>${new Date(booking.timestamp).toLocaleDateString()}</td>
-                    <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <select class="action-btn" onchange="updateBookingStatus('${booking.id}', this.value)">
-                                <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="Contacted" ${booking.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                                <option value="Completed" ${booking.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                            </select>
-                            <button class="action-btn btn-danger" onclick="deleteBooking('${booking.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Render visitors table
-        function renderVisitors() {
-            const tbody = document.getElementById('visitors-tbody');
-            
-            if (visitorsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="no-data">No visitor data found</td></tr>';
-                return;
-            }
-
-            const recentVisitors = visitorsData.slice(-50).reverse(); // Show last 50 visitors
-            
-            tbody.innerHTML = recentVisitors.map(visitor => `
-                <tr>
-                    <td>${new Date(visitor.timestamp).toLocaleString()}</td>
-                    <td>${visitor.ip || 'Unknown'}</td>
-                    <td>${visitor.city ? `${visitor.city}, ${visitor.country}` : 'Unknown'}</td>
-                    <td>${visitor.referrer || 'Direct'}</td>
-                    <td>${getDeviceType(visitor.userAgent)}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Render events table
-        function renderEvents() {
-            const tbody = document.getElementById('events-tbody');
-            
-            if (eventsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="no-data">No events found</td></tr>';
-                return;
-            }
-
-            const recentEvents = eventsData.slice(-100).reverse(); // Show last 100 events
-            
-            tbody.innerHTML = recentEvents.map(event => `
-                <tr>
-                    <td>${event.event}</td>
-                    <td>${new Date(event.timestamp).toLocaleString()}</td>
-                    <td>${event.sessionId}</td>
-                    <td>${JSON.stringify(event.data || {})}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Render charts
-        function renderCharts() {
-            renderCountryChart();
-            renderDailyChart();
-        }
-
-        // Render country chart
-        function renderCountryChart() {
-            const countryData = {};
-            visitorsData.forEach(visitor => {
-                const country = visitor.country || 'Unknown';
-                countryData[country] = (countryData[country] || 0) + 1;
-            });
-
-            const chartContainer = document.getElementById('country-chart');
-            
-            if (Object.keys(countryData).length === 0) {
-                chartContainer.innerHTML = '<div class="no-data">No country data available</div>';
-                return;
-            }
-
-            const sortedCountries = Object.entries(countryData)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5);
-
-            chartContainer.innerHTML = sortedCountries.map(([country, count]) => `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: rgba(255, 124, 0, 0.1); border-radius: 5px;">
-                    <span>${country}</span>
-                    <span style="font-weight: bold; color: var(--solar-orange);">${count}</span>
-                </div>
-            `).join('');
-        }
-
-        // Render daily chart
-        function renderDailyChart() {
-            const last7Days = [];
-            const today = new Date();
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                last7Days.push(date.toDateString());
-            }
-
-            const dailyData = {};
-            last7Days.forEach(date => dailyData[date] = 0);
-
-            visitorsData.forEach(visitor => {
-                const date = new Date(visitor.timestamp).toDateString();
-                if (dailyData.hasOwnProperty(date)) {
-                    dailyData[date]++;
-                }
-            });
-
-            const chartContainer = document.getElementById('daily-chart');
-            const maxCount = Math.max(...Object.values(dailyData));
-
-            chartContainer.innerHTML = Object.entries(dailyData).map(([date, count]) => `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <span style="font-size: 0.9rem;">${new Date(date).toLocaleDateString()}</span>
-                    <div style="flex: 1; margin: 0 15px; background: rgba(255, 255, 255, 0.1); height: 20px; border-radius: 10px; overflow: hidden;">
-                        <div style="width: ${maxCount ? (count / maxCount) * 100 : 0}%; height: 100%; background: linear-gradient(90deg, var(--solar-orange), var(--solar-blue)); border-radius: 10px;"></div>
-                    </div>
-                    <span style="font-weight: bold; color: var(--solar-orange); min-width: 30px; text-align: right;">${count}</span>
-                </div>
-            `).join('');
-        }
-
-        // Setup filters
-        function setupFilters() {
-            const searchInput = document.getElementById('search-bookings');
-            const statusFilter = document.getElementById('status-filter');
-            const dateFilter = document.getElementById('date-filter');
-
-            [searchInput, statusFilter, dateFilter].forEach(filter => {
-                filter.addEventListener('input', applyFilters);
-            });
-        }
-
-        // Apply filters
-        function applyFilters() {
-            const searchTerm = document.getElementById('search-bookings').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            const dateFilter = document.getElementById('date-filter').value;
-
-            let filteredData = bookingsData.filter(booking => {
-                const matchesSearch = booking.name.toLowerCase().includes(searchTerm) || 
-                                    booking.mobile.includes(searchTerm);
-                const matchesStatus = !statusFilter || booking.status === statusFilter;
-                const matchesDate = !dateFilter || 
-                                  new Date(booking.timestamp).toDateString() === new Date(dateFilter).toDateString();
-
-                return matchesSearch && matchesStatus && matchesDate;
-            });
-
-            renderBookings(filteredData);
-        }
-
-        // Update booking status
-        function updateBookingStatus(bookingId, newStatus) {
-            const bookingIndex = bookingsData.findIndex(b => b.id === bookingId);
-            if (bookingIndex !== -1) {
-                bookingsData[bookingIndex].status = newStatus;
-                localStorage.setItem('solarBookings', JSON.stringify(bookingsData));
-                updateStatistics();
-                applyFilters();
-            }
-        }
-
-        // Delete booking
-        function deleteBooking(bookingId) {
-            if (confirm('Are you sure you want to delete this booking?')) {
-                bookingsData = bookingsData.filter(b => b.id !== bookingId);
-                localStorage.setItem('solarBookings', JSON.stringify(bookingsData));
-                loadData();
-            }
-        }
-
-        // Export functions
-        function exportBookings() {
-            const csv = convertToCSV(bookingsData, ['id', 'name', 'mobile', 'location', 'timestamp', 'status']);
-            downloadCSV(csv, 'solar_bookings.csv');
-        }
-
-        function exportVisitors() {
-            const csv = convertToCSV(visitorsData, ['timestamp', 'ip', 'city', 'country', 'referrer']);
-            downloadCSV(csv, 'solar_visitors.csv');
-        }
-
-        // Convert data to CSV
-        function convertToCSV(data, fields) {
-            if (data.length === 0) return '';
-            
-            const header = fields.join(',');
-            const rows = data.map(item => 
-                fields.map(field => `"${(item[field] || '').toString().replace(/"/g, '""')}"`).join(',')
-            );
-            
-            return [header, ...rows].join('\n');
-        }
-
-        // Download CSV file
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        // Clear events
-        function clearEvents() {
-            if (confirm('Are you sure you want to clear all events?')) {
-                localStorage.removeItem('solarEvents');
-                eventsData = [];
-                renderEvents();
-            }
-        }
-
-        // Refresh data
-        function refreshData() {
-            loadData();
-            console.log('Dashboard data refreshed');
-        }
-
-        // Utility functions
-        function getDeviceType(userAgent) {
-            if (!userAgent) return 'Unknown';
-            
-            if (/Mobile|Android|iPhone|iPad/.test(userAgent)) {
-                return 'Mobile';
-            } else if (/Tablet/.test(userAgent)) {
-                return 'Tablet';
-            } else {
-                return 'Desktop';
-            }
-        }
-
-        // Add some demo data if none exists
-        function addDemoData() {
-            if (bookingsData.length === 0 && visitorsData.length === 0) {
-                const demoBookings = [
-                    {
-                        id: Date.now().toString(),
-                        name: 'Rajesh Kumar',
-                        mobile: '+919876543210',
-                        location: 'Hyderabad, Telangana',
-                        timestamp: new Date().toISOString(),
-                        status: 'Pending'
-                    }
-                ];
-                
-                const demoVisitors = [
-                    {
-                        id: Date.now().toString(),
-                        timestamp: new Date().toISOString(),
-                        ip: '192.168.1.1',
-                        city: 'Hyderabad',
-                        country: 'India',
-                        referrer: 'Google',
-                        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                    }
-                ];
-
-                localStorage.setItem('solarBookings', JSON.stringify(demoBookings));
-                localStorage.setItem('solarVisitors', JSON.stringify(demoVisitors));
-                
-                loadData();
-            }
-        }
-
-        // Add demo data button (for testing)
-        if (localStorage.getItem('solarBookings') === null) {
-            const demoBtn = document.createElement('button');
-            demoBtn.textContent = 'Add Demo Data';
-            demoBtn.className = 'btn';
-            demoBtn.style.position = 'fixed';
-            demoBtn.style.top = '20px';
-            demoBtn.style.right = '20px';
-            demoBtn.onclick = addDemoData;
-            document.body.appendChild(demoBtn);
-        }
-
-        console.log('Admin Dashboard Loaded Successfully! 📊');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('adminPassword').focus();
+        });
     </script>
 </body>
 </html>
