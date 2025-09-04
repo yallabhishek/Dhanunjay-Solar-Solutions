@@ -653,9 +653,41 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="data-sync.js"></script>
+    <script src="pricing-data.js"></script>
     <script src="script.js"></script>
     
+    <!-- Clear localStorage and force refresh -->
+    <script>
+    // Clear old localStorage data that might interfere
+    localStorage.removeItem('customPricingData');
+    localStorage.removeItem('solarPricingData');
+    localStorage.removeItem('brandPricingData');
+    localStorage.removeItem('onGridPricing');
+    localStorage.removeItem('lastCloudSync');
+    
+    // Test function to verify pricing data is loaded
+    window.testPricingData = function() {
+        console.log('🧪 Testing pricing data loading...');
+        
+        if (typeof SOLAR_PRICING_DATA !== 'undefined') {
+            console.log('✅ SOLAR_PRICING_DATA loaded successfully');
+            console.log('📊 Tata 1KW data:', SOLAR_PRICING_DATA.tata["1"]);
+            return true;
+        } else {
+            console.log('❌ SOLAR_PRICING_DATA not found');
+            return false;
+        }
+    };
+    
+    // Test on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            console.log('🔍 Testing pricing data after page load...');
+            window.testPricingData();
+        }, 100);
+    });
+    </script>
+
     <!-- Test localStorage sync -->
     <script>
     // Add test function to window for debugging

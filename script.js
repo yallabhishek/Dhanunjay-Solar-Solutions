@@ -33,29 +33,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Brand-specific Solar System Pricing Data
-async function getBrandPricing() {
-    // Try to load from cloud first
-    if (typeof loadWithCloudSync === 'function') {
-        try {
-            const cloudData = await loadWithCloudSync();
-            if (cloudData) {
-                console.log('✅ Using cloud pricing data:', cloudData);
-                return cloudData;
-            }
-        } catch (error) {
-            console.error('❌ Cloud load failed:', error);
-        }
+function getBrandPricing() {
+    // Use the SOLAR_PRICING_DATA from pricing-data.js
+    if (typeof SOLAR_PRICING_DATA !== 'undefined') {
+        console.log('✅ Using pricing data from pricing-data.js');
+        return SOLAR_PRICING_DATA;
     }
     
-    // Fallback to local storage
-    const customData = localStorage.getItem('customPricingData');
-    const solarData = localStorage.getItem('solarPricingData');
-    const brandData = localStorage.getItem('brandPricingData');
-    
-    console.log('🔍 Checking for local admin data...');
-    console.log('customPricingData:', !!customData);
-    console.log('solarPricingData:', !!solarData);
-    console.log('brandPricingData:', !!brandData);
+    console.log('⚠️ SOLAR_PRICING_DATA not found, using fallback data');
     
     // Define default pricing structure
     const defaultBrandPricing = {
@@ -121,28 +106,7 @@ async function getBrandPricing() {
         }
     };
     
-    // Try to use admin data if available
-    if (customData || solarData || brandData) {
-        try {
-            const adminData = JSON.parse(customData || solarData || brandData);
-            console.log('✅ Using admin pricing data:', adminData);
-            
-            // Merge admin data with defaults
-            const mergedData = { ...defaultBrandPricing };
-            Object.keys(adminData).forEach(brand => {
-                if (!mergedData[brand]) mergedData[brand] = {};
-                Object.keys(adminData[brand]).forEach(kw => {
-                    mergedData[brand][kw] = { ...mergedData[brand][kw], ...adminData[brand][kw] };
-                });
-            });
-            
-            return mergedData;
-        } catch (error) {
-            console.error('❌ Error parsing admin data:', error);
-        }
-    }
-    
-    console.log('📋 Using default pricing data');
+    console.log('📋 Using fallback pricing data');
     return defaultBrandPricing;
 }
 
@@ -160,15 +124,16 @@ let originalValues = {};
 let editedData = {};
 
 // Force refresh pricing data on page load and when needed
-async function refreshPricingData() {
-    onGridPricing = await getBrandPricing();
+function refreshPricingData() {
+    onGridPricing = getBrandPricing();
     console.log('🔄 Pricing data refreshed:', onGridPricing);
     return onGridPricing;
 }
 
 // Initialize pricing data
-document.addEventListener('DOMContentLoaded', async function() {
-    await refreshPricingData();
+document.addEventListener('DOMContentLoaded', function() {
+    refreshPricingData();
+    updateKWCardPrices();
 });
 
 // Select brand by logo click
