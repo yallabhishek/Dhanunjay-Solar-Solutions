@@ -1,6 +1,6 @@
 {
   "tata": {
-    "1": { "generation": 120, "savings": 14400, "price": 60000, "subsidy": 18000 },
+    "1": { "generation": 120, "savings": 14400, "price": 90000, "subsidy": 30000 },
     "2": { "generation": 240, "savings": 28800, "price": 125000, "subsidy": 37500 },
     "3": { "generation": 360, "savings": 43200, "price": 180000, "subsidy": 78000 },
     "4": { "generation": 480, "savings": 57600, "price": 240000, "subsidy": 72000 },
