@@ -452,6 +452,7 @@
         </div>
     </div>
 
+    <script src="data-sync.js"></script>
     <script>
         // Admin configuration
         const ADMIN_PASSWORD = 'solar2024';
@@ -607,8 +608,8 @@
             document.getElementById('syncStatus').textContent = 'Loaded';
         }
 
-        // Save pricing data
-        function savePricing() {
+        // Save pricing data with cloud sync
+        async function savePricing() {
             const generation = parseInt(document.getElementById('generation').value) || 0;
             const savings = parseInt(document.getElementById('savings').value) || 0;
             const price = parseInt(document.getElementById('price').value) || 0;
@@ -642,19 +643,38 @@
                 subsidy: subsidy
             };
             
-            // Save to localStorage
-            localStorage.setItem('customPricingData', JSON.stringify(customData));
+            // Save with cloud sync
+            document.getElementById('syncStatus').textContent = 'Saving...';
             
-            // Also save to main site keys for compatibility
-            localStorage.setItem('solarPricingData', JSON.stringify(customData));
-            localStorage.setItem('brandPricingData', JSON.stringify(customData));
-            localStorage.setItem('onGridPricing', JSON.stringify(customData));
+            try {
+                if (typeof saveWithCloudSync === 'function') {
+                    const cloudSaved = await saveWithCloudSync(customData);
+                    if (cloudSaved) {
+                        document.getElementById('syncStatus').textContent = 'Cloud Synced ✅';
+                        alert('✅ Pricing data saved and synced to cloud!\nChanges will now appear on all devices.');
+                    } else {
+                        document.getElementById('syncStatus').textContent = 'Local Only ⚠️';
+                        alert('⚠️ Data saved locally but cloud sync failed.\nChanges may not appear on other devices.');
+                    }
+                } else {
+                    // Fallback to local only
+                    localStorage.setItem('customPricingData', JSON.stringify(customData));
+                    localStorage.setItem('solarPricingData', JSON.stringify(customData));
+                    localStorage.setItem('brandPricingData', JSON.stringify(customData));
+                    localStorage.setItem('onGridPricing', JSON.stringify(customData));
+                    
+                    document.getElementById('syncStatus').textContent = 'Local Only';
+                    alert('✅ Pricing data saved locally!');
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                document.getElementById('syncStatus').textContent = 'Save Failed ❌';
+                alert('❌ Failed to save data. Please try again.');
+                return;
+            }
             
             // Update status
             document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
-            document.getElementById('syncStatus').textContent = 'Saved';
-            
-            alert('✅ Pricing data saved successfully!');
             
             console.log('Saved pricing data:', customData);
         }

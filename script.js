@@ -33,13 +33,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Brand-specific Solar System Pricing Data
-function getBrandPricing() {
-    // Check for custom pricing data from admin panel
+async function getBrandPricing() {
+    // Try to load from cloud first
+    if (typeof loadWithCloudSync === 'function') {
+        try {
+            const cloudData = await loadWithCloudSync();
+            if (cloudData) {
+                console.log('✅ Using cloud pricing data:', cloudData);
+                return cloudData;
+            }
+        } catch (error) {
+            console.error('❌ Cloud load failed:', error);
+        }
+    }
+    
+    // Fallback to local storage
     const customData = localStorage.getItem('customPricingData');
     const solarData = localStorage.getItem('solarPricingData');
     const brandData = localStorage.getItem('brandPricingData');
     
-    console.log('🔍 Checking for admin data...');
+    console.log('🔍 Checking for local admin data...');
     console.log('customPricingData:', !!customData);
     console.log('solarPricingData:', !!solarData);
     console.log('brandPricingData:', !!brandData);
@@ -147,15 +160,15 @@ let originalValues = {};
 let editedData = {};
 
 // Force refresh pricing data on page load and when needed
-function refreshPricingData() {
-    onGridPricing = getBrandPricing();
+async function refreshPricingData() {
+    onGridPricing = await getBrandPricing();
     console.log('🔄 Pricing data refreshed:', onGridPricing);
     return onGridPricing;
 }
 
 // Initialize pricing data
-document.addEventListener('DOMContentLoaded', function() {
-    refreshPricingData();
+document.addEventListener('DOMContentLoaded', async function() {
+    await refreshPricingData();
 });
 
 // Select brand by logo click
