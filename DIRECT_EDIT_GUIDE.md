@@ -1,4 +1,4 @@
-# Direct Edit Feature - DhanunJay Solar Solutions Website
+# Direct Edit Feature - Dhanunjay Solar Solutions Website
 
 ## Overview
 The website now includes a powerful direct edit feature that allows authorized users to edit content directly from the website interface without needing to modify code files.

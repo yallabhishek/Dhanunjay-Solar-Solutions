@@ -136,11 +136,12 @@ body {
 
 .company-name {
     font-family: 'Poppins', sans-serif;
-    font-size: 4.5rem;
+    font-size: 2.8rem;
     font-weight: 900;
     color: #FFFFFF;
     margin-bottom: 25px;
     animation: fadeInUp 1s ease 1s both;
+    line-height: 1.1;
 }
 
 .tagline {
@@ -288,7 +289,7 @@ body {
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 15px;
     flex-shrink: 0;
     white-space: nowrap;
 }
@@ -353,18 +354,6 @@ body {
     background-clip: text;
 }
 
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 30px;
-    align-items: center;
-}
-
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
 
 .call-btn {
     background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
@@ -385,21 +374,54 @@ body {
 }
 
 .quote-btn-mobile {
-    background: linear-gradient(45deg, var(--golden-yellow), var(--solar-orange));
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
     color: var(--white);
     text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: none;
-    align-items: center;
-    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    white-space: nowrap !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    margin: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-family: 'Poppins', sans-serif !important;
+    letter-spacing: 0.5px;
+    transform: none !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
-.quote-btn-mobile:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 185, 0, 0.3);
+.quote-btn-mobile i,
+.quote-btn-mobile .quote-text {
+    display: inline-flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
+.quote-btn-mobile i {
+    font-size: 1.2rem !important;
+    margin-right: 4px;
+}
+
+.quote-btn-mobile:hover,
+.quote-btn-mobile:focus,
+.quote-btn-mobile:active {
+    background: linear-gradient(45deg, var(--solar-blue), var(--solar-orange)) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(30, 144, 255, 0.25) !important;
+}
+
+.quote-btn-mobile:active {
+    transform: translateY(1px) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
 }
 
 .hamburger {
@@ -467,6 +489,8 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 13px;
+    z-index: 1001;
+    position: relative;
 }
 
 .quote-btn:hover {
@@ -553,8 +577,18 @@ body {
     font-size: 3.5rem;
     font-weight: 700;
     color: var(--white);
-    margin-bottom: 20px;
-    line-height: 1.2;
+    margin-bottom: 0px;
+    line-height: 1.1;
+}
+
+.hero-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--solar-orange);
+    margin-bottom: 25px;
+    margin-top: 0;
+    font-style: italic;
 }
 
 .hero-subtitle {
@@ -568,6 +602,7 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    margin-top: 30px;
 }
 
 .btn {
@@ -637,6 +672,7 @@ body {
     .hero-celestial {
         width: 100px;
         height: 100px;
+        top: -360px;
         right: -50px;
     }
 }
@@ -1574,7 +1610,7 @@ body {
     border-radius: 12px;
     padding: 15px 8px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1.275);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -1878,6 +1914,7 @@ body {
     .price-modal-content {
         width: 95%;
         margin: 10px;
+        max-height: 75vh;
     }
     
     .details-layout {
@@ -2677,20 +2714,17 @@ body.edit-mode .section-header [data-editable] {
     }
     
     .quote-btn-mobile {
-        background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
+        background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue)) !important;
         color: var(--white);
         border: none;
         padding: 10px 20px;
         border-radius: 25px;
         font-weight: 600;
-        cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
-        font-size: 14px;
-        min-width: 40px;
-        justify-content: center;
         align-items: center;
         gap: 8px;
+        font-size: 14px;
         text-decoration: none;
     }
     
@@ -2703,39 +2737,41 @@ body.edit-mode .section-header [data-editable] {
     }
 }
 
-/* Enhanced Responsive Design */
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
     }
-    
+
     .nav-menu {
         position: fixed;
-        top: 80px;
         left: -100%;
-        width: 100%;
-        height: calc(100vh - 80px);
-        background: rgba(0, 0, 0, 0.98);
-        backdrop-filter: blur(10px);
+        top: 80px;
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 20px;
-        padding-top: 30px;
-        transition: left 0.3s ease;
+        background-color: rgba(0, 0, 0, 0.98);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 124, 0, 0.1);
+        padding: 20px 0;
         z-index: 999;
+        gap: 0;
+        justify-content: flex-start;
+        align-items: stretch;
+        min-height: calc(100vh - 80px);
         overflow-y: auto;
     }
-    
+
     .nav-menu.active {
         left: 0;
     }
-    
+
     .nav-item {
         width: 90%;
         text-align: center;
     }
-    
+
     .nav-link {
         display: block;
         padding: 12px 20px;
@@ -2746,11 +2782,11 @@ body.edit-mode .section-header [data-editable] {
         margin-bottom: 5px;
         transition: all 0.3s ease;
     }
-    
+
     .nav-link:hover {
         background: rgba(255, 124, 0, 0.1);
     }
-    
+
     .quote-btn {
         margin-top: 10px;
         display: inline-block;
@@ -2759,65 +2795,62 @@ body.edit-mode .section-header [data-editable] {
         padding: 12px 24px;
         border-radius: 25px;
     }
-    
+
     .call-btn {
         font-size: 14px;
         padding: 10px 15px;
         min-width: auto;
         justify-content: center;
     }
-    
-    .call-btn .call-text {
-        display: none;
-    }
-    
+
     .quote-btn-mobile {
         display: flex;
         font-size: 14px;
         padding: 10px 15px;
         min-width: auto;
     }
-    
+
     .hero-content {
         grid-template-columns: 1fr;
         gap: 40px;
         text-align: center;
     }
-    
-    .hero-title {
-        font-size: 2.5rem;
-        line-height: 1.1;
-        margin-bottom: 15px;
+
+    .hero {
+        margin-top: 0;
+        padding-top: 100px;
+        min-height: calc(100vh - 80px);
     }
-    
+
+    .hero-title {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
     /* Fix mobile viewport and prevent black bars */
     html, body {
         width: 100%;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .nav-container {
         padding: 0 15px;
         min-height: 80px;
     }
-    
+
     /* Ensure proper mobile spacing */
-    .hero {
-        margin-top: 0;
-        padding-top: 100px;
-        min-height: calc(100vh - 80px);
-    }
-    
     .hero-subtitle {
         font-size: 1rem;
         margin-bottom: 30px;
     }
-    
+
     .hero-buttons {
         justify-content: center;
         gap: 15px;
     }
+
     
     .btn {
         padding: 12px 25px;

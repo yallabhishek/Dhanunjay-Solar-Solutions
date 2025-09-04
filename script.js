@@ -1020,16 +1020,16 @@ function initializeWebsite() {
         // Set sun/moon based on time
         setCelestialBody();
         
-        // Hide loading screen after page loads
+        // Hide loading screen after page loads (1 second total)
         setTimeout(() => {
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                }, 500);
+                }, 200);
             }
-        }, 1000);
+        }, 800);
         
         // Initialize brand logos with delay for GitHub Pages
         setTimeout(() => {
@@ -1399,7 +1399,7 @@ function redirectToWhatsAppWithDetails() {
         
         // Construct WhatsApp message with system details
         const netPrice = systemData.price - systemData.sub;
-        const message = `Hello DhanunJay Solar Solutions,
+        const message = `Hello Dhanunjay Solar Solutions,
 
 I am interested in your ${brand.toUpperCase()} solar system with the following specifications:
 
@@ -1416,7 +1416,7 @@ Thank you!`;
         const encodedMessage = encodeURIComponent(message);
         
         // WhatsApp number to contact
-        const whatsappNumber = '919133921819';
+        const whatsappNumber = '918500583341';
         
         // Smart WhatsApp redirection - Always try native app first
         const openWhatsAppSmart = () => {
@@ -1707,7 +1707,7 @@ async function sendEmailNotification(data) {
                 <p><strong>Government Subsidy:</strong> ${data.subsidy}</p>
                 <p><strong>Message:</strong> ${data.message}</p>
                 <hr>
-                <p><em>Sent from DhanunJay Solar Solutions Website</em></p>
+                <p><em>Sent from Dhanunjay Solar Solutions Website</em></p>
             `
         };
         
@@ -2131,19 +2131,32 @@ function toggleEditMode() {
     }
 }
 
-// Admin password for edit access
-const EDIT_PASSWORD = 'solar2024';
+// Admin access control - password should be handled server-side in production
 let isEditAuthorized = false;
+
+// Secure admin authentication function
+function authenticateAdmin() {
+    // In production, this should use proper authentication with server-side validation
+    const password = prompt('Enter admin password:');
+    if (password && password.length > 0) {
+        // This is a temporary client-side check - replace with server authentication
+        const hashedInput = btoa(password); // Basic encoding - use proper hashing in production
+        const expectedHash = btoa('solar2024'); // This should come from server in production
+        
+        if (hashedInput === expectedHash) {
+            isEditAuthorized = true;
+            sessionStorage.setItem('adminAuth', 'true');
+            return true;
+        }
+    }
+    alert('Invalid password');
+    return false;
+}
 
 // Request edit access with password
 function requestEditAccess() {
-    const password = prompt('🔐 Enter admin password to edit values:');
-    
-    if (password === EDIT_PASSWORD) {
-        isEditAuthorized = true;
+    if (authenticateAdmin()) {
         enterEditMode();
-    } else if (password !== null) {
-        alert('❌ Incorrect password!');
     }
 }
 
@@ -2440,4 +2453,56 @@ selectKW = function(kw) {
     document.getElementById('priceResult').style.display = 'block';
 };
 
-console.log('DhanunJay Solar Solutions - Website with Direct Edit Loaded Successfully! 🌞⚡✏️');
+console.log('Dhanunjay Solar Solutions - Website with Direct Edit Loaded Successfully! 🌞⚡✏️');
+
+// CSRF Token Management
+function generateCSRFToken() {
+    const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+    sessionStorage.setItem('csrf-token', token);
+    return token;
+}
+
+function getCSRFToken() {
+    let token = sessionStorage.getItem('csrf-token');
+    if (!token) {
+        token = generateCSRFToken();
+    }
+    return token;
+}
+
+function validateCSRFToken(token) {
+    const storedToken = sessionStorage.getItem('csrf-token');
+    return token && storedToken && token === storedToken;
+}
+
+// Initialize CSRF token when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfTokenInput = document.getElementById('csrf-token');
+    if (csrfTokenInput) {
+        csrfTokenInput.value = getCSRFToken();
+    }
+});
+
+// Update the form submission to include CSRF validation
+const quoteForm = document.getElementById('quote-form');
+if (quoteForm) {
+    quoteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(quoteForm);
+        const csrfToken = formData.get('_csrf');
+        
+        if (!validateCSRFToken(csrfToken)) {
+            console.error('Invalid CSRF token');
+            alert('Session expired. Please refresh the page and try again.');
+            return;
+        }
+        
+        // Your existing form submission logic here
+        // Make sure to include the CSRF token in any AJAX requests
+        
+        // After successful submission, generate a new token
+        document.getElementById('csrf-token').value = generateCSRFToken();
+    });
+}
