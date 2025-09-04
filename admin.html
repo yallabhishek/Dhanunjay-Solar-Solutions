@@ -206,6 +206,24 @@
             background: #0056b3;
         }
 
+        .btn-copy {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #138496;
+        }
+
+        .btn-paste {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .btn-paste:hover {
+            background: #5a32a3;
+        }
+
         .status-panel {
             background: white;
             padding: 25px;
@@ -395,6 +413,12 @@
                         <button class="btn btn-load" onclick="loadPricing()">
                             <i class="fas fa-sync"></i> Load Current
                         </button>
+                        <button class="btn btn-copy" onclick="copyBrandData()">
+                            <i class="fas fa-copy"></i> Copy Brand Data
+                        </button>
+                        <button class="btn btn-paste" onclick="pasteBrandData()">
+                            <i class="fas fa-paste"></i> Paste Brand Data
+                        </button>
                         <button class="btn btn-reset" onclick="resetToDefaults()">
                             <i class="fas fa-undo"></i> Reset to Default
                         </button>
@@ -421,6 +445,10 @@
                 <span class="status-label">Data Sync:</span>
                 <span class="status-value" id="syncStatus">Ready</span>
             </div>
+            <div class="status-item">
+                <span class="status-label">Copied Data:</span>
+                <span class="status-value" id="copiedStatus">None</span>
+            </div>
         </div>
     </div>
 
@@ -429,6 +457,7 @@
         const ADMIN_PASSWORD = 'solar2024';
         let currentBrand = 'tata';
         let currentKW = 1;
+        let copiedBrandData = null;
 
         // Default pricing data
         const defaultPricing = {
@@ -649,6 +678,114 @@
                 login();
             }
         });
+
+        // Copy brand data
+        function copyBrandData() {
+            const savedData = localStorage.getItem('customPricingData');
+            let pricingData = defaultPricing;
+            
+            if (savedData) {
+                try {
+                    const customData = JSON.parse(savedData);
+                    // Merge custom data with defaults
+                    Object.keys(customData).forEach(brand => {
+                        if (!pricingData[brand]) pricingData[brand] = {};
+                        Object.keys(customData[brand]).forEach(kw => {
+                            pricingData[brand][kw] = { ...pricingData[brand][kw], ...customData[brand][kw] };
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error loading custom data:', error);
+                }
+            }
+            
+            // Copy all KW data for current brand
+            if (pricingData[currentBrand]) {
+                copiedBrandData = {
+                    brand: currentBrand,
+                    data: JSON.parse(JSON.stringify(pricingData[currentBrand])) // Deep copy
+                };
+                
+                const brandNames = {
+                    tata: 'Tata Power',
+                    exide: 'Exide',
+                    luminous: 'Luminous',
+                    adani: 'Adani',
+                    waaree: 'Waaree'
+                };
+                
+                document.getElementById('copiedStatus').textContent = brandNames[currentBrand];
+                document.getElementById('syncStatus').textContent = 'Data Copied';
+                
+                alert(`✅ Copied all pricing data from ${brandNames[currentBrand]}!\nYou can now paste this data to another brand.`);
+                console.log('Copied brand data:', copiedBrandData);
+            } else {
+                alert('❌ No data found for current brand!');
+            }
+        }
+
+        // Paste brand data
+        function pasteBrandData() {
+            if (!copiedBrandData) {
+                alert('❌ No data copied! Please copy data from a brand first.');
+                return;
+            }
+            
+            const brandNames = {
+                tata: 'Tata Power',
+                exide: 'Exide',
+                luminous: 'Luminous',
+                adani: 'Adani',
+                waaree: 'Waaree'
+            };
+            
+            const sourceBrand = brandNames[copiedBrandData.brand];
+            const targetBrand = brandNames[currentBrand];
+            
+            if (copiedBrandData.brand === currentBrand) {
+                alert('⚠️ Cannot paste data to the same brand it was copied from!');
+                return;
+            }
+            
+            const confirmPaste = confirm(`🔄 Paste all pricing data from ${sourceBrand} to ${targetBrand}?\n\nThis will overwrite ALL existing data for ${targetBrand} (1KW to 10KW).`);
+            
+            if (confirmPaste) {
+                // Get existing custom data
+                let customData = {};
+                const savedData = localStorage.getItem('customPricingData');
+                if (savedData) {
+                    try {
+                        customData = JSON.parse(savedData);
+                    } catch (error) {
+                        console.error('Error parsing saved data:', error);
+                    }
+                }
+                
+                // Paste the copied data to current brand
+                if (!customData[currentBrand]) {
+                    customData[currentBrand] = {};
+                }
+                
+                // Copy all KW data
+                customData[currentBrand] = JSON.parse(JSON.stringify(copiedBrandData.data));
+                
+                // Save to localStorage
+                localStorage.setItem('customPricingData', JSON.stringify(customData));
+                localStorage.setItem('solarPricingData', JSON.stringify(customData));
+                localStorage.setItem('brandPricingData', JSON.stringify(customData));
+                localStorage.setItem('onGridPricing', JSON.stringify(customData));
+                
+                // Update status
+                document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
+                document.getElementById('syncStatus').textContent = 'Data Pasted';
+                
+                // Reload current pricing to show pasted data
+                loadPricing();
+                
+                alert(`✅ Successfully pasted all pricing data from ${sourceBrand} to ${targetBrand}!\n\nAll KW values (1KW to 10KW) have been copied.`);
+                console.log('Pasted brand data to:', currentBrand, customData[currentBrand]);
+            }
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
