@@ -1086,40 +1086,101 @@ function initializeWebsite() {
     }
 }
 
-// Disable right-click context menu and image protection
+// Enhanced image protection for GitHub Pages
 document.addEventListener('contextmenu', function(e) {
+    // Block right-click on images and entire page
+    if (e.target.tagName === 'IMG' || e.target.closest('img')) {
+        e.preventDefault();
+        alert('Image downloading is not allowed!');
+        return false;
+    }
     e.preventDefault();
     return false;
 });
 
-// Disable drag and drop
+// Disable drag and drop for images
 document.addEventListener('dragstart', function(e) {
     if (e.target.tagName === 'IMG') {
         e.preventDefault();
+        alert('Image downloading is not allowed!');
         return false;
     }
 });
 
-// Disable F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S
+// Disable image saving shortcuts
 document.addEventListener('keydown', function(e) {
-    // F12
+    // Disable Ctrl+S (Save)
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        alert('Saving is not allowed!');
+        return false;
+    }
+});
+
+// Prevent image context menu specifically
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img');
+    images.forEach(function(img) {
+        img.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('Image downloading is not allowed!');
+            return false;
+        });
+        
+        img.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable image selection
+        img.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+});
+
+// Enhanced developer tools and save protection
+document.addEventListener('keydown', function(e) {
+    // F12 - Developer Tools
     if (e.keyCode === 123) {
         e.preventDefault();
+        alert('Developer tools are disabled!');
         return false;
     }
-    // Ctrl+Shift+I
+    // Ctrl+Shift+I - Developer Tools
     if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
         e.preventDefault();
+        alert('Developer tools are disabled!');
         return false;
     }
-    // Ctrl+U
+    // Ctrl+Shift+C - Element Inspector
+    if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+        e.preventDefault();
+        alert('Element inspector is disabled!');
+        return false;
+    }
+    // Ctrl+U - View Source
     if (e.ctrlKey && e.keyCode === 85) {
         e.preventDefault();
+        alert('View source is disabled!');
         return false;
     }
-    // Ctrl+S
+    // Ctrl+S - Save Page
     if (e.ctrlKey && e.keyCode === 83) {
         e.preventDefault();
+        alert('Saving is not allowed!');
+        return false;
+    }
+    // Ctrl+A - Select All
+    if (e.ctrlKey && e.keyCode === 65) {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+P - Print
+    if (e.ctrlKey && e.keyCode === 80) {
+        e.preventDefault();
+        alert('Printing is disabled!');
         return false;
     }
 });
