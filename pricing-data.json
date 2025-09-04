@@ -1,0 +1,62 @@
+{
+  "tata": {
+    "1": { "generation": 120, "savings": 14400, "price": 60000, "subsidy": 18000 },
+    "2": { "generation": 240, "savings": 28800, "price": 125000, "subsidy": 37500 },
+    "3": { "generation": 360, "savings": 43200, "price": 180000, "subsidy": 78000 },
+    "4": { "generation": 480, "savings": 57600, "price": 240000, "subsidy": 72000 },
+    "5": { "generation": 600, "savings": 72000, "price": 300000, "subsidy": 90000 },
+    "6": { "generation": 720, "savings": 86400, "price": 350000, "subsidy": 105000 },
+    "7": { "generation": 840, "savings": 100800, "price": 385000, "subsidy": 115500 },
+    "8": { "generation": 960, "savings": 115200, "price": 400000, "subsidy": 120000 },
+    "9": { "generation": 1080, "savings": 129600, "price": 415000, "subsidy": 124500 },
+    "10": { "generation": 1200, "savings": 144000, "price": 425000, "subsidy": 127500 }
+  },
+  "exide": {
+    "1": { "generation": 110, "savings": 13200, "price": 58000, "subsidy": 17400 },
+    "2": { "generation": 220, "savings": 26400, "price": 118000, "subsidy": 35400 },
+    "3": { "generation": 330, "savings": 39600, "price": 175000, "subsidy": 52500 },
+    "4": { "generation": 440, "savings": 52800, "price": 235000, "subsidy": 70500 },
+    "5": { "generation": 550, "savings": 66000, "price": 295000, "subsidy": 88500 },
+    "6": { "generation": 660, "savings": 79200, "price": 345000, "subsidy": 103500 },
+    "7": { "generation": 770, "savings": 92400, "price": 375000, "subsidy": 112500 },
+    "8": { "generation": 880, "savings": 105600, "price": 395000, "subsidy": 118500 },
+    "9": { "generation": 990, "savings": 118800, "price": 410000, "subsidy": 123000 },
+    "10": { "generation": 1100, "savings": 132000, "price": 420000, "subsidy": 126000 }
+  },
+  "luminous": {
+    "1": { "generation": 115, "savings": 13800, "price": 59000, "subsidy": 17700 },
+    "2": { "generation": 230, "savings": 27600, "price": 120000, "subsidy": 36000 },
+    "3": { "generation": 345, "savings": 41400, "price": 177000, "subsidy": 53100 },
+    "4": { "generation": 460, "savings": 55200, "price": 237000, "subsidy": 71100 },
+    "5": { "generation": 575, "savings": 69000, "price": 297000, "subsidy": 89100 },
+    "6": { "generation": 690, "savings": 82800, "price": 347000, "subsidy": 104100 },
+    "7": { "generation": 805, "savings": 96600, "price": 377000, "subsidy": 113100 },
+    "8": { "generation": 920, "savings": 110400, "price": 397000, "subsidy": 119100 },
+    "9": { "generation": 1035, "savings": 124200, "price": 412000, "subsidy": 123600 },
+    "10": { "generation": 1150, "savings": 138000, "price": 422000, "subsidy": 126600 }
+  },
+  "adani": {
+    "1": { "generation": 125, "savings": 15000, "price": 62000, "subsidy": 18600 },
+    "2": { "generation": 250, "savings": 30000, "price": 127000, "subsidy": 38100 },
+    "3": { "generation": 375, "savings": 45000, "price": 182000, "subsidy": 54600 },
+    "4": { "generation": 500, "savings": 60000, "price": 242000, "subsidy": 72600 },
+    "5": { "generation": 625, "savings": 75000, "price": 302000, "subsidy": 90600 },
+    "6": { "generation": 750, "savings": 90000, "price": 352000, "subsidy": 105600 },
+    "7": { "generation": 875, "savings": 105000, "price": 382000, "subsidy": 114600 },
+    "8": { "generation": 1000, "savings": 120000, "price": 402000, "subsidy": 120600 },
+    "9": { "generation": 1125, "savings": 135000, "price": 417000, "subsidy": 125100 },
+    "10": { "generation": 1250, "savings": 150000, "price": 427000, "subsidy": 128100 }
+  },
+  "waaree": {
+    "1": { "generation": 128, "savings": 15360, "price": 61000, "subsidy": 18300 },
+    "2": { "generation": 256, "savings": 30720, "price": 126000, "subsidy": 37800 },
+    "3": { "generation": 384, "savings": 46080, "price": 181000, "subsidy": 54300 },
+    "4": { "generation": 512, "savings": 61440, "price": 241000, "subsidy": 72300 },
+    "5": { "generation": 640, "savings": 76800, "price": 301000, "subsidy": 90300 },
+    "6": { "generation": 768, "savings": 92160, "price": 351000, "subsidy": 105300 },
+    "7": { "generation": 896, "savings": 107520, "price": 381000, "subsidy": 114300 },
+    "8": { "generation": 1024, "savings": 122880, "price": 401000, "subsidy": 120300 },
+    "9": { "generation": 1152, "savings": 138240, "price": 416000, "subsidy": 124800 },
+    "10": { "generation": 1280, "savings": 153600, "price": 426000, "subsidy": 127800 }
+  }
+}

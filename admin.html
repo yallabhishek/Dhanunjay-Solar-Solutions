@@ -649,13 +649,13 @@
             try {
                 if (typeof saveWithCloudSync === 'function') {
                     const cloudSaved = await saveWithCloudSync(customData);
-                    if (cloudSaved) {
-                        document.getElementById('syncStatus').textContent = 'Cloud Synced ✅';
-                        alert('✅ Pricing data saved and synced to cloud!\nChanges will now appear on all devices.');
-                    } else {
-                        document.getElementById('syncStatus').textContent = 'Local Only ⚠️';
-                        alert('⚠️ Data saved locally but cloud sync failed.\nChanges may not appear on other devices.');
-                    }
+                    document.getElementById('syncStatus').textContent = 'Saved ✅';
+                    
+                    // Also update the pricing-data.json content for GitHub Pages
+                    console.log('📝 Updated pricing data for GitHub Pages:');
+                    console.log(JSON.stringify(customData, null, 2));
+                    
+                    alert('✅ Pricing data saved successfully!\n\nTo sync across devices:\n1. Copy the JSON data from browser console\n2. Update pricing-data.json file\n3. Push to GitHub');
                 } else {
                     // Fallback to local only
                     localStorage.setItem('customPricingData', JSON.stringify(customData));
