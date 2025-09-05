@@ -1091,7 +1091,6 @@ document.addEventListener('contextmenu', function(e) {
     // Block right-click on images and entire page
     if (e.target.tagName === 'IMG' || e.target.closest('img')) {
         e.preventDefault();
-        alert('Image downloading is not allowed!');
         return false;
     }
     e.preventDefault();
@@ -1102,7 +1101,6 @@ document.addEventListener('contextmenu', function(e) {
 document.addEventListener('dragstart', function(e) {
     if (e.target.tagName === 'IMG') {
         e.preventDefault();
-        alert('Image downloading is not allowed!');
         return false;
     }
 });
@@ -1112,7 +1110,6 @@ document.addEventListener('keydown', function(e) {
     // Disable Ctrl+S (Save)
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        alert('Saving is not allowed!');
         return false;
     }
 });
@@ -1123,7 +1120,6 @@ document.addEventListener('DOMContentLoaded', function() {
     images.forEach(function(img) {
         img.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            alert('Image downloading is not allowed!');
             return false;
         });
         
@@ -1145,31 +1141,26 @@ document.addEventListener('keydown', function(e) {
     // F12 - Developer Tools
     if (e.keyCode === 123) {
         e.preventDefault();
-        alert('Developer tools are disabled!');
         return false;
     }
     // Ctrl+Shift+I - Developer Tools
     if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
         e.preventDefault();
-        alert('Developer tools are disabled!');
         return false;
     }
     // Ctrl+Shift+C - Element Inspector
     if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
         e.preventDefault();
-        alert('Element inspector is disabled!');
         return false;
     }
     // Ctrl+U - View Source
     if (e.ctrlKey && e.keyCode === 85) {
         e.preventDefault();
-        alert('View source is disabled!');
         return false;
     }
     // Ctrl+S - Save Page
     if (e.ctrlKey && e.keyCode === 83) {
         e.preventDefault();
-        alert('Saving is not allowed!');
         return false;
     }
     // Ctrl+A - Select All
@@ -1180,7 +1171,6 @@ document.addEventListener('keydown', function(e) {
     // Ctrl+P - Print
     if (e.ctrlKey && e.keyCode === 80) {
         e.preventDefault();
-        alert('Printing is disabled!');
         return false;
     }
 });
