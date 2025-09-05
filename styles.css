@@ -473,7 +473,7 @@ body {
 }
 
 .hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     cursor: pointer;
     padding: 8px 12px 8px 4px;
@@ -576,7 +576,7 @@ body {
 }
 
 .hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     cursor: pointer;
 }
@@ -2812,7 +2812,13 @@ body.edit-mode .section-header [data-editable] {
         height: 65px;
     }
     
-    .logo img, .logo-fallback {
+    .logo img {
+        content: url('small screen logo.png');
+        max-height: 35px;
+        width: auto;
+    }
+    
+    .logo-fallback {
         max-height: 35px;
     }
     
@@ -2850,6 +2856,12 @@ body.edit-mode .section-header [data-editable] {
         height: 70px;
     }
     
+    .logo img {
+        content: url('small screen logo.png');
+        max-height: 40px;
+        width: auto;
+    }
+    
     .hamburger {
         display: flex !important;
     }
@@ -2865,6 +2877,12 @@ body.edit-mode .section-header [data-editable] {
         padding: 0 15px;
         gap: 15px;
         height: 75px;
+    }
+    
+    .logo img {
+        content: url('small screen logo.png');
+        max-height: 45px;
+        width: auto;
     }
     
     .hamburger {
@@ -2887,6 +2905,12 @@ body.edit-mode .section-header [data-editable] {
         padding: 0 20px;
         gap: 20px;
         height: 80px;
+    }
+    
+    .logo img {
+        content: url('small screen logo.png');
+        max-height: 50px;
+        width: auto;
     }
     
     .hamburger {
@@ -2915,7 +2939,7 @@ body.edit-mode .section-header [data-editable] {
     }
     
     .hamburger {
-        display: none;
+        display: none !important;
     }
     
     .nav-menu {
@@ -2932,6 +2956,21 @@ body.edit-mode .section-header [data-editable] {
     
     .services-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Hide hamburger on large desktop screens */
+@media (min-width: 1367px) {
+    .hamburger {
+        display: none !important;
+    }
+    
+    .nav-menu {
+        display: flex !important;
+        position: static;
+        background: transparent;
+        flex-direction: row;
+        gap: 30px;
     }
 }
 

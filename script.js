@@ -1017,6 +1017,11 @@ function initializeWebsite() {
     try {
         console.log('Initializing website...');
         
+        // Scroll to top on page load/refresh
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        
         // Set sun/moon based on time
         setCelestialBody();
         
@@ -1070,19 +1075,14 @@ function initializeWebsite() {
                 const priceResult = document.getElementById('priceResult');
                 if (priceResult) {
                     console.log('Price result container found on GitHub Pages');
-                } else {
-                    console.warn('Price result container not found on GitHub Pages');
                 }
-                
             } catch (e) {
                 console.error('GitHub Pages initialization error:', e);
             }
-        }, 500);
+        }, 300);
         
-        console.log('Website initialization completed');
-        
-    } catch (error) {
-        console.error('Website initialization error:', error);
+    } catch (e) {
+        console.error('Website initialization error:', e);
     }
 }
 
@@ -1182,6 +1182,16 @@ document.addEventListener('selectstart', function(e) {
         return false;
     }
 });
+
+// Force scroll to top before page loads
+window.addEventListener('beforeunload', function() {
+    window.scrollTo(0, 0);
+});
+
+// Prevent scroll restoration by browser
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
 
 // Multiple event listeners for maximum browser compatibility
 if (document.readyState === 'loading') {
