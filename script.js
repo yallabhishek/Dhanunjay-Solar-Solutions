@@ -1020,16 +1020,16 @@ function initializeWebsite() {
         // Set sun/moon based on time
         setCelestialBody();
         
-        // Hide loading screen after page loads (1 second total)
+        // Hide loading screen after page loads (3 seconds total)
         setTimeout(() => {
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                }, 200);
+                }, 500);
             }
-        }, 800);
+        }, 2500);
         
         // Initialize brand logos with delay for GitHub Pages
         setTimeout(() => {
