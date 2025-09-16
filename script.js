@@ -163,50 +163,182 @@ function updateBrandPricing() {
 
 // Update KW card prices from current brand data
 function updateKWCardPrices() {
-    // Force refresh pricing data from localStorage before updating
-    onGridPricing = getBrandPricing();
-    console.log('🔄 Refreshing KW card prices for brand:', currentBrand);
-    
-    const brandData = onGridPricing[currentBrand];
-    if (!brandData) {
-        console.warn('❌ No brand data found for:', currentBrand);
-        return;
-    }
-    
-    console.log('📊 Brand data for', currentBrand, ':', brandData);
-    
-    for (let kw = 1; kw <= 10; kw++) {
-        const card = document.querySelector(`[data-kw="${kw}"]`);
-        if (card && brandData[kw]) {
-            const priceElement = card.querySelector('.kw-price');
-            if (priceElement) {
-                priceElement.textContent = `₹${brandData[kw].price.toLocaleString()}`;
-                console.log(`💰 Updated ${kw}KW price to:`, brandData[kw].price);
-            }
+    try {
+        // Force refresh pricing data from localStorage before updating
+        onGridPricing = getBrandPricing();
+        console.log('🔄 Refreshing KW card prices for brand:', currentBrand);
+        
+        const brandData = onGridPricing[currentBrand];
+        if (!brandData) {
+            console.warn('❌ No brand data found for:', currentBrand);
+            return;
         }
+        
+        console.log('📊 Brand data for', currentBrand, ':', brandData);
+        
+        // Wait a bit for DOM to be ready
+        setTimeout(() => {
+            for (let kw = 1; kw <= 10; kw++) {
+                const card = document.querySelector(`[data-kw="${kw}"]`);
+                if (card && brandData[kw]) {
+                    const priceElement = card.querySelector('.kw-price');
+                    if (priceElement) {
+                        priceElement.textContent = `₹${brandData[kw].price.toLocaleString()}`;
+                        console.log(`💰 Updated ${kw}KW price to:`, brandData[kw].price);
+                    } else {
+                        console.warn(`Price element not found for ${kw}KW card`);
+                    }
+                } else {
+                    console.warn(`Card or data not found for ${kw}KW`);
+                }
+            }
+            
+            // Ensure cards are visible
+            const kwCards = document.querySelectorAll('.kw-card');
+            kwCards.forEach(card => {
+                card.style.display = 'flex';
+                card.style.visibility = 'visible';
+                card.style.opacity = '1';
+            });
+            
+            console.log(`✅ Updated ${kwCards.length} KW cards for brand: ${currentBrand}`);
+        }, 50);
+        
+    } catch (error) {
+        console.error('Error in updateKWCardPrices:', error);
     }
 }
 
-// Open price modal
+// Enhanced mobile-friendly price modal opener
 function openPriceModal() {
-    const modal = document.getElementById('priceModal');
-    const priceResult = document.getElementById('priceResult');
-    currentSelectedKW = null; // Reset selected KW
-    
-    // Initialize with current brand pricing
-    updateKWCardPrices();
-    
-    // Reset form
-    document.querySelectorAll('.kw-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    priceResult.style.display = 'none';
-    
-    // Update KW card prices from admin data
-    updateKWCardPrices();
-    
-    modal.style.display = 'block';
+    try {
+        console.log('🔥 openPriceModal called');
+        
+        const modal = document.getElementById('priceModal');
+        if (!modal) {
+            console.error('❌ Modal element not found!');
+            alert('Price calculator not available. Please refresh the page.');
+            return;
+        }
+        
+        console.log('✅ Modal element found:', modal);
+        
+        const priceResult = document.getElementById('priceResult');
+        currentSelectedKW = null; // Reset selected KW
+        
+        // Reset form
+        document.querySelectorAll('.kw-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        if (priceResult) {
+            priceResult.style.display = 'none';
+        }
+        
+        // Enhanced mobile modal display
+        modal.style.display = 'block';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        modal.style.zIndex = '9999';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        
+        // Mobile-specific fixes
+        if (window.innerWidth <= 768) {
+            const modalContent = modal.querySelector('.modal-content, .price-modal-content');
+            if (modalContent) {
+                modalContent.style.position = 'fixed';
+                modalContent.style.top = '5%';
+                modalContent.style.left = '2.5%';
+                modalContent.style.width = '95%';
+                modalContent.style.maxHeight = '90vh';
+                modalContent.style.transform = 'none';
+                modalContent.style.overflowY = 'auto';
+                modalContent.style.webkitOverflowScrolling = 'touch';
+            }
+        }
+        
+        // Prevent body scroll with mobile fixes
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        
+        // Force show capacity view with mobile delay
+        setTimeout(() => {
+            showCapacityView();
+            updateKWCardPrices();
+        }, 200);
+        
+        console.log('✅ Modal opened successfully');
+        
+    } catch (error) {
+        console.error('❌ Error in openPriceModal:', error);
+        alert('Unable to open price calculator. Please try again.');
+    }
 }
+
+// Test if JavaScript is loading
+console.log('🚀 Script.js loaded successfully');
+
+// Enhanced mobile-friendly event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, adding brand click listeners');
+    
+    // Wait for DOM to be fully ready
+    setTimeout(() => {
+        const brandLogos = document.querySelectorAll('.brand-logo');
+        console.log('Found brand logos:', brandLogos.length);
+        
+        brandLogos.forEach((logo, index) => {
+            console.log(`Setting up brand logo ${index}:`, logo);
+            
+            // Remove any existing listeners
+            logo.onclick = null;
+            
+            // Mobile-friendly event handler
+            const handleBrandClick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const brand = this.getAttribute('data-brand');
+                console.log('Brand clicked:', brand);
+                
+                if (brand) {
+                    // Add visual feedback for mobile
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                    
+                    openPriceModalWithBrand(brand);
+                }
+            };
+            
+            // Add multiple event types for better mobile support
+            logo.addEventListener('click', handleBrandClick);
+            logo.addEventListener('touchend', handleBrandClick);
+            
+            // Prevent default touch behaviors that might interfere
+            logo.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            });
+            
+            // Make sure the element is focusable and clickable
+            logo.style.cursor = 'pointer';
+            logo.style.userSelect = 'none';
+            logo.style.webkitUserSelect = 'none';
+            logo.style.webkitTouchCallout = 'none';
+            
+            // Add tabindex for accessibility
+            if (!logo.hasAttribute('tabindex')) {
+                logo.setAttribute('tabindex', '0');
+            }
+        });
+    }, 100);
+});
 
 // Open price calculator modal with specific brand
 function openPriceModalWithBrand(brand) {
@@ -264,29 +396,34 @@ function openPriceModalWithBrand(brand) {
             priceResult.style.display = 'none';
         }
         
-        // Force show System Capacity tab and hide System Details tab
-        showCapacityView();
-        
-        // Update KW card prices with selected brand data
-        try {
-            updateKWCardPrices();
-        } catch (e) {
-            console.warn('Error updating KW card prices:', e);
-        }
-        
-        // Show modal with enhanced browser compatibility
+        // Enhanced mobile-friendly modal display
         const showModal = () => {
             try {
                 if (modal && modal.style) {
+                    // Force display with mobile-specific fixes
                     modal.style.display = 'block';
                     modal.style.visibility = 'visible';
                     modal.style.opacity = '1';
+                    modal.style.zIndex = '9999';
+                    modal.style.position = 'fixed';
+                    modal.style.top = '0';
+                    modal.style.left = '0';
+                    modal.style.width = '100%';
+                    modal.style.height = '100%';
                     
-                    // Prevent body scroll with enhanced GitHub Pages compatibility
+                    // Mobile viewport fix
+                    const viewport = document.querySelector('meta[name="viewport"]');
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    }
+                    
+                    // Prevent body scroll with enhanced mobile compatibility
                     if (document.body && document.body.style) {
                         document.body.style.overflow = 'hidden';
                         document.body.style.overflowX = 'hidden';
                         document.body.style.overflowY = 'hidden';
+                        document.body.style.position = 'fixed';
+                        document.body.style.width = '100%';
                         document.body.classList.add('modal-open');
                         
                         // Also apply to html element for better browser compatibility
@@ -296,12 +433,34 @@ function openPriceModalWithBrand(brand) {
                         }
                     }
                     
-                    // Focus management for accessibility
-                    if (modal.focus) {
-                        modal.focus();
+                    // Mobile-specific modal content positioning
+                    const modalContent = modal.querySelector('.modal-content, .price-modal-content');
+                    if (modalContent && window.innerWidth <= 768) {
+                        modalContent.style.position = 'fixed';
+                        modalContent.style.top = '5%';
+                        modalContent.style.left = '2.5%';
+                        modalContent.style.width = '95%';
+                        modalContent.style.maxHeight = '90vh';
+                        modalContent.style.transform = 'none';
+                        modalContent.style.overflowY = 'auto';
+                        modalContent.style.webkitOverflowScrolling = 'touch';
                     }
                     
                     console.log('Price modal opened successfully for brand:', brand);
+                    
+                    // After modal is shown, initialize the content with delay for mobile
+                    setTimeout(() => {
+                        // Force show System Capacity tab and hide System Details tab
+                        showCapacityView();
+                        
+                        // Update KW card prices with selected brand data
+                        try {
+                            updateKWCardPrices();
+                            console.log('KW card prices updated for brand:', brand);
+                        } catch (e) {
+                            console.warn('Error updating KW card prices:', e);
+                        }
+                    }, 200);
                 }
             } catch (e) {
                 console.error('Error showing modal:', e);
@@ -315,18 +474,6 @@ function openPriceModalWithBrand(brand) {
         } else {
             // Fallback for older browsers
             setTimeout(showModal, 16);
-        }
-        // Track price modal view (with error handling)
-        try {
-            if (typeof trackEvent === 'function') {
-                trackEvent('price_calculator_opened', { brand: brand });
-            }
-            updateKWCardPrices();
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        } catch (error) {
-            console.error('Error in openPriceModalWithBrand:', error);
-            alert('Unable to open price calculator. Please try again.');
         }
     } catch (error) {
         console.error('Error opening price modal:', error);
@@ -392,15 +539,15 @@ function selectKW(kw) {
         currentSelectedKW = kw;
         console.log('Current selected KW updated to:', currentSelectedKW);
         
-        // Calculate and show price with delay for better compatibility
+        // Calculate and show price with increased delay for smoother transitions
         setTimeout(() => {
             calculatePrice(kw);
-        }, 50);
+        }, 300);
         
-        // Automatically switch to details view with delay
+        // Automatically switch to details view with increased delay for smooth animation
         setTimeout(() => {
             showDetailsView();
-        }, 100);
+        }, 600);
         
     } catch (error) {
         console.error('Error in selectKW function:', error);
@@ -984,19 +1131,39 @@ function closePriceModal() {
 
 // Toggle between capacity and details view
 function showCapacityView() {
-    // Update button states
-    document.getElementById('capacityBtn').classList.add('active');
-    document.getElementById('detailsBtn').classList.remove('active');
-    
-    // Show capacity selector, hide details
-    document.querySelector('.kw-selector-container').style.display = 'block';
-    document.getElementById('priceResult').style.display = 'none';
+    try {
+        // Update button states
+        const capacityBtn = document.getElementById('capacityBtn');
+        const detailsBtn = document.getElementById('detailsBtn');
+        
+        if (capacityBtn) capacityBtn.classList.add('active');
+        if (detailsBtn) detailsBtn.classList.remove('active');
+        
+        // Show capacity selector, hide details
+        const kwSelector = document.querySelector('.kw-selector-container');
+        const priceResult = document.getElementById('priceResult');
+        
+        if (kwSelector) {
+            kwSelector.style.display = 'block';
+            kwSelector.style.visibility = 'visible';
+            kwSelector.style.opacity = '1';
+        }
+        
+        if (priceResult) {
+            priceResult.style.display = 'none';
+        }
+        
+        console.log('Capacity view shown successfully');
+    } catch (error) {
+        console.error('Error in showCapacityView:', error);
+    }
 }
 
 function showDetailsView() {
     // Check if a KW is selected
     if (!currentSelectedKW) {
-        alert('Please select a system capacity first!');
+        // Show helpful message instead of alert
+        showSelectionPrompt();
         return;
     }
     
@@ -1010,6 +1177,51 @@ function showDetailsView() {
     
     // Ensure the details are calculated and displayed
     calculatePrice(currentSelectedKW);
+}
+
+// Show selection prompt with visual feedback
+function showSelectionPrompt() {
+    // Create or show selection prompt
+    let promptElement = document.getElementById('selectionPrompt');
+    
+    if (!promptElement) {
+        promptElement = document.createElement('div');
+        promptElement.id = 'selectionPrompt';
+        promptElement.className = 'selection-prompt';
+        promptElement.innerHTML = `
+            <div class="prompt-content">
+                <i class="fas fa-arrow-up"></i>
+                <p>Please select a system capacity above to view pricing details</p>
+            </div>
+        `;
+        
+        // Insert after the toggle buttons
+        const toggleButtons = document.querySelector('.toggle-buttons');
+        if (toggleButtons) {
+            toggleButtons.parentNode.insertBefore(promptElement, toggleButtons.nextSibling);
+        }
+    }
+    
+    // Show the prompt with animation
+    promptElement.style.display = 'block';
+    promptElement.classList.add('show');
+    
+    // Add shake effect to capacity cards
+    const kwCards = document.querySelectorAll('.kw-card');
+    kwCards.forEach(card => {
+        card.classList.add('highlight-selection');
+    });
+    
+    // Remove effects after 3 seconds
+    setTimeout(() => {
+        promptElement.classList.remove('show');
+        kwCards.forEach(card => {
+            card.classList.remove('highlight-selection');
+        });
+        setTimeout(() => {
+            promptElement.style.display = 'none';
+        }, 300);
+    }, 3000);
 }
 
 // Enhanced DOM Content Loaded for better Brave browser compatibility
@@ -1482,7 +1694,15 @@ function redirectToWhatsAppWithDetails() {
     try {
         // Check if KW is selected
         if (!currentSelectedKW) {
-            alert('Please select a system capacity first!');
+            // Apply shake effect to System Details button instead of showing alert
+            const detailsBtn = document.getElementById('detailsBtn');
+            if (detailsBtn) {
+                detailsBtn.classList.add('shake-button');
+                // Remove the shake class after animation completes
+                setTimeout(() => {
+                    detailsBtn.classList.remove('shake-button');
+                }, 600);
+            }
             return;
         }
         
@@ -2612,4 +2832,214 @@ if (quoteForm) {
         // After successful submission, generate a new token
         document.getElementById('csrf-token').value = generateCSRFToken();
     });
+}
+
+// Enhanced smooth scrolling function
+function smoothScrollTo(element) {
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+        });
+    }
+}
+
+// Smooth scroll to brands section
+function scrollToBrands() {
+    const brandsSection = document.getElementById('brands');
+    if (brandsSection) {
+        smoothScrollTo(brandsSection);
+    }
+}
+
+// Enhanced modal opening with smooth animations
+function openPriceModal() {
+    const modal = document.getElementById('priceModal');
+    const priceResult = document.getElementById('priceResult');
+    currentSelectedKW = null; // Reset selected KW
+    
+    // Initialize with current brand pricing
+    updateKWCardPrices();
+    
+    // Reset form with smooth transitions
+    document.querySelectorAll('.kw-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    if (priceResult) {
+        priceResult.style.display = 'none';
+        priceResult.classList.remove('show');
+    }
+    
+    // Update KW card prices from admin data
+    updateKWCardPrices();
+    
+    // Show modal with smooth animation
+    if (modal) {
+        modal.style.display = 'block';
+        // Add smooth class after a brief delay to trigger CSS animations
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 50);
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Enhanced modal closing with smooth animations
+function closePriceModal() {
+    const modal = document.getElementById('priceModal');
+    if (modal) {
+        modal.classList.remove('show');
+        
+        // Wait for animation to complete before hiding
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 500);
+    }
+}
+
+// Enhanced view switching with smooth transitions
+function showCapacityView() {
+    const capacityBtn = document.getElementById('capacityBtn');
+    const detailsBtn = document.getElementById('detailsBtn');
+    const kwSelector = document.querySelector('.kw-selector-container');
+    const priceResult = document.getElementById('priceResult');
+    
+    // Update button states with smooth transitions
+    if (capacityBtn && detailsBtn) {
+        capacityBtn.classList.add('active');
+        detailsBtn.classList.remove('active');
+    }
+    
+    // Show capacity selector with smooth animation
+    if (kwSelector) {
+        kwSelector.style.opacity = '0';
+        kwSelector.style.transform = 'translateY(20px)';
+        kwSelector.style.display = 'block';
+        
+        setTimeout(() => {
+            kwSelector.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            kwSelector.style.opacity = '1';
+            kwSelector.style.transform = 'translateY(0)';
+        }, 50);
+    }
+    
+    // Hide price result with smooth animation
+    if (priceResult) {
+        priceResult.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        priceResult.style.opacity = '0';
+        priceResult.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            priceResult.style.display = 'none';
+            priceResult.classList.remove('show');
+        }, 400);
+    }
+}
+
+// Enhanced details view with smooth transitions
+function showDetailsView() {
+    const capacityBtn = document.getElementById('capacityBtn');
+    const detailsBtn = document.getElementById('detailsBtn');
+    const kwSelector = document.querySelector('.kw-selector-container');
+    const priceResult = document.getElementById('priceResult');
+    
+    // Check if a KW is selected
+    if (!currentSelectedKW) {
+        // Apply smooth shake animation to System Details button
+        if (detailsBtn) {
+            detailsBtn.classList.add('shake');
+            setTimeout(() => {
+                detailsBtn.classList.remove('shake');
+            }, 800);
+        }
+        return;
+    }
+    
+    // Update button states with smooth transitions
+    if (capacityBtn && detailsBtn) {
+        capacityBtn.classList.remove('active');
+        detailsBtn.classList.add('active');
+    }
+    
+    // Hide capacity selector with smooth animation
+    if (kwSelector) {
+        kwSelector.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        kwSelector.style.opacity = '0';
+        kwSelector.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            kwSelector.style.display = 'none';
+        }, 400);
+    }
+    
+    // Show price result with smooth animation
+    if (priceResult) {
+        priceResult.style.display = 'block';
+        priceResult.style.opacity = '0';
+        priceResult.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            priceResult.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            priceResult.style.opacity = '1';
+            priceResult.style.transform = 'translateY(0)';
+            priceResult.classList.add('show');
+        }, 100);
+    }
+}
+
+// Enhanced WhatsApp redirect with smooth feedback
+function redirectToWhatsAppWithDetails() {
+    if (!currentSelectedKW) {
+        // Apply smooth shake animation to the button
+        const button = event.target;
+        if (button) {
+            button.classList.add('shake');
+            setTimeout(() => {
+                button.classList.remove('shake');
+            }, 800);
+        }
+        return;
+    }
+    
+    // Get current system details with smooth transition feedback
+    const brandPricing = getBrandPricing();
+    const currentBrandData = brandPricing[currentBrand];
+    
+    if (currentBrandData && currentBrandData[currentSelectedKW]) {
+        const systemData = currentBrandData[currentSelectedKW];
+        
+        // Create WhatsApp message
+        const message = `Hi! I'm interested in a ${currentSelectedKW}KW solar system.
+        
+System Details:
+• Capacity: ${currentSelectedKW} KW
+• Monthly Generation: ${systemData.generation} units
+• Annual Savings: ₹${systemData.savings.toLocaleString()}
+• Total Price: ₹${systemData.price.toLocaleString()}
+• Government Subsidy: ₹${systemData.subsidy.toLocaleString()}
+
+Please provide more information and installation details.`;
+        
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappURL = `https://wa.me/918500583341?text=${encodedMessage}`;
+        
+        // Add smooth transition effect before redirect
+        const button = event.target;
+        if (button) {
+            button.style.transform = 'scale(0.95)';
+            button.style.transition = 'transform 0.2s ease';
+            
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+                button.style.transform = 'scale(1)';
+            }, 200);
+        } else {
+            window.open(whatsappURL, '_blank');
+        }
+    }
 }

@@ -402,7 +402,6 @@ body {
     background-clip: text;
 }
 
-
 .call-btn {
     background: linear-gradient(45deg, var(--solar-orange), var(--solar-blue));
     color: var(--white);
@@ -608,6 +607,13 @@ body {
     height: 100%;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23FF7C00" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     opacity: 0.3;
+}
+
+.kw-selector-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .hero-container {
@@ -835,6 +841,16 @@ body {
 .highlight-card p {
     color: var(--text-gray);
     line-height: 1.6;
+}
+
+.price-display {
+    background: linear-gradient(135deg, rgba(255, 124, 0, 0.1), rgba(30, 144, 255, 0.1));
+    border: 2px solid rgba(255, 124, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Services Section */
@@ -1298,9 +1314,9 @@ body {
     border: 1px solid var(--solar-orange);
     border-radius: 20px;
     padding: 40px;
-    max-width: 500px;
+    max-width: 650px;
     width: 90%;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
 }
 
@@ -1504,21 +1520,21 @@ body {
 
 /* Price Calculator Modal Styles */
 .price-modal-content {
-    max-width: 700px;
+    max-width: 650px;
     width: 90%;
-    max-height: 85vh;
+    max-height: 80vh;
     overflow-y: auto;
     padding: 0;
 }
 
 .price-modal-header {
     text-align: center;
-    padding: 30px 40px;
+    padding: 20px 30px 15px 30px;
     background: linear-gradient(135deg, var(--solar-orange), var(--golden-yellow));
     color: white;
     border-radius: 20px 20px 0 0;
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .price-modal-header .close {
@@ -1546,14 +1562,14 @@ body {
 
 .price-modal-header h2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .price-modal-header p {
-    font-size: 16px;
+    font-size: 14px;
     opacity: 0.95;
     font-weight: 500;
     margin: 0;
@@ -1564,7 +1580,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 0;
-    margin: 20px 40px;
+    margin: 10px 30px 15px 30px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 4px;
@@ -1598,7 +1614,7 @@ body {
 }
 
 .price-modal-body {
-    padding: 0 40px 20px 40px;
+    padding: 0 0 0 0;
 }
 
 /* Price Modal Footer */
@@ -1645,31 +1661,38 @@ body {
 }
 
 .kw-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 12px;
-    max-width: 580px;
-    margin: 0 auto;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 124, 0, 0.1);
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(5, 1fr) !important;
+    gap: 6px 6px !important;
+    margin: 0 auto !important;
+    margin-bottom: 20px !important;
+    width: 85% !important;
+    max-width: 450px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
 }
 
 .kw-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
-    border: 2px solid rgba(233, 236, 239, 0.8);
-    border-radius: 12px;
-    padding: 15px 8px;
+    background: linear-gradient(135deg, rgba(255, 124, 0, 0.1), rgba(30, 144, 255, 0.1));
+    border: 2px solid rgba(255, 124, 0, 0.3);
+    padding: 6px 10px;
+    text-align: left;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1.275);
-    text-align: center;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    min-width: 95px;
+    height: 42px;
+    max-height: 42px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
 }
 
 .kw-card::before {
@@ -1732,44 +1755,76 @@ body {
 }
 
 .kw-number {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--solar-orange);
-    margin-bottom: 6px;
-    transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--solar-orange);
+    margin: 0;
+    transition: all 0.3s ease;
+    flex: 0 0 auto;
+    min-width: 30px;
 }
 
 .kw-description {
-    font-size: 11px;
-    color: #666;
-    margin-bottom: 8px;
-    font-weight: 600;
+    font-size: 10px;
+    color: var(--text-gray);
+    margin: 0;
+    font-weight: 500;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.2px;
+    flex: 1;
+    text-align: center;
+    padding: 0 6px;
 }
 
 .kw-price {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    color: #333;
+    color: #ffffff;
     transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    margin: 0;
+    flex: 0 0 auto;
+    text-align: right;
+    min-width: 55px;
 }
 
 /* Popular badge for recommended options */
-.kw-card[data-kw="3"]::after,
-.kw-card[data-kw="5"]::after {
+.kw-card[data-kw="3"]::before,
+.kw-card[data-kw="5"]::before {
     content: 'Popular';
     position: absolute;
-    top: -3px;
-    right: -3px;
+    top: -12px;
+    right: -12px;
     background: #28a745;
     color: white;
-    font-size: 7px;
-    font-weight: 600;
+    font-size: 6px;
+    font-weight: 700;
+    padding: 6px;
+    width: 25px;
+    height: 25px;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.1px;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.4);
+    pointer-events: none;
+    transform: none !important;
+    transition: none !important;
 }
+
+/* Ensure parent cards have relative positioning */
+.kw-card[data-kw="3"],
+.kw-card[data-kw="5"] {
+    position: relative;
+}
+
 
 /* Responsive grid */
 @media (max-width: 768px) {
@@ -1783,18 +1838,26 @@ body {
     .kw-card {
         padding: 8px 5px;
         min-width: 70px;
+        flex-direction: column;
+        text-align: center;
+        height: 45px;
     }
     
     .kw-number {
         font-size: 12px;
+        min-width: auto;
     }
     
     .kw-description {
         font-size: 8px;
+        padding: 0;
+        text-align: center;
     }
     
     .kw-price {
         font-size: 9px;
+        text-align: center;
+        min-width: auto;
     }
 }
 
@@ -1808,6 +1871,8 @@ body {
     
     .kw-card {
         min-width: 60px;
+        flex-direction: column;
+        text-align: center;
     }
 }
 
@@ -1822,25 +1887,27 @@ body {
 }
 
 .system-details {
-    background: #f8f9fa;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 124, 0, 0.2);
+    margin-top: 12px;
 }
 
 .system-details h3 {
-    color: #333;
-    font-size: 20px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--white);
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
 .details-layout {
-    display: flex;
-    gap: 30px;
-    align-items: stretch;
-    min-height: 180px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: start;
 }
 
 .details-left {
@@ -1862,13 +1929,13 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    border-left: 4px solid #ff6b35;
-    margin-bottom: 8px;
-    flex: 1;
-    min-height: 50px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(255, 124, 0, 0.1), rgba(30, 144, 255, 0.1));
+    border: 2px solid rgba(255, 124, 0, 0.3);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .detail-item {
@@ -1883,51 +1950,59 @@ body {
 
 .detail-label {
     font-weight: 600;
-    color: #555;
-    font-size: 14px;
+    color: #ffffff;
+    font-size: 12px;
 }
 
 .detail-value {
     font-weight: 700;
-    color: #333;
-    font-size: 14px;
+    color: #ff6b35;
+    font-size: 12px;
 }
 
 .price-display {
     text-align: center;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    border: 2px solid #ff6b35;
+    padding: 8px;
+    background: linear-gradient(135deg, rgba(255, 124, 0, 0.1), rgba(30, 144, 255, 0.1));
+    border: 2px solid rgba(255, 124, 0, 0.3);
+    border-radius: 5px;
     height: fit-content;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .total-price {
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
 
 .price-label {
     display: block;
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 5px;
+    font-size: 11px;
+    color: #ffffff;
+    margin-bottom: 2px;
+    font-weight: 600;
 }
 
 .price-amount {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 700;
     color: #ff6b35;
 }
 
 .subsidy-info {
-    padding-top: 15px;
-    border-top: 1px solid #e9ecef;
+    background: linear-gradient(135deg, rgba(255, 124, 0, 0.1), rgba(30, 144, 255, 0.1));
+    border: 2px solid rgba(255, 124, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .subsidy-label {
     display: block;
     font-size: 14px;
-    color: #28a745;
+    color: #ffffff;
     margin-bottom: 5px;
     font-weight: 600;
 }
@@ -1935,7 +2010,7 @@ body {
 .subsidy-amount {
     font-size: 24px;
     font-weight: 700;
-    color: #28a745;
+    color: #ff6b35;
 }
 
 .price-modal-footer {
@@ -1960,126 +2035,6 @@ body {
 .secondary-btn:hover {
     background: #5a6268;
     transform: translateY(-2px);
-}
-
-/* ===== RESPONSIVE PRICE CALCULATOR FOR ALL DEVICES ===== */
-
-/* Extra Small Mobile Price Calculator (320px - 375px) */
-@media (max-width: 375px) {
-    .price-modal-content {
-        width: 98%;
-        margin: 5px;
-        max-height: 95vh;
-        padding: 15px;
-    }
-    
-    .kw-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-        padding: 8px;
-    }
-    
-    .kw-card {
-        padding: 6px;
-        min-height: 70px;
-    }
-    
-    .kw-number {
-        font-size: 12px;
-    }
-    
-    .kw-description {
-        font-size: 9px;
-    }
-    
-    .kw-price {
-        font-size: 10px;
-    }
-    
-    .details-layout {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .price-amount {
-        font-size: 20px;
-    }
-    
-    .subsidy-amount {
-        font-size: 16px;
-    }
-}
-
-/* Small Mobile Price Calculator (376px - 480px) */
-@media (min-width: 376px) and (max-width: 480px) {
-    .price-modal-content {
-        width: 96%;
-        margin: 8px;
-        max-height: 92vh;
-    }
-    
-    .kw-cards-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-    
-    .kw-card {
-        padding: 8px;
-        min-height: 75px;
-    }
-    
-    .details-layout {
-        flex-direction: column;
-        gap: 18px;
-    }
-    
-    .price-amount {
-        font-size: 22px;
-    }
-    
-    .subsidy-amount {
-        font-size: 18px;
-    }
-}
-
-/* Large Mobile Price Calculator (481px - 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-    .price-modal-content {
-        width: 94%;
-        margin: 10px;
-        max-height: 90vh;
-    }
-    
-    .kw-cards-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-    }
-    
-    .kw-card {
-        padding: 10px;
-        min-height: 85px;
-    }
-    
-    .details-layout {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .price-amount {
-        font-size: 24px;
-    }
-    
-    .subsidy-amount {
-        font-size: 20px;
-    }
-    
-    .price-modal-footer {
-        flex-direction: column;
-    }
-    
-    .price-modal-footer button {
-        width: 100%;
-    }
 }
 
 /* Admin Edit Mode Styles */
