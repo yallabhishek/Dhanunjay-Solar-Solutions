@@ -134,6 +134,21 @@ function refreshPricingData() {
 document.addEventListener('DOMContentLoaded', function() {
     refreshPricingData();
     updateKWCardPrices();
+    
+    // Initialize navigation
+    initNavigation();
+    
+    // Initialize sliders
+    initSliders();
+    
+    // Initialize testimonial carousel
+    initTestimonialCarousel();
+    
+    // Initialize scroll effects
+    initScrollEffects();
+    
+    // Initialize Get Quote button functionality
+    initGetQuoteButton();
 });
 
 // Select brand by logo click
@@ -283,60 +298,68 @@ function openPriceModal() {
 // Test if JavaScript is loading
 console.log('🚀 Script.js loaded successfully');
 
+// Initialize brand event listeners function
+function initializeBrandEventListeners() {
+    console.log('Initializing brand click listeners');
+    
+    const brandLogos = document.querySelectorAll('.brand-logo');
+    console.log('Found brand logos:', brandLogos.length);
+    
+    brandLogos.forEach((logo, index) => {
+        console.log(`Setting up brand logo ${index}:`, logo);
+        
+        // Remove any existing listeners to prevent duplicates
+        const newLogo = logo.cloneNode(true);
+        logo.parentNode.replaceChild(newLogo, logo);
+        
+        // Mobile-friendly event handler
+        const handleBrandClick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const brand = this.getAttribute('data-brand');
+            console.log('Brand clicked:', brand);
+            
+            if (brand) {
+                // Add visual feedback for mobile
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
+                openPriceModalWithBrand(brand);
+            }
+        };
+        
+        // Add multiple event types for better mobile support
+        newLogo.addEventListener('click', handleBrandClick, { passive: false });
+        newLogo.addEventListener('touchend', handleBrandClick, { passive: false });
+        
+        // Prevent default touch behaviors that might interfere
+        newLogo.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Make sure the element is focusable and clickable
+        newLogo.style.cursor = 'pointer';
+        newLogo.style.userSelect = 'none';
+        newLogo.style.webkitUserSelect = 'none';
+        newLogo.style.webkitTouchCallout = 'none';
+        
+        // Add tabindex for accessibility
+        if (!newLogo.hasAttribute('tabindex')) {
+            newLogo.setAttribute('tabindex', '0');
+        }
+    });
+}
+
 // Enhanced mobile-friendly event listeners
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, adding brand click listeners');
     
     // Wait for DOM to be fully ready
     setTimeout(() => {
-        const brandLogos = document.querySelectorAll('.brand-logo');
-        console.log('Found brand logos:', brandLogos.length);
-        
-        brandLogos.forEach((logo, index) => {
-            console.log(`Setting up brand logo ${index}:`, logo);
-            
-            // Remove any existing listeners
-            logo.onclick = null;
-            
-            // Mobile-friendly event handler
-            const handleBrandClick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const brand = this.getAttribute('data-brand');
-                console.log('Brand clicked:', brand);
-                
-                if (brand) {
-                    // Add visual feedback for mobile
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
-                    
-                    openPriceModalWithBrand(brand);
-                }
-            };
-            
-            // Add multiple event types for better mobile support
-            logo.addEventListener('click', handleBrandClick);
-            logo.addEventListener('touchend', handleBrandClick);
-            
-            // Prevent default touch behaviors that might interfere
-            logo.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-            });
-            
-            // Make sure the element is focusable and clickable
-            logo.style.cursor = 'pointer';
-            logo.style.userSelect = 'none';
-            logo.style.webkitUserSelect = 'none';
-            logo.style.webkitTouchCallout = 'none';
-            
-            // Add tabindex for accessibility
-            if (!logo.hasAttribute('tabindex')) {
-                logo.setAttribute('tabindex', '0');
-            }
-        });
+        initializeBrandEventListeners();
     }, 100);
 });
 
@@ -1105,6 +1128,9 @@ function closePriceModal() {
             document.body.style.removeProperty('overflow');
             document.body.style.removeProperty('overflow-x');
             document.body.style.removeProperty('overflow-y');
+            document.body.style.removeProperty('position');
+            document.body.style.removeProperty('width');
+            document.body.classList.remove('modal-open');
             
             // Force reflow to ensure changes take effect
             document.body.offsetHeight;
@@ -1125,6 +1151,14 @@ function closePriceModal() {
         html.style.removeProperty('overflow-x');
         html.style.removeProperty('overflow-y');
     }
+    
+    // Reset modal state variables
+    currentSelectedKW = null;
+    
+    // Reinitialize brand event listeners to ensure they work after modal close
+    setTimeout(() => {
+        initializeBrandEventListeners();
+    }, 100);
     
     console.log('Price modal closed and scrolling restored with enhanced compatibility');
 }
@@ -2837,10 +2871,69 @@ if (quoteForm) {
 // Enhanced smooth scrolling function
 function smoothScrollTo(element) {
     if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest'
+        // Get header height for proper offset
+        const header = document.querySelector('.header');
+        const headerHeight = header ? header.offsetHeight : 80;
+        
+        // Calculate target position
+        const elementPosition = element.offsetTop - headerHeight;
+        
+        // Use multiple fallback methods for better browser compatibility
+        try {
+            // Method 1: Modern smooth scrolling
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+        } catch (e) {
+            // Method 2: Fallback for older browsers
+            try {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest'
+                });
+            } catch (e2) {
+                // Method 3: Basic scrolling
+                window.scrollTo(0, elementPosition);
+            }
+        }
+    }
+}
+
+// Initialize Get Quote button functionality
+function initGetQuoteButton() {
+    const getQuoteBtn = document.getElementById('quote-btn-nav');
+    if (getQuoteBtn) {
+        // Remove the href to prevent default navigation
+        getQuoteBtn.removeAttribute('href');
+        
+        // Add click event to open price modal
+        getQuoteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Add visual feedback
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Open price modal
+            openPriceModal();
+        });
+        
+        // Make it behave like a button
+        getQuoteBtn.style.cursor = 'pointer';
+        getQuoteBtn.setAttribute('role', 'button');
+        getQuoteBtn.setAttribute('tabindex', '0');
+        
+        // Add keyboard support
+        getQuoteBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
         });
     }
 }
@@ -2883,8 +2976,24 @@ function openPriceModal() {
             modal.classList.add('show');
         }, 50);
         
-        // Prevent body scroll
+        // Prevent body scroll with enhanced mobile compatibility
         document.body.style.overflow = 'hidden';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.overflowY = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.classList.add('modal-open');
+        
+        // Also apply to html element for better browser compatibility
+        const html = document.documentElement;
+        if (html) {
+            html.style.overflow = 'hidden';
+        }
+        
+        // Force show capacity view
+        setTimeout(() => {
+            showCapacityView();
+        }, 100);
     }
 }
 
@@ -2897,61 +3006,109 @@ function closePriceModal() {
         // Wait for animation to complete before hiding
         setTimeout(() => {
             modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            
+            // Restore body scroll with multiple fallback methods
+            document.body.style.overflow = '';
+            document.body.style.overflowX = '';
+            document.body.style.overflowY = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.classList.remove('modal-open');
+            
+            // Also restore html element
+            const html = document.documentElement;
+            if (html) {
+                html.style.overflow = '';
+            }
+            
+            // Reset viewport meta tag if it was modified
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+            }
         }, 500);
     }
 }
 
-// Enhanced view switching with smooth transitions
+// Enhanced view switching with ultra-smooth transitions
 function showCapacityView() {
     const capacityBtn = document.getElementById('capacityBtn');
     const detailsBtn = document.getElementById('detailsBtn');
     const kwSelector = document.querySelector('.kw-selector-container');
     const priceResult = document.getElementById('priceResult');
     
+    console.log('🔄 Switching to Capacity View');
+    
     // Update button states with smooth transitions
     if (capacityBtn && detailsBtn) {
+        // Add smooth button transition
+        capacityBtn.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        detailsBtn.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        
         capacityBtn.classList.add('active');
         detailsBtn.classList.remove('active');
     }
     
-    // Show capacity selector with smooth animation
-    if (kwSelector) {
-        kwSelector.style.opacity = '0';
-        kwSelector.style.transform = 'translateY(20px)';
-        kwSelector.style.display = 'block';
-        
-        setTimeout(() => {
-            kwSelector.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            kwSelector.style.opacity = '1';
-            kwSelector.style.transform = 'translateY(0)';
-        }, 50);
-    }
-    
-    // Hide price result with smooth animation
-    if (priceResult) {
-        priceResult.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    // First, hide price result with smooth fade-out
+    if (priceResult && priceResult.style.display !== 'none') {
+        priceResult.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         priceResult.style.opacity = '0';
-        priceResult.style.transform = 'translateY(-20px)';
+        priceResult.style.transform = 'translateY(-30px) scale(0.95)';
+        priceResult.classList.remove('show');
         
+        // Wait for fade-out to complete before showing capacity selector
         setTimeout(() => {
             priceResult.style.display = 'none';
-            priceResult.classList.remove('show');
+            
+            // Now show capacity selector with smooth fade-in
+            if (kwSelector) {
+                kwSelector.style.display = 'block';
+                kwSelector.style.opacity = '0';
+                kwSelector.style.transform = 'translateY(40px) scale(0.95)';
+                kwSelector.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                
+                // Use requestAnimationFrame for smoother animation
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        kwSelector.style.opacity = '1';
+                        kwSelector.style.transform = 'translateY(0) scale(1)';
+                    });
+                });
+            }
         }, 400);
+    } else {
+        // If price result is already hidden, just show capacity selector
+        if (kwSelector) {
+            kwSelector.style.display = 'block';
+            kwSelector.style.opacity = '0';
+            kwSelector.style.transform = 'translateY(40px) scale(0.95)';
+            kwSelector.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    kwSelector.style.opacity = '1';
+                    kwSelector.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
     }
 }
 
-// Enhanced details view with smooth transitions
+// Enhanced details view with ultra-smooth transitions
 function showDetailsView() {
     const capacityBtn = document.getElementById('capacityBtn');
     const detailsBtn = document.getElementById('detailsBtn');
     const kwSelector = document.querySelector('.kw-selector-container');
     const priceResult = document.getElementById('priceResult');
     
+    console.log('🔄 Switching to Details View, Selected KW:', currentSelectedKW);
+    
     // Check if a KW is selected
     if (!currentSelectedKW) {
+        console.log('⚠️ No KW selected, showing shake animation');
         // Apply smooth shake animation to System Details button
         if (detailsBtn) {
+            detailsBtn.style.transition = 'transform 0.1s ease';
             detailsBtn.classList.add('shake');
             setTimeout(() => {
                 detailsBtn.classList.remove('shake');
@@ -2962,33 +3119,73 @@ function showDetailsView() {
     
     // Update button states with smooth transitions
     if (capacityBtn && detailsBtn) {
+        // Add smooth button transition
+        capacityBtn.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        detailsBtn.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        
         capacityBtn.classList.remove('active');
         detailsBtn.classList.add('active');
     }
     
-    // Hide capacity selector with smooth animation
-    if (kwSelector) {
-        kwSelector.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    // First, hide capacity selector with smooth fade-out
+    if (kwSelector && kwSelector.style.display !== 'none') {
+        kwSelector.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         kwSelector.style.opacity = '0';
-        kwSelector.style.transform = 'translateY(-20px)';
+        kwSelector.style.transform = 'translateY(-30px) scale(0.95)';
         
+        // Wait for fade-out to complete before showing price result
         setTimeout(() => {
             kwSelector.style.display = 'none';
+            
+            // Now show price result with smooth fade-in
+            if (priceResult) {
+                priceResult.style.display = 'block';
+                priceResult.style.opacity = '0';
+                priceResult.style.transform = 'translateY(40px) scale(0.95)';
+                priceResult.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                
+                // Use requestAnimationFrame for smoother animation
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        priceResult.style.opacity = '1';
+                        priceResult.style.transform = 'translateY(0) scale(1)';
+                        priceResult.classList.add('show');
+                        
+                        // Add a subtle bounce effect at the end
+                        setTimeout(() => {
+                            priceResult.style.transform = 'translateY(-2px) scale(1.01)';
+                            setTimeout(() => {
+                                priceResult.style.transform = 'translateY(0) scale(1)';
+                            }, 150);
+                        }, 300);
+                    });
+                });
+            }
         }, 400);
-    }
-    
-    // Show price result with smooth animation
-    if (priceResult) {
-        priceResult.style.display = 'block';
-        priceResult.style.opacity = '0';
-        priceResult.style.transform = 'translateY(30px)';
-        
-        setTimeout(() => {
-            priceResult.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            priceResult.style.opacity = '1';
-            priceResult.style.transform = 'translateY(0)';
-            priceResult.classList.add('show');
-        }, 100);
+    } else {
+        // If capacity selector is already hidden, just show price result
+        if (priceResult) {
+            priceResult.style.display = 'block';
+            priceResult.style.opacity = '0';
+            priceResult.style.transform = 'translateY(40px) scale(0.95)';
+            priceResult.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    priceResult.style.opacity = '1';
+                    priceResult.style.transform = 'translateY(0) scale(1)';
+                    priceResult.classList.add('show');
+                    
+                    // Add a subtle bounce effect
+                    setTimeout(() => {
+                        priceResult.style.transform = 'translateY(-2px) scale(1.01)';
+                        setTimeout(() => {
+                            priceResult.style.transform = 'translateY(0) scale(1)';
+                        }, 150);
+                    }, 300);
+                });
+            });
+        }
     }
 }
 
